@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Container, CardLogin } from "./styles";
-import { Box, Grid, TextField } from "@material-ui/core";
+import { Container, CardLogin, ButtonLogin, Title } from "./styles";
+import { TextField, Button } from "@material-ui/core";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,12 +10,12 @@ export default function Login() {
     <Container>
       <form noValidate autoComplete="off">
         <CardLogin>
-          <Grid item m={4}>
-            <TextField id="outlined-basic" label="Email" variant="outlined" />
-          </Grid>
-          <Grid item>
-            <TextField id="outlined-basic" label="Senha" variant="outlined" />
-          </Grid>
+          <Title>Faça login para entrar no sistema</Title>
+          <TextField id="outlined-basic" label="Email" variant="outlined" />
+          <div style={{ height: "15px" }}></div>
+          <TextField id="outlined-basic" label="Senha" variant="outlined" />
+          <div style={{ height: "25px" }}></div>
+          <ButtonLogin>Entrar</ButtonLogin>
         </CardLogin>
       </form>
     </Container>
