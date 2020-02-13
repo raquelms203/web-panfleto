@@ -7,31 +7,31 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   return (
-    <Container>
-      <Grid
-        container
-        spacing={0}
-        direction="column"
-        alignItems="center"
-        justify="center"
-        style={{ minHeight: "100vh" }}
-      >
-        <CardLogin>
-          <form noValidate autoComplete="off">
-            <Grid
-              container
-              spacing={0}
-              direction="column"
-              alignItems="center"
-              justify="center"
-              style={{ minHeight: "100vh" }}
-            >
-              <TextField id="outlined-basic" label="Email" variant="outlined" />
-              <TextField id="outlined-basic" label="Senha" variant="outlined" />
-            </Grid>
-          </form>
-        </CardLogin>
+    <Grid container direction="column">
+    
+        <Grid item>
+          <Container>
+            <form noValidate autoComplete="off">
+              <CardLogin>
+                <Grid item>
+                  <TextField
+                    id="outlined-basic"
+                    label="Email"
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    id="outlined-basic"
+                    label="Senha"
+                    variant="outlined"
+                  />
+                </Grid>
+              </CardLogin>
+            </form>
+          </Container>
       </Grid>
-    </Container>
+         <Grid item><p>Oi</p></Grid>
+    </Grid>
   );
 }
