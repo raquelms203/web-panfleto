@@ -24,6 +24,8 @@ export const CardLogin = styled.div`
   flex-direction: column;
   flex-wrap: wrap; 
   padding: 20px;
+  width: 350px;
+  min-width: 100px;
   background-color: white;
   color: black;
   
