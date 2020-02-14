@@ -20,7 +20,10 @@ export default function Dashboard() {
 
   return (
    <div> {cities.length}</div>
-    // <StyledGrid container justify="center" alignItems="center">
+  
+  );
+}
+  // <StyledGrid container justify="center" alignItems="center">
     //   <Grid item xs={12} sm={6} md={3}>
     //     <Paper>
     //       <Grid container item xs={12} justify="center">
@@ -29,5 +32,3 @@ export default function Dashboard() {
     //     </Paper>
     //   </Grid>
     // </StyledGrid>
-  );
-}

@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Container, CardLogin, ButtonLogin, Title, Card } from "./styles";
-import { TextField, Button } from "@material-ui/core";
+import {
+  Container,
+  CardLogin,
+  ButtonLogin,
+  Title,
+  Card,
+  StyledGrid
+} from "./styles";
+import { TextField, Button, Grid, Paper } from "@material-ui/core";
 import Computer from "../../assets/computer.png";
 
 export default function Login() {
@@ -9,23 +16,35 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   return (
-    <Container>
-      <Card>
-        <img src={Computer}></img>
-      </Card>
-
-      <form noValidate autoComplete="off">
-        <CardLogin>
-          <Title>Faça login para entrar no sistema</Title>
-          <TextField label="Email" variant="outlined" />
-          <div style={{ height: "15px" }}></div>
-          <TextField label="Senha" variant="outlined" />
-          <div style={{ height: "25px" }}></div>
-          <Link to="/dashboard">
-            <ButtonLogin>Entrar</ButtonLogin>
-          </Link>
-        </CardLogin>
-      </form>
-    </Container>
+    <StyledGrid container direction="row">
+      <Grid container justify="center" alignItems="center">
+        <Grid item sm={12} md={4}>
+          <Paper>
+            <CardLogin>
+              <img
+                src={Computer}
+                style={{ height: "250px", width: "auto", justify: "center" }}
+              ></img>
+            </CardLogin>
+          </Paper>
+        </Grid>
+        <Grid item sm={12} md={4}>
+          <Paper>
+            <form noValidate autoComplete="off">
+              <CardLogin>
+                <Title>Faça login para entrar no sistema</Title>
+                <TextField label="Email" variant="outlined" />
+                <div style={{ height: "15px" }}></div>
+                <TextField label="Senha" variant="outlined" />
+                <div style={{ height: "25px" }}></div>
+                <Link to="/dashboard">
+                  <ButtonLogin>Entrar</ButtonLogin>
+                </Link>
+              </CardLogin>
+            </form>
+          </Paper>
+        </Grid>
+      </Grid>
+    </StyledGrid>
   );
 }
