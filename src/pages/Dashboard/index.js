@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { apiStates }  from "../../services/api";
 
 
@@ -7,22 +7,30 @@ export default function Dashboard() {
 
   const [cities, setCities] = useState([]);
 
-  useEffect(() => { 
-    const names = [];
-    const response = apiStates.get().then(response => {  
-      response.data.map((item => {  
-        names.push(item.nome);
-      }));
-      
-    });
-    setCities(names);
-    console.log(cities);
+  const fetchCities = useCallback(
+    async () => {
+      if(cities.length === 0) {
+        const response = await apiStates.get();
+        const names = response.data.map(item =>   
+          item.nome
+        );
+        setCities(names);
+      }
     
-  }, []);
+    },
+    [cities],
+  );
+
+  useEffect(() => { 
+   
+   fetchCities();
+  
+  }, [fetchCities]);
 
  
+ 
 
-  return (  
-    <div style={{background: "#000" , height: "400px"}}></div>
-  )
+  return (<div style={{height: "400px"}}>{cities.length}</div>)
+
+
 }
