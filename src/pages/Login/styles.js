@@ -39,7 +39,7 @@ export const ButtonLogin = styled.div`
 `;
 
 export const Title = styled.p`
-  font: bold 20px Georgia, serif;
+  font: bold 20px Roboto, serif;
   margin-bottom: 25px;
 `;
 
