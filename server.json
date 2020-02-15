@@ -1,0 +1,73 @@
+{
+  "user": {
+    "nome": "Raquel Martins dos Santos",
+    "email": "raquelmartins203@yahoo.com.br",
+    "senha": 1234,
+    "partido": "PSDB",
+    "corPrimaria": "#f9a825",
+    "politicos": [
+      {
+        "idPolitico": 1,
+        "nome": "Político 1",
+        "categoria": 1,
+        "cpf": 10000000000,
+        "cidade": "João Monlevade",
+        "token": "123123",
+        "assinatura": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Assinatura_Jos%C3%A9_Saramago.png",
+        "gestores": [
+          {
+            "email": "gestor1@gmail.com",
+            "senha": "1234",
+            "cpf": 11111111111,
+            "cpfPolitico": 10000000000,
+            "nome": "Gestor 1",
+            "cidade": "João Monlevade",
+            "contratados": [
+              {
+                "nome": "Contratado 1",
+                "cpf": 22222222222,
+                "endereco": "Rua Getúlio Vargas",
+                "cidade": "João Monlevade",
+                "valor": 60.15,
+                "dia": "03",
+                "mes": "Setembro",
+                "assinatura": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Assinatura_Jos%C3%A9_Saramago.png"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "idPolitico": 2,
+        "nome": "Político 2",
+        "categoria": 2,
+        "cidade": "Itabira",
+        "cpf": 33333333333,
+        "token": "123123",
+        "assinatura": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Assinatura_Jos%C3%A9_Saramago.png",
+        "gestores": [
+          {
+            "email": "gestor2@gmail.com",
+            "senha": "1234",
+            "cpf": 44444444444,
+            "cpfPolitico": 33333333333,
+            "nome": "Gestor 2",
+            "cidade": "João Monlevade",
+            "contratados": [
+              {
+                "nome": "Contratado 2",
+                "cpf": 55555555555,
+                "endereco": "Rua Getúlio Vargas",
+                "cidade": "Itabira",
+                "valor": 60.15,
+                "dia": "03",
+                "mes": "Setembro",
+                "assinatura": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Assinatura_Jos%C3%A9_Saramago.png"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
