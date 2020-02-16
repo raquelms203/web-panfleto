@@ -4,7 +4,10 @@ import {
   Button,
   List,
   ListItem,
-  ListItemText
+  ListItemText,
+  Grid,
+  ListItemIcon,
+  Checkbox
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 import { apiStates, apiADM } from "../../services/api";
@@ -12,7 +15,7 @@ import { StyledGrid } from "./styles";
 
 export default function Dashboard() {
   const [cities, setCities] = useState([]);
-  const [indexPolitic, setIndexPolitic] = useState(1);
+  const [indexPolitic, setIndexPolitic] = useState(0);
   const [user, setUser] = useState({});
   const [politics, setPolitics] = useState([]);
 
@@ -25,7 +28,7 @@ export default function Dashboard() {
   }, [cities]);
 
   const fetchUser = useCallback(async () => {
-    if (user.toSource() === "({})") {
+    if (Object.entries(user).length === 0) {
       let response = await apiADM.get();
       let user = {
         nome: response.data.nome,
@@ -46,12 +49,16 @@ export default function Dashboard() {
       setUser(user);
       setPolitics(politicsAll);
     }
-  }, [user, politics]);
+  }, [user]);
 
   useEffect(() => {
     fetchCities();
     fetchUser();
   }, [fetchCities, fetchUser]);
+
+  const handleListCheck = (event, index) => {
+    setIndexPolitic(index);
+  };
 
   return (
     <>
@@ -62,14 +69,48 @@ export default function Dashboard() {
           </Button>
         </div>
       </AppBar>
-      <StyledGrid>
-        <List component="nav">
-          {politics.map(item => (
-            <ListItem button selected={indexPolitic === 0} onClick={() => {}}>
-              <ListItemText primary={item.nome}></ListItemText>
-            </ListItem>
-          ))}
-        </List>
+      <StyledGrid container direction="row">
+        <Grid item xs={4} md={2}>
+          <List component="nav" dense>
+            {politics.map((item, index) => (
+              <ListItem
+                key={index}
+                divider
+                button
+                selected={indexPolitic === index}
+                onClick={event => handleListCheck(event, index)}
+              >
+                <ListItemIcon>
+                  <Checkbox
+                    edge="start"
+                    // checked={checked.indexOf(value) !== -1}
+                    tabIndex={-1}
+                    disableRipple
+                    // inputProps={{ 'aria-labelledby': labelId }}
+                  />
+                </ListItemIcon>
+                <ListItemText primary={item.nome}></ListItemText>
+              </ListItem>
+            ))}
+          </List>
+        </Grid>
+        <div
+          style={{ width: "2px", background: "#babdc2" }}
+        ></div>
+        <Grid item xs={4} md={2}>
+          <List component="nav" dense>
+            {politics.map((item, index) => (
+              <ListItem
+                divider
+                button
+                selected={indexPolitic === index}
+                onClick={event => handleListCheck(event, index)}
+              >
+                <ListItemText primary={item.nome}></ListItemText>
+              </ListItem>
+            ))}
+          </List>
+        </Grid>
       </StyledGrid>
     </>
   );
