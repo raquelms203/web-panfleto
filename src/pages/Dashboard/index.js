@@ -7,7 +7,9 @@ import {
   ListItemText,
   Grid,
   ListItemIcon,
-  Checkbox
+  Checkbox,
+  Dialog,
+  DialogTitle
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 import { apiStates, apiADM } from "../../services/api";
@@ -23,6 +25,7 @@ export default function Dashboard() {
   const [indexManager, setIndexManager] = useState(0);
   const [hireds, setHireds] = useState([]);
   const [indexHired, setIndexHired] = useState(-1);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const fetchCities = useCallback(async () => {
     if (cities.length === 0) {
@@ -76,6 +79,10 @@ export default function Dashboard() {
     setHireds(managers[index].contratados);
   };
 
+  const handleFilterClick = event => {
+    setOpenDialog(true);
+  };
+
   return (
     <>
       <AppBar position="static">
@@ -94,9 +101,21 @@ export default function Dashboard() {
             justify="space-between"
           >
             <Grid item>
-              <Button>
+              <Button onClick={handleFilterClick}>
                 <strong>Filtrar</strong>
               </Button>
+              <Dialog
+                onClose={() => setOpenDialog(false)}
+                aria-labelledby="simple-dialog-title"
+                open={openDialog}
+              >
+                <DialogTitle>
+                  <Grid container direction="column">
+                    <Grid item>Oi</Grid>
+                    <Grid item>Oi 2</Grid>
+                  </Grid>
+                </DialogTitle>
+              </Dialog>
             </Grid>
             <Grid item>
               <ActionButton></ActionButton>

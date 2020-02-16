@@ -23,7 +23,7 @@ export default function Login() {
             <CardLogin>
               <img
                 src={Computer}
-                style={{maxHeight: "300px", maxWidth: "300px", justify: "center" }}
+                style={{maxHeight: "302px", maxWidth: "302px", justify: "center" }}
               ></img>
             </CardLogin>
           </Paper>
