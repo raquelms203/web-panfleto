@@ -12,12 +12,17 @@ import {
 import { Menu } from "@material-ui/icons";
 import { apiStates, apiADM } from "../../services/api";
 import { StyledGrid } from "./styles";
+import ActionButton from "../../components/ActionButton";
 
 export default function Dashboard() {
   const [cities, setCities] = useState([]);
-  const [indexPolitic, setIndexPolitic] = useState(0);
   const [user, setUser] = useState({});
   const [politics, setPolitics] = useState([]);
+  const [indexPolitic, setIndexPolitic] = useState(0);
+  const [managers, setManagers] = useState([]);
+  const [indexManager, setIndexManager] = useState(0);
+  const [hireds, setHireds] = useState([]);
+  const [indexHired, setIndexHired] = useState(-1);
 
   const fetchCities = useCallback(async () => {
     if (cities.length === 0) {
@@ -37,17 +42,20 @@ export default function Dashboard() {
       };
       let politicsAll = [];
 
-      response.data.politicos.map(item => {
+      response.data.politicos.forEach(item => {
         let p = {
           nome: item.nome,
           categoria: item.categoria,
           cpf: item.cpf,
-          cidade: item.cidade
+          cidade: item.cidade,
+          gestores: item.gestores
         };
         politicsAll.push(p);
       });
       setUser(user);
       setPolitics(politicsAll);
+      setManagers(politicsAll[0].gestores);
+      setHireds(politicsAll[0].gestores[0].contratados);
     }
   }, [user]);
 
@@ -56,8 +64,16 @@ export default function Dashboard() {
     fetchUser();
   }, [fetchCities, fetchUser]);
 
-  const handleListCheck = (event, index) => {
+  const handlePoliticListCheck = (event, index) => {
     setIndexPolitic(index);
+    setIndexManager(0);
+    setManagers(politics[index].gestores);
+    setHireds(politics[index].gestores[0].contratados);
+  };
+
+  const handleManagerListCheck = (event, index) => {
+    setIndexManager(index);
+    setHireds(managers[index].contratados);
   };
 
   return (
@@ -70,17 +86,32 @@ export default function Dashboard() {
         </div>
       </AppBar>
       <StyledGrid container direction="row">
-        <Grid item xs={4} md={2}>
-          <List component="nav" dense>
-            {politics.map((item, index) => (
-              <ListItem
-                key={index}
-                divider
-                button
-                selected={indexPolitic === index}
-                onClick={event => handleListCheck(event, index)}
-              >
-                <ListItemIcon>
+        <Grid item xs={3} sm={3} md={2}>
+          <Grid
+            container
+            direction="row"
+            alignItems="center"
+            justify="space-between"
+          >
+            <Grid item>
+              <Button>
+                <strong>Filtrar</strong>
+              </Button>
+            </Grid>
+            <Grid item>
+              <ActionButton></ActionButton>
+            </Grid>
+          </Grid>
+          <div style={{ background: "white", height: "100vh" }}>
+            <List component="nav" dense>
+              {politics.map((item, index) => (
+                <ListItem
+                  key={index}
+                  divider
+                  button
+                  selected={indexPolitic === index}
+                  onClick={event => handlePoliticListCheck(event, index)}
+                >
                   <Checkbox
                     edge="start"
                     // checked={checked.indexOf(value) !== -1}
@@ -88,50 +119,109 @@ export default function Dashboard() {
                     disableRipple
                     // inputProps={{ 'aria-labelledby': labelId }}
                   />
-                </ListItemIcon>
-                <ListItemText primary={item.nome}></ListItemText>
-              </ListItem>
-            ))}
-          </List>
+                  <ListItemText primary={item.nome}></ListItemText>
+                </ListItem>
+              ))}
+            </List>
+          </div>
         </Grid>
-        <div
-          style={{ width: "2px", background: "#babdc2" }}
-        ></div>
-        <Grid item xs={4} md={2}>
-          <List component="nav" dense>
-            {politics.map((item, index) => (
-              <ListItem
-                divider
-                button
-                selected={indexPolitic === index}
-                onClick={event => handleListCheck(event, index)}
-              >
-                <ListItemText primary={item.nome}></ListItemText>
-              </ListItem>
-            ))}
-          </List>
+
+        <div style={{ width: "2px", background: "#babdc2" }}></div>
+
+        <Grid item xs={3} sm={3} md={2}>
+          <ActionButton></ActionButton>
+          <div style={{ height: "8px" }}></div>
+          <div style={{ background: "white", height: "100vh" }}>
+            <List component="nav" dense>
+              {managers.map((item, index) => {
+                return index === 0 ? (
+                  <>
+                    <ListItem
+                      divider
+                      button
+                      selected={index === indexManager}
+                      onClick={event => handleManagerListCheck(event, index)}
+                    >
+                      <Checkbox
+                        edge="start"
+                        // checked={checked.indexOf(value) !== -1}
+                        tabIndex={-1}
+                        disableRipple
+                        // inputProps={{ 'aria-labelledby': labelId }}
+                      />
+                      <ListItemText primary={item.nome}></ListItemText>
+                    </ListItem>
+                  </>
+                ) : (
+                  <ListItem
+                    divider
+                    button
+                    selected={index === indexManager}
+                    onClick={event => handleManagerListCheck(event, index)}
+                  >
+                    <Checkbox
+                      edge="start"
+                      // checked={checked.indexOf(value) !== -1}
+                      tabIndex={-1}
+                      disableRipple
+                      // inputProps={{ 'aria-labelledby': labelId }}
+                    />
+                    <ListItemText primary={item.nome}></ListItemText>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </div>
+        </Grid>
+
+        <div style={{ width: "2px", background: "#babdc2" }}></div>
+
+        <Grid item xs={3} sm={3} md={2}>
+          <ActionButton></ActionButton>
+          <div style={{ height: "8px" }}></div>
+          <div style={{ background: "white", height: "100vh" }}>
+            <List component="nav" dense>
+              {hireds.map((item, index) =>
+                index === 0 ? (
+                  <>
+                    <ListItem
+                      divider
+                      button
+                      selected={index === indexHired}
+                      onClick={event => handleManagerListCheck(event, index)}
+                    >
+                      <Checkbox
+                        edge="start"
+                        // checked={checked.indexOf(value) !== -1}
+                        tabIndex={-1}
+                        disableRipple
+                        // inputProps={{ 'aria-labelledby': labelId }}
+                      />
+                      <ListItemText primary={item.nome}></ListItemText>
+                    </ListItem>
+                  </>
+                ) : (
+                  <ListItem
+                    divider
+                    button
+                    selected={index === indexHired}
+                    onClick={event => handleManagerListCheck(event, index)}
+                  >
+                    <Checkbox
+                      edge="start"
+                      // checked={checked.indexOf(value) !== -1}
+                      tabIndex={-1}
+                      disableRipple
+                      // inputProps={{ 'aria-labelledby': labelId }}
+                    />
+                    <ListItemText primary={item.nome}></ListItemText>
+                  </ListItem>
+                )
+              )}
+            </List>
+          </div>
         </Grid>
       </StyledGrid>
     </>
   );
 }
-{
-  /* <StyledGrid>
-        <List component="nav" aria-label="main mailbox folders">
-          {politics.map((politic, index) => (
-            <ListItem button
-          selected={indexPolitic === index}
-          onClick={event => {}}>{politic}</ListItem>
-          ))}
-        </List>
-      </StyledGrid> */
-}
-// <StyledGrid container justify="center" alignItems="center">
-//   <Grid item xs={12} sm={6} md={3}>
-//     <Paper>
-//       <Grid container item xs={12} justify="center">
-//         <p>Hey</p>
-//       </Grid>
-//     </Paper>
-//   </Grid>
-// </StyledGrid>
