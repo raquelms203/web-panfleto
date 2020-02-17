@@ -1,28 +1,18 @@
 import styled from "styled-components";
 import { TextField, Button, Grid, Paper } from "@material-ui/core";
 
-export const Container = styled.div`
-  /* display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  flex-wrap: wrap;
-  height: 100vh; */
-  background: #ecf0f9;
-`;
 
 export const StyledGrid = styled(Grid)`
-  padding: 50px;
+  padding: 20px;
   background: #ecf0f9;
-  height: 100vh;
+  min-height: 100vh;
 `;
 
 export const CardLogin = styled.div`
-   display: flex;
+  display: flex;
   justify-content: center;
-   align-items: center; 
+  align-items: center; 
   flex-direction: column;
-  flex-wrap: wrap; 
   padding: 20px;
   width: 350px;
   min-width: 100px;

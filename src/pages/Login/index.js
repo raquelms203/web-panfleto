@@ -16,8 +16,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   return (
-    <StyledGrid container direction="row">
-      <Grid container justify="center" alignItems="center">
+    <StyledGrid container justify="center" alignItems="center">
         <Grid item sm={12} md={4}>
           <Paper>
             <CardLogin>
@@ -44,7 +43,7 @@ export default function Login() {
             </form>
           </Paper>
         </Grid>
-      </Grid>
+     
     </StyledGrid>
   );
 }

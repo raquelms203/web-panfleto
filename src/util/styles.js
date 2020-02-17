@@ -1,7 +1,8 @@
 import { createGlobalStyle } from "styled-components";
+import { normalize } from 'styled-normalize';
 
 export default createGlobalStyle`  
-
+${normalize}
  
  * {  
    margin: 0;
@@ -12,6 +13,8 @@ export default createGlobalStyle`
 
  body, input, button {  
    font: 14px Roboto, sans-serif;
+   
+  
  }
  
  button {  
