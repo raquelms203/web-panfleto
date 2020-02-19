@@ -13,7 +13,7 @@ ${normalize}
 
  body, input, button {  
    font: 14px Roboto, sans-serif;
-   
+   background: #ecf0f9 
   
  }
  

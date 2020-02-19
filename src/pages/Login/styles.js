@@ -4,7 +4,6 @@ import { TextField, Button, Grid, Paper } from "@material-ui/core";
 
 export const StyledGrid = styled(Grid)`
   padding: 20px;
-  background: #ecf0f9;
   min-height: 100vh;
 `;
 

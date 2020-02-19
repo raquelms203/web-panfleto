@@ -92,8 +92,8 @@ export default function Dashboard() {
           </Button>
         </div>
       </AppBar>
-      <StyledGrid container direction="row">
-        <Grid item xs={3} sm={3} md={2}>
+      <StyledGrid container direction="row" justify="center">
+        <Grid item xs={3} sm={3} md={4}>
           <Grid
             container
             direction="row"
@@ -147,7 +147,7 @@ export default function Dashboard() {
 
         <div style={{ width: "2px", background: "#babdc2" }}></div>
 
-        <Grid item xs={3} sm={3} md={2}>
+        <Grid item xs={3} sm={3} md={3}>
           <ActionButton></ActionButton>
           <div style={{ height: "8px" }}></div>
           <div style={{ background: "white", height: "100vh" }}>
@@ -195,7 +195,7 @@ export default function Dashboard() {
 
         <div style={{ width: "2px", background: "#babdc2" }}></div>
 
-        <Grid item xs={3} sm={3} md={2}>
+        <Grid item xs={3} sm={3} md={3}>
           <ActionButton></ActionButton>
           <div style={{ height: "8px" }}></div>
           <div style={{ background: "white", height: "100vh" }}>
