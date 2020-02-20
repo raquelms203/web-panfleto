@@ -13,8 +13,10 @@ import {
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 import { apiStates, apiADM } from "../../services/api";
-import { StyledGrid } from "./styles";
+import { StyledGrid, TitleAppBar, Separator } from "./styles";
 import ActionButton from "../../components/ActionButton";
+import CustomList from "../../components/CustomList";
+import Filter from "../../components/Filter";
 
 export default function Dashboard() {
   const [cities, setCities] = useState([]);
@@ -86,33 +88,21 @@ export default function Dashboard() {
   return (
     <>
       <AppBar position="static">
-        <div style={{ display: "flex" }}>
-          <Button style={{ marginLeft: "auto" }} color="inherit">
-            {user.nome}
-          </Button>
-        </div>
+        <TitleAppBar>
+          <Button>{user.nome}</Button>
+        </TitleAppBar>
       </AppBar>
-      <StyledGrid container direction="row" justify="center">
+      <StyledGrid container justify="center">
         <Grid item xs={3} sm={3} md={4}>
-          <Grid
-            container
-            direction="row"
-            alignItems="center"
-            justify="space-between"
-          >
+          <Grid container alignItems="center" justify="space-between">
             <Grid item>
               <Button onClick={handleFilterClick}>
                 <strong>Filtrar</strong>
               </Button>
-              <Dialog
-                onClose={() => setOpenDialog(false)}
-                aria-labelledby="simple-dialog-title"
-                open={openDialog}
-              >
+              <Dialog onClose={() => setOpenDialog(false)} open={openDialog}>
                 <DialogTitle>
                   <Grid container direction="column">
-                    <Grid item>Oi</Grid>
-                    <Grid item>Oi 2</Grid>
+                    <Filter list={cities}/>
                   </Grid>
                 </DialogTitle>
               </Dialog>
@@ -121,124 +111,35 @@ export default function Dashboard() {
               <ActionButton></ActionButton>
             </Grid>
           </Grid>
-          <div style={{ background: "white", height: "100vh" }}>
-            <List component="nav" dense>
-              {politics.map((item, index) => (
-                <ListItem
-                  key={index}
-                  divider
-                  button
-                  selected={indexPolitic === index}
-                  onClick={event => handlePoliticListCheck(event, index)}
-                >
-                  <Checkbox
-                    edge="start"
-                    // checked={checked.indexOf(value) !== -1}
-                    tabIndex={-1}
-                    disableRipple
-                    // inputProps={{ 'aria-labelledby': labelId }}
-                  />
-                  <ListItemText primary={item.nome}></ListItemText>
-                </ListItem>
-              ))}
-            </List>
-          </div>
+          <CustomList
+            onClick={handlePoliticListCheck}
+            list={politics}
+          />
         </Grid>
 
-        <div style={{ width: "2px", background: "#babdc2" }}></div>
+        <Separator />
 
         <Grid item xs={3} sm={3} md={3}>
           <ActionButton></ActionButton>
           <div style={{ height: "8px" }}></div>
-          <div style={{ background: "white", height: "100vh" }}>
-            <List component="nav" dense>
-              {managers.map((item, index) => {
-                return index === 0 ? (
-                  <>
-                    <ListItem
-                      divider
-                      button
-                      selected={index === indexManager}
-                      onClick={event => handleManagerListCheck(event, index)}
-                    >
-                      <Checkbox
-                        edge="start"
-                        // checked={checked.indexOf(value) !== -1}
-                        tabIndex={-1}
-                        disableRipple
-                        // inputProps={{ 'aria-labelledby': labelId }}
-                      />
-                      <ListItemText primary={item.nome}></ListItemText>
-                    </ListItem>
-                  </>
-                ) : (
-                  <ListItem
-                    divider
-                    button
-                    selected={index === indexManager}
-                    onClick={event => handleManagerListCheck(event, index)}
-                  >
-                    <Checkbox
-                      edge="start"
-                      // checked={checked.indexOf(value) !== -1}
-                      tabIndex={-1}
-                      disableRipple
-                      // inputProps={{ 'aria-labelledby': labelId }}
-                    />
-                    <ListItemText primary={item.nome}></ListItemText>
-                  </ListItem>
-                );
-              })}
-            </List>
-          </div>
+          <CustomList
+            onClick={handleManagerListCheck}
+            indexSelected={indexManager}
+            list={managers}
+          />
         </Grid>
 
-        <div style={{ width: "2px", background: "#babdc2" }}></div>
+        <Separator />
 
         <Grid item xs={3} sm={3} md={3}>
           <ActionButton></ActionButton>
           <div style={{ height: "8px" }}></div>
-          <div style={{ background: "white", height: "100vh" }}>
-            <List component="nav" dense>
-              {hireds.map((item, index) =>
-                index === 0 ? (
-                  <>
-                    <ListItem
-                      divider
-                      button
-                      selected={index === indexHired}
-                      onClick={event => handleManagerListCheck(event, index)}
-                    >
-                      <Checkbox
-                        edge="start"
-                        // checked={checked.indexOf(value) !== -1}
-                        tabIndex={-1}
-                        disableRipple
-                        // inputProps={{ 'aria-labelledby': labelId }}
-                      />
-                      <ListItemText primary={item.nome}></ListItemText>
-                    </ListItem>
-                  </>
-                ) : (
-                  <ListItem
-                    divider
-                    button
-                    selected={index === indexHired}
-                    onClick={event => handleManagerListCheck(event, index)}
-                  >
-                    <Checkbox
-                      edge="start"
-                      // checked={checked.indexOf(value) !== -1}
-                      tabIndex={-1}
-                      disableRipple
-                      // inputProps={{ 'aria-labelledby': labelId }}
-                    />
-                    <ListItemText primary={item.nome}></ListItemText>
-                  </ListItem>
-                )
-              )}
-            </List>
-          </div>
+
+          <CustomList
+            onClick={() => {}}
+            indexSelected={indexHired}
+            list={hireds}
+          />
         </Grid>
       </StyledGrid>
     </>

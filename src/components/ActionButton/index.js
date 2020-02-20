@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import {
-  TextField,
-  Button,
   Grid,
-  Paper,
-  IconButton,
-  Tooltip
 } from "@material-ui/core";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import { Add, Edit, Delete } from "@material-ui/icons";
@@ -29,22 +24,22 @@ import { Add, Edit, Delete } from "@material-ui/icons";
 export default function ActionButton() {
   return (
     <Grid container direction="row-reverse">
-      
-        <Grid item>
-          <button style={{ border: "none", color: "firebrick" }}>
-            <Delete style={{ transform: "scale(0.8)" }}></Delete>
-          </button>
-        </Grid>
-        <Grid item>
-          <button style={{ border: "none", color: "blue" }}>
-            <Edit style={{ transform: "scale(0.8)" }}></Edit>
-          </button>
-        </Grid>
-        <Grid item>
-          <button style={{ border: "none", color: "green" }}>
-            <Add></Add>
-          </button>
-        </Grid>
+      <Grid item>
+        <button style={{ border: "none", color: "firebrick" }}>
+          <Delete style={{ transform: "scale(0.8)" }}></Delete>
+        
+        </button>
+      </Grid>
+      <Grid item>
+        <button style={{ border: "none", color: "blue" }}>
+          <Edit style={{ transform: "scale(0.8)" }}></Edit>
+        </button>
+      </Grid>
+      <Grid item>
+        <button style={{ border: "none", color: "green" }}>
+          <Add></Add>
+        </button>
+      </Grid>
     </Grid>
   );
 }
