@@ -15,3 +15,8 @@ export const TitleAppBar = styled.div`
     color: inherit;
   }
 `;
+
+export const Separator = styled.div`  
+   width: 2px;
+    background: #babdc2;
+`;

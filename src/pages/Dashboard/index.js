@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 import { apiStates, apiADM } from "../../services/api";
-import { StyledGrid, TitleAppBar, Separator, Padding } from "./styles";
+import { StyledGrid, TitleAppBar, Separator } from "./styles";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import FilterPolitics from "../../components/FilterPolitics";
@@ -126,7 +126,7 @@ export default function Dashboard() {
         <Grid item xs={3} sm={3} md={3}>
           <ActionButton></ActionButton>
 
-          <div style={{ height: "16px" }}></div>
+          <div style={{ height: "8px" }}></div>
 
           <CustomList
             onClick={handleManagerListCheck}
@@ -140,7 +140,7 @@ export default function Dashboard() {
         <Grid item xs={3} sm={3} md={3}>
           <ActionButton></ActionButton>
 
-          <div style={{ height: "16px" }}></div>
+          <div style={{ height: "8px" }}></div>
 
           <CustomList
             onClick={() => {}}
