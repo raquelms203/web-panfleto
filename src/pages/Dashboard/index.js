@@ -13,10 +13,11 @@ import {
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 import { apiStates, apiADM } from "../../services/api";
-import { StyledGrid, TitleAppBar, Separator } from "./styles";
+import { StyledGrid, TitleAppBar, Separator, Padding } from "./styles";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
-import Filter from "../../components/Filter";
+import FilterPolitics from "../../components/FilterPolitics";
+import FilterCities from "../../components/FilterCities";
 
 export default function Dashboard() {
   const [cities, setCities] = useState([]);
@@ -102,7 +103,9 @@ export default function Dashboard() {
               <Dialog onClose={() => setOpenDialog(false)} open={openDialog}>
                 <DialogTitle>
                   <Grid container direction="column">
-                    <Filter list={cities}/>
+                    <FilterPolitics onChange={() => {}} />
+                    <div style={{ height: "16px" }}></div>
+                    <FilterCities onChange={() => {}} list={cities} />
                   </Grid>
                 </DialogTitle>
               </Dialog>
@@ -113,6 +116,7 @@ export default function Dashboard() {
           </Grid>
           <CustomList
             onClick={handlePoliticListCheck}
+            indexSelected={indexPolitic}
             list={politics}
           />
         </Grid>
@@ -121,7 +125,9 @@ export default function Dashboard() {
 
         <Grid item xs={3} sm={3} md={3}>
           <ActionButton></ActionButton>
-          <div style={{ height: "8px" }}></div>
+
+          <div style={{ height: "16px" }}></div>
+
           <CustomList
             onClick={handleManagerListCheck}
             indexSelected={indexManager}
@@ -133,7 +139,8 @@ export default function Dashboard() {
 
         <Grid item xs={3} sm={3} md={3}>
           <ActionButton></ActionButton>
-          <div style={{ height: "8px" }}></div>
+
+          <div style={{ height: "16px" }}></div>
 
           <CustomList
             onClick={() => {}}
