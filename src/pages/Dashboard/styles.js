@@ -21,6 +21,6 @@ export const Separator = styled.div`
     background: #babdc2;
 `;
 
-export const ButtonOk = styled(Button)`  
-  width: 80px;
+export const Subtitle = styled.p`  
+  padding-left: 8px;
 `;

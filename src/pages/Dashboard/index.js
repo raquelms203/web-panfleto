@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { AppBar, Button, Grid, Dialog, DialogTitle } from "@material-ui/core";
 import { apiStates, apiADM } from "../../services/api";
-import { StyledGrid, TitleAppBar, Separator, ButtonOk } from "./styles";
+import { StyledGrid, TitleAppBar, Separator, Subtitle } from "./styles";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import FilterPolitics from "../../components/FilterPolitics";
@@ -30,6 +30,24 @@ export default function Dashboard() {
     }
   }, [cities]);
 
+  const fetchPolitics = async () => {
+    let response = await apiADM.get();
+    let politicsAll = [];
+
+    response.data.politicos.forEach(item => {
+      let p = {
+        nome: item.nome,
+        categoria: item.categoria,
+        cpf: item.cpf,
+        cidade: item.cidade,
+        gestores: item.gestores
+      };
+      politicsAll.push(p);
+    });
+
+    return politicsAll;
+  };
+
   const fetchUser = useCallback(async () => {
     if (Object.entries(user).length === 0) {
       let response = await apiADM.get();
@@ -38,18 +56,7 @@ export default function Dashboard() {
         partido: response.data.partido,
         corPrimaria: response.data.corPrimaria
       };
-      let politicsAll = [];
-
-      response.data.politicos.forEach(item => {
-        let p = {
-          nome: item.nome,
-          categoria: item.categoria,
-          cpf: item.cpf,
-          cidade: item.cidade,
-          gestores: item.gestores
-        };
-        politicsAll.push(p);
-      });
+      let politicsAll = await fetchPolitics();
 
       setUser(user);
       setPolitics(politicsAll);
@@ -85,7 +92,7 @@ export default function Dashboard() {
     let list = checkPolitic;
     list[indexList] = value;
     setCheckPolitic(list);
-    if (isTwoPoliticSelected()) {  
+    if (isTwoPoliticSelected()) {
       setManagers([]);
       setHireds([]);
     }
@@ -108,25 +115,43 @@ export default function Dashboard() {
     setFilterPoliticSelected(event.target.value);
   };
 
-  const handleFilters = event => {
+  const handleFilters = async (event) => {
     if (citySelected === "" && filterPoliticSelected === 1) {
       setOpenDialog(false);
       return;
     }
+    let fetch = await fetchPolitics();
     let list = [];
-    if (citySelected !== "") {
-      politics.forEach(item =>
-        item.cidade === citySelected ? list.push(item) : undefined
-      );
-      setCitySelected("");
+    console.log("cidade" + citySelected);
+    console.log(`tipo ${filterPoliticSelected}`);
+    if (citySelected !== "" && filterPoliticSelected !== 1) {
+      fetch.forEach(item => {
+        if (item.cidade === citySelected) {
+          if (list.indexOf(item) === -1) {
+            let n = filterPoliticSelected - 1;
+            if (item.categoria === n) {
+              if (list.indexOf(item) === -1) list.push(item);
+            }
+          }
+        }
+      });
+    } else if (filterPoliticSelected !== 1 && citySelected === "") {
+      let n = filterPoliticSelected - 1;
+      fetch.forEach(item => {
+        if (item.categoria === n) {
+          if (list.indexOf(item) === -1) list.push(item);
+        }
+      });
+    } else if (filterPoliticSelected === 1 && citySelected !== "") {
+      fetch.forEach(item => {
+        if (item.cidade === citySelected) {
+          if (list.indexOf(item) === -1) {
+            list.push(item);
+          }
+        }
+      });
     }
-    if (filterPoliticSelected !== 1) {
-      const n = filterPoliticSelected - 1;
-      politics.forEach(item =>
-        item.categoria === n ? list.push(item) : undefined
-      );
-      setFilterPoliticSelected(1);
-    }
+
     list.sort(function(a, b) {
       if (a.nome < b.nome) {
         return -1;
@@ -138,7 +163,31 @@ export default function Dashboard() {
     });
     console.log(list);
     setPolitics(list);
+    if (list.length === 0) {
+      setManagers([]);
+      setHireds([]);
+    }
     setOpenDialog(false);
+  };
+
+  const removeFilterCity = async () => {
+    setCitySelected("");
+    if (filterPoliticSelected !== 1) {
+      handleFilters();
+    } else {
+      let politicsAll = await fetchPolitics();
+      setPolitics(politicsAll);
+    }
+  };
+
+  const removeFilterPolitic = async () => {
+    setFilterPoliticSelected(1);
+    if (citySelected !== "") {
+      handleFilters();
+    } else {
+      let politicsAll = await fetchPolitics();
+      setPolitics(politicsAll);
+    }
   };
 
   return (
@@ -175,11 +224,28 @@ export default function Dashboard() {
                   </Grid>
                 </DialogTitle>
               </Dialog>
+              {citySelected !== "" ? (
+                <Button onClick={removeFilterCity}>{citySelected}</Button>
+              ) : (
+                undefined
+              )}
+              {filterPoliticSelected !== 1 ? (
+                <Button onClick={removeFilterPolitic}>
+                  {filterPoliticSelected === 2 ? (
+                    <span>Prefeitos</span>
+                  ) : (
+                    <span>Vereadores</span>
+                  )}
+                </Button>
+              ) : (
+                undefined
+              )}
             </Grid>
             <Grid item>
               <ActionButton></ActionButton>
             </Grid>
           </Grid>
+          <Subtitle>Campanhas</Subtitle>
           <CustomList
             onClick={handlePoliticListCheck}
             indexSelected={indexPolitic}
@@ -192,7 +258,7 @@ export default function Dashboard() {
           <ActionButton></ActionButton>
 
           <div style={{ height: "8px" }}></div>
-
+          <Subtitle>Gestores</Subtitle>
           <CustomList
             onClick={handleManagerListCheck}
             indexSelected={indexManager}
@@ -204,7 +270,7 @@ export default function Dashboard() {
           <ActionButton></ActionButton>
 
           <div style={{ height: "8px" }}></div>
-
+          <Subtitle>Contratados</Subtitle>
           <CustomList
             onClick={() => {}}
             indexSelected={indexHired}

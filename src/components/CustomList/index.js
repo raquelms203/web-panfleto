@@ -39,7 +39,7 @@ export default function CustomList(props) {
                 onChange={(event, value) => onCheckChange(event, value, index)}
               />
               <ListItemText primary={item.nome}></ListItemText>
-              <ListItemIcon><ArrowForwardIos style={{ color: "#525252", transform: "scale(0.8)" }} /></ListItemIcon>
+              <ArrowForwardIos style={{ color: "#525252", transform: "scale(0.8)" }} />
             </ListItem>
           ))}
         </List>

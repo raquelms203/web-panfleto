@@ -89,6 +89,59 @@
             ]
           }
         ]
+      },
+      {
+        "idPolitico": 3,
+        "nome": "Político 3",
+        "categoria": 1,
+        "cidade": "Itabira",
+        "cpf": 33333333333,
+        "token": "123123",
+        "assinatura": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Assinatura_Jos%C3%A9_Saramago.png",
+        "gestores": [
+          {
+            "email": "gestor3@gmail.com",
+            "senha": "1234",
+            "cpf": 44444444444,
+            "cpfPolitico": 33333333333,
+            "nome": "Gestor 3",
+            "cidade": "Itabira",
+            "contratados": [
+              {
+                "nome": "Contratado 3",
+                "cpf": 55555555555,
+                "endereco": "Rua Getúlio Vargas",
+                "cidade": "Itabira",
+                "valor": 60.15,
+                "dia": "03",
+                "mes": "Setembro",
+                "assinatura": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Assinatura_Jos%C3%A9_Saramago.png",
+                "contrato": "http://crmvgo.org.br/go/pdf/Surgerido_cont_prestacao_de_serv.pdf"
+              }
+            ]
+          },
+          {
+            "email": "gestor3@gmail.com",
+            "senha": "1234",
+            "cpf": 555555555555,
+            "cpfPolitico": 33333333333,
+            "nome": "Gestor 3",
+            "cidade": "Itabira",
+            "contratados": [
+              {
+                "nome": "Contratado 4",
+                "cpf": 55555555555,
+                "endereco": "Rua Getúlio Vargas",
+                "cidade": "Itabira",
+                "valor": 60.15,
+                "dia": "03",
+                "mes": "Setembro",
+                "assinatura": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Assinatura_Jos%C3%A9_Saramago.png",
+                "contrato": "http://crmvgo.org.br/go/pdf/Surgerido_cont_prestacao_de_serv.pdf"
+              }
+            ]
+          }
+        ]
       }
     ]
   }
