@@ -1,19 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  AppBar,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  Grid,
-  ListItemIcon,
-  Checkbox,
-  Dialog,
-  DialogTitle,
-  TextField
-} from "@material-ui/core";
-import { Menu } from "@material-ui/icons";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import { AppBar, Button, Grid, Dialog, DialogTitle } from "@material-ui/core";
 import { apiStates, apiADM } from "../../services/api";
 import { StyledGrid, TitleAppBar, Separator, ButtonOk } from "./styles";
 import ActionButton from "../../components/ActionButton";
@@ -26,10 +12,12 @@ export default function Dashboard() {
   const [citySelected, setCitySelected] = useState("");
   const [user, setUser] = useState({});
   const [politics, setPolitics] = useState([]);
-  const [politicSelected, setPoliticSelected] = useState(1);
+  const [filterPoliticSelected, setFilterPoliticSelected] = useState(1);
+  const [checkPolitic, setCheckPolitic] = useState([]);
   const [indexPolitic, setIndexPolitic] = useState(0);
   const [managers, setManagers] = useState([]);
   const [indexManager, setIndexManager] = useState(0);
+  const [showManagers, setShowManagers] = useState(true);
   const [hireds, setHireds] = useState([]);
   const [indexHired, setIndexHired] = useState(-1);
   const [openDialog, setOpenDialog] = useState(false);
@@ -62,10 +50,12 @@ export default function Dashboard() {
         };
         politicsAll.push(p);
       });
+
       setUser(user);
       setPolitics(politicsAll);
       setManagers(politicsAll[0].gestores);
       setHireds(politicsAll[0].gestores[0].contratados);
+      setCheckPolitic(Array(politicsAll.length).fill(false));
     }
   }, [user]);
 
@@ -79,6 +69,26 @@ export default function Dashboard() {
     setIndexManager(0);
     setManagers(politics[index].gestores);
     setHireds(politics[index].gestores[0].contratados);
+  };
+
+  const isTwoPoliticSelected = () => {
+    let counter = 0;
+    checkPolitic.forEach(item => {
+      if (item) counter++;
+      if (counter >= 2) return;
+    });
+    if (counter >= 2) return true;
+    return false;
+  };
+
+  const handleCheckChangePolitic = (event, value, indexList) => {
+    let list = checkPolitic;
+    list[indexList] = value;
+    setCheckPolitic(list);
+    if (isTwoPoliticSelected()) {  
+      setManagers([]);
+      setHireds([]);
+    }
   };
 
   const handleManagerListCheck = (event, index) => {
@@ -95,11 +105,11 @@ export default function Dashboard() {
   };
 
   const handleFilterPolitic = event => {
-    setPoliticSelected(event.target.value);
+    setFilterPoliticSelected(event.target.value);
   };
 
   const handleFilters = event => {
-    if (citySelected === "" && politicSelected === 1) {
+    if (citySelected === "" && filterPoliticSelected === 1) {
       setOpenDialog(false);
       return;
     }
@@ -110,16 +120,23 @@ export default function Dashboard() {
       );
       setCitySelected("");
     }
-    if (politicSelected !== 1) {
-      const n = politicSelected - 1;
+    if (filterPoliticSelected !== 1) {
+      const n = filterPoliticSelected - 1;
       politics.forEach(item =>
         item.categoria === n ? list.push(item) : undefined
       );
-      setPoliticSelected(1);
+      setFilterPoliticSelected(1);
     }
-    list.sort((a, b) => {
-       a > b;
+    list.sort(function(a, b) {
+      if (a.nome < b.nome) {
+        return -1;
+      }
+      if (a.nome > b.nome) {
+        return 1;
+      }
+      return 0;
     });
+    console.log(list);
     setPolitics(list);
     setOpenDialog(false);
   };
@@ -131,7 +148,7 @@ export default function Dashboard() {
           <Button>{user.nome}</Button>
         </TitleAppBar>
       </AppBar>
-      <StyledGrid container justify="center">
+      <StyledGrid container item justify="center">
         <Grid item xs={3} sm={3} md={4}>
           <Grid container alignItems="center" justify="space-between">
             <Grid item>
@@ -167,11 +184,10 @@ export default function Dashboard() {
             onClick={handlePoliticListCheck}
             indexSelected={indexPolitic}
             list={politics}
+            onCheckChange={handleCheckChangePolitic}
           />
         </Grid>
-
         <Separator />
-
         <Grid item xs={3} sm={3} md={3}>
           <ActionButton></ActionButton>
 
@@ -183,9 +199,7 @@ export default function Dashboard() {
             list={managers}
           />
         </Grid>
-
         <Separator />
-
         <Grid item xs={3} sm={3} md={3}>
           <ActionButton></ActionButton>
 

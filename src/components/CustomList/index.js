@@ -1,15 +1,18 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import {
   List,
   ListItem,
   ListItemText,
   Checkbox,
-  Grid
+  Grid,
+  ListItemIcon,
 } from "@material-ui/core";
 
+import { ArrowForwardIos } from "@material-ui/icons";
+
 export default function CustomList(props) {
-  const { list, onClick, indexSelected } = props;
+  const { list, onClick, indexSelected, onCheckChange } = props;
 
   return (
     <div style={{ background: "white", height: "100vh" }}>
@@ -33,9 +36,10 @@ export default function CustomList(props) {
                 edge="start"
                 tabIndex={-1}
                 disableRipple
-                onChange={() => console.log("mudança")}
+                onChange={(event, value) => onCheckChange(event, value, index)}
               />
               <ListItemText primary={item.nome}></ListItemText>
+              <ListItemIcon><ArrowForwardIos style={{ color: "#525252", transform: "scale(0.8)" }} /></ListItemIcon>
             </ListItem>
           ))}
         </List>

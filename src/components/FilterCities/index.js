@@ -13,7 +13,7 @@ export default function Filter(props) {
       getOptionLabel={option => option}
       style={{ width: 300 }}
       renderInput={params => (
-        <TextField {...params} label="Cidades" variant="outlined" fullWidth />
+        <TextField {...params} label="Selecione a cidade" variant="outlined" fullWidth />
       )}
     />
   );
