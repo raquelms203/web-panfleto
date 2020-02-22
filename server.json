@@ -8,7 +8,7 @@
     "politicos": [
       {
         "idPolitico": 1,
-        "nome": "Político 1",
+        "nome": "Política 1",
         "categoria": 1,
         "cpf": 10000000000,
         "cidade": "João Monlevade",

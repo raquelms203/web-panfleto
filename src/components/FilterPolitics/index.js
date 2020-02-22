@@ -17,6 +17,7 @@ export default function Filter(props) {
             labelId="demo-simple-select-autowidth-label"
             id="demo-simple-select-autowidth"
             onChange={onChange}
+            defaultValue={1}
           >
             <MenuItem key={1} value={1}>
               Todos

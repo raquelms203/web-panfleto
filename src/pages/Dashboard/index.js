@@ -9,11 +9,13 @@ import {
   ListItemIcon,
   Checkbox,
   Dialog,
-  DialogTitle
+  DialogTitle,
+  TextField
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import { apiStates, apiADM } from "../../services/api";
-import { StyledGrid, TitleAppBar, Separator } from "./styles";
+import { StyledGrid, TitleAppBar, Separator, ButtonOk } from "./styles";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import FilterPolitics from "../../components/FilterPolitics";
@@ -21,8 +23,10 @@ import FilterCities from "../../components/FilterCities";
 
 export default function Dashboard() {
   const [cities, setCities] = useState([]);
+  const [citySelected, setCitySelected] = useState("");
   const [user, setUser] = useState({});
   const [politics, setPolitics] = useState([]);
+  const [politicSelected, setPoliticSelected] = useState(1);
   const [indexPolitic, setIndexPolitic] = useState(0);
   const [managers, setManagers] = useState([]);
   const [indexManager, setIndexManager] = useState(0);
@@ -86,6 +90,40 @@ export default function Dashboard() {
     setOpenDialog(true);
   };
 
+  const handleFilterCity = event => {
+    setCitySelected(event.currentTarget.innerText);
+  };
+
+  const handleFilterPolitic = event => {
+    setPoliticSelected(event.target.value);
+  };
+
+  const handleFilters = event => {
+    if (citySelected === "" && politicSelected === 1) {
+      setOpenDialog(false);
+      return;
+    }
+    let list = [];
+    if (citySelected !== "") {
+      politics.forEach(item =>
+        item.cidade === citySelected ? list.push(item) : undefined
+      );
+      setCitySelected("");
+    }
+    if (politicSelected !== 1) {
+      const n = politicSelected - 1;
+      politics.forEach(item =>
+        item.categoria === n ? list.push(item) : undefined
+      );
+      setPoliticSelected(1);
+    }
+    list.sort((a, b) => {
+       a > b;
+    });
+    setPolitics(list);
+    setOpenDialog(false);
+  };
+
   return (
     <>
       <AppBar position="static">
@@ -103,9 +141,20 @@ export default function Dashboard() {
               <Dialog onClose={() => setOpenDialog(false)} open={openDialog}>
                 <DialogTitle>
                   <Grid container direction="column">
-                    <FilterPolitics onChange={() => {}} />
+                    <FilterPolitics onChange={handleFilterPolitic} />
                     <div style={{ height: "16px" }}></div>
-                    <FilterCities onChange={() => {}} list={cities} />
+                    <FilterCities
+                      onChange={handleFilterCity}
+                      list={cities}
+                    ></FilterCities>
+                    <div style={{ height: "16px" }}></div>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleFilters}
+                    >
+                      OK
+                    </Button>
                   </Grid>
                 </DialogTitle>
               </Dialog>

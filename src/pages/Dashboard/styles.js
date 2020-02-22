@@ -20,3 +20,7 @@ export const Separator = styled.div`
    width: 2px;
     background: #babdc2;
 `;
+
+export const ButtonOk = styled(Button)`  
+  width: 80px;
+`;
