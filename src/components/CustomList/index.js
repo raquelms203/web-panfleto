@@ -6,20 +6,40 @@ import {
   ListItemText,
   Checkbox,
   Grid,
+  Button,
+  Menu,
+  MenuItem,
+  ListItemSecondaryAction
 } from "@material-ui/core";
 
-import { ArrowForwardIos } from "@material-ui/icons";
+import { MoreVert } from "@material-ui/icons";
 
 export default function CustomList(props) {
-  const { list, onClick, indexSelected, onCheckChange } = props;
+  const {
+    list,
+    onClick,
+    indexSelected,
+    onCheckChange,
+    dropdownNames,
+    dropdownOnChange
+  } = props;
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClickMenu = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <div style={{ background: "white", height: "100vh" }}>
       {list.length === 0 ? (
         <Grid container direction="column" alignItems="center">
-          <div style={{ height: "50px" }}>
-          </div>
-            <strong> Não há registros</strong>
+          <div style={{ height: "50px" }}></div>
+          <strong> Não há registros</strong>
         </Grid>
       ) : (
         <List component="nav" dense>
@@ -38,7 +58,28 @@ export default function CustomList(props) {
                 onChange={(event, value) => onCheckChange(event, value, index)}
               />
               <ListItemText primary={item.nome}></ListItemText>
-              <ArrowForwardIos style={{ color: "#525252", transform: "scale(0.8)" }} />
+              <ListItemSecondaryAction>
+                <Button
+                  aria-controls="simple-menu"
+                  aria-haspopup="true"
+                  onClick={handleClickMenu}
+                >
+                  <MoreVert
+                    style={{ color: "#525252", transform: "scale(0.8)" }}
+                  />
+                </Button>
+                <Menu
+                  id="simple-menu"
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  onClose={handleCloseMenu}
+                >
+                  {dropdownNames.map((item, index) => (
+                    <MenuItem onClick={handleCloseMenu}>{item}</MenuItem>
+                  ))}
+                </Menu>
+              </ListItemSecondaryAction>
             </ListItem>
           ))}
         </List>

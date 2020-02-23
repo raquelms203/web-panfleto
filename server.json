@@ -121,11 +121,11 @@
             ]
           },
           {
-            "email": "gestor3@gmail.com",
+            "email": "gestor4@gmail.com",
             "senha": "1234",
             "cpf": 555555555555,
             "cpfPolitico": 33333333333,
-            "nome": "Gestor 3",
+            "nome": "Gestor 4",
             "cidade": "Itabira",
             "contratados": [
               {

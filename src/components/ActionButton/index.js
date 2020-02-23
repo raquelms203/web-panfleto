@@ -3,7 +3,7 @@ import React  from "react";
 import {
   Grid,
 } from "@material-ui/core";
-import { Add, Edit, Delete } from "@material-ui/icons";
+import { Add, Delete } from "@material-ui/icons";
 
 // const useStylesBootstrap = makeStyles(theme => ({
 //   arrow: {
@@ -28,12 +28,7 @@ export default function ActionButton() {
           <Delete style={{ transform: "scale(0.8)" }}></Delete>
         </button>
       </Grid>
-      <div style={{ width:"15px" }}></div>
-      <Grid item>
-        <button style={{ border: "none", color: "blue" }}>
-          <Edit style={{ transform: "scale(0.8)" }}></Edit>
-        </button>
-      </Grid>
+
       <div style={{ width:"15px" }}></div>
 
       <Grid item>

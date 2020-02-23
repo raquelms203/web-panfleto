@@ -331,6 +331,8 @@ export default function Dashboard() {
             indexSelected={indexPolitic}
             list={politics}
             onCheckChange={handleCheckChangePolitic}
+            dropdownNames={["Adicionar assinatura", "Editar"]}
+            dropdownOnChange={[() => {}, () => {}]}
           />
         </Grid>
         <Separator />
@@ -345,6 +347,8 @@ export default function Dashboard() {
             indexSelected={indexManager}
             list={managers}
             onCheckChange={handleCheckChangeManager}
+            dropdownNames={["Editar"]}
+            dropdownOnChange={[() => {}]}
           />
         </Grid>
         <Separator />
@@ -359,21 +363,14 @@ export default function Dashboard() {
             indexSelected={indexHired}
             list={hireds}
             onCheckChange={handleCheckChangeHired}
+            dropdownNames={[
+              "Adicionar assinatura",
+              "Adicionar comprovante",
+              "Ver PDF",
+              "Editar"
+            ]}
+            dropdownOnChange={[() => {}, () => {}, () => {}, () => {}]}
           />
-          <Dialog onClose={() => setOpenDialogPDF(false)} open={openDialogPDF}>
-            <DialogTitle>
-              <Grid container>
-                <Button variant="contained" color="primary" onChange={() => {}}>
-                  Anexar comprovante
-                </Button>
-                <div style={{ width: "16px" }}></div>
-                <Button variant="contained" color="primary" onChange={() => {}}>
-                  Ver PDF
-                </Button>
-                <div style={{ height: "16px" }}></div>
-              </Grid>
-            </DialogTitle>
-          </Dialog>
         </Grid>
       </StyledGrid>
     </>
