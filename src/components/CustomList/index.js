@@ -6,7 +6,6 @@ import {
   ListItemText,
   Checkbox,
   Grid,
-  ListItemIcon,
 } from "@material-ui/core";
 
 import { ArrowForwardIos } from "@material-ui/icons";

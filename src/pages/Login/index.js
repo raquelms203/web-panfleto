@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  Container,
   CardLogin,
   ButtonLogin,
   Title,
-  Card,
   StyledGrid
 } from "./styles";
-import { TextField, Button, Grid, Paper } from "@material-ui/core";
+import { TextField, Grid, Paper } from "@material-ui/core";
 import Computer from "../../assets/computer.png";
 
 export default function Login() {
@@ -22,6 +20,7 @@ export default function Login() {
             <CardLogin>
               <img
                 src={Computer}
+                alt="login"
                 style={{maxHeight: "302px", maxWidth: "302px", justify: "center" }}
               ></img>
             </CardLogin>

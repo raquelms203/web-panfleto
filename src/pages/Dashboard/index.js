@@ -1,7 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { AppBar, Button, Grid, Dialog, DialogTitle } from "@material-ui/core";
 import { apiStates, apiADM } from "../../services/api";
-import { StyledGrid, TitleAppBar, Separator, Subtitle, LabelFilter } from "./styles";
+import {
+  StyledGrid,
+  TitleAppBar,
+  Separator,
+  Subtitle,
+  LabelFilter
+} from "./styles";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import FilterPolitics from "../../components/FilterPolitics";
@@ -17,10 +23,12 @@ export default function Dashboard() {
   const [indexPolitic, setIndexPolitic] = useState(0);
   const [managers, setManagers] = useState([]);
   const [indexManager, setIndexManager] = useState(0);
-  const [showManagers, setShowManagers] = useState(true);
+  const [checkManager, setCheckManager] = useState([]);
   const [hireds, setHireds] = useState([]);
   const [indexHired, setIndexHired] = useState(-1);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [checkHired, setCheckHired] = useState([]);
+  const [openDialogFilter, setOpenDialogFilter] = useState(false);
+  const [openDialogPDF, setOpenDialogPDF] = useState(false);
 
   const fetchCities = useCallback(async () => {
     if (cities.length === 0) {
@@ -71,14 +79,14 @@ export default function Dashboard() {
     fetchUser();
   }, [fetchCities, fetchUser]);
 
-  const handlePoliticListCheck = (event, index) => {
+  const handlePoliticListClick = (event, index) => {
     setIndexPolitic(index);
     setIndexManager(0);
     setManagers(politics[index].gestores);
     setHireds(politics[index].gestores[0].contratados);
   };
 
-  const isTwoPoliticSelected = () => {
+  const isTwoPoliticsSelected = () => {
     let counter = 0;
     checkPolitic.forEach(item => {
       if (item) counter++;
@@ -92,19 +100,49 @@ export default function Dashboard() {
     let list = checkPolitic;
     list[indexList] = value;
     setCheckPolitic(list);
-    if (isTwoPoliticSelected()) {
+    if (isTwoPoliticsSelected()) {
       setManagers([]);
       setHireds([]);
     }
   };
 
-  const handleManagerListCheck = (event, index) => {
+  const handleManagerListClick = (event, index) => {
     setIndexManager(index);
     setHireds(managers[index].contratados);
   };
 
+  const isTwoManagersSelected = () => {
+    let counter = 0;
+    checkManager.forEach(item => {
+      if (item) counter++;
+      if (counter >= 2) return;
+    });
+    if (counter >= 2) return true;
+    return false;
+  };
+
+  const handleHiredListClick = () => {
+    setOpenDialogPDF(true);
+  };
+
+  const handleCheckChangeManager = (event, value, indexList) => {
+    let list = checkManager;
+    list[indexList] = value;
+    setCheckManager(list);
+    if (isTwoManagersSelected()) {
+      setHireds([]);
+    }
+  };
+
+  const handleCheckChangeHired = (event, value, indexList) => {
+    let list = checkHired;
+    list[indexList] = value;
+    setCheckHired(list);
+    console.log(list);
+  };
+
   const handleFilterClick = event => {
-    setOpenDialog(true);
+    setOpenDialogFilter(true);
   };
 
   const handleFilterCity = event => {
@@ -117,7 +155,7 @@ export default function Dashboard() {
 
   const handleFilters = async event => {
     if (citySelected === "" && filterPoliticSelected === 1) {
-      setOpenDialog(false);
+      setOpenDialogFilter(false);
       return;
     }
     let fetch = await fetchPolitics();
@@ -166,8 +204,11 @@ export default function Dashboard() {
     if (list.length === 0) {
       setManagers([]);
       setHireds([]);
-    } 
-    setOpenDialog(false);
+    } else {
+      setManagers(list[0].gestores);
+      setHireds(list[0].gestores[0].contratados);
+    }
+    setOpenDialogFilter(false);
   };
 
   const removeFilterCity = async () => {
@@ -184,13 +225,12 @@ export default function Dashboard() {
         }
       });
       setPolitics(list);
-      if(list.length !== 0) {  
-      setManagers(fetch[0].gestores);
-      setHireds(fetch[0].gestores[0].contratados);
+      if (list.length !== 0) {
+        setManagers(list[0].gestores);
+        setHireds(list[0].gestores[0].contratados);
       }
     } else {
       setPolitics(fetch);
-      
     }
   };
 
@@ -207,10 +247,10 @@ export default function Dashboard() {
           }
         }
       });
-      if(list.length !== 0) {  
-        setManagers(fetch[0].gestores);
-        setHireds(fetch[0].gestores[0].contratados);
-        }
+      if (list.length !== 0) {
+        setManagers(list[0].gestores);
+        setHireds(list[0].gestores[0].contratados);
+      }
       setPolitics(list);
     } else {
       setPolitics(fetch);
@@ -221,7 +261,9 @@ export default function Dashboard() {
     <>
       <AppBar position="static">
         <TitleAppBar>
-          <Button>{user.nome}</Button>
+          <Button onClick={() => {}}>
+            <p>{user.nome}</p>
+          </Button>
         </TitleAppBar>
       </AppBar>
       <StyledGrid container item justify="center">
@@ -231,7 +273,10 @@ export default function Dashboard() {
               <Button onClick={handleFilterClick}>
                 <strong>Filtrar</strong>
               </Button>
-              <Dialog onClose={() => setOpenDialog(false)} open={openDialog}>
+              <Dialog
+                onClose={() => setOpenDialogFilter(false)}
+                open={openDialogFilter}
+              >
                 <DialogTitle>
                   <Grid container direction="column">
                     <FilterPolitics onChange={handleFilterPolitic} />
@@ -254,7 +299,9 @@ export default function Dashboard() {
               {citySelected !== "" ? (
                 <Button onClick={removeFilterCity}>
                   {citySelected.length > 10 ? (
-                    <LabelFilter>{citySelected.substring(0, 10) + "... X"}</LabelFilter>
+                    <LabelFilter>
+                      {citySelected.substring(0, 10) + "... X"}
+                    </LabelFilter>
                   ) : (
                     <LabelFilter>{citySelected} X</LabelFilter>
                   )}
@@ -280,7 +327,7 @@ export default function Dashboard() {
           </Grid>
           <Subtitle>Campanhas</Subtitle>
           <CustomList
-            onClick={handlePoliticListCheck}
+            onClick={handlePoliticListClick}
             indexSelected={indexPolitic}
             list={politics}
             onCheckChange={handleCheckChangePolitic}
@@ -291,11 +338,13 @@ export default function Dashboard() {
           <ActionButton></ActionButton>
 
           <div style={{ height: "8px" }}></div>
+
           <Subtitle>Gestores</Subtitle>
           <CustomList
-            onClick={handleManagerListCheck}
+            onClick={handleManagerListClick}
             indexSelected={indexManager}
             list={managers}
+            onCheckChange={handleCheckChangeManager}
           />
         </Grid>
         <Separator />
@@ -303,12 +352,28 @@ export default function Dashboard() {
           <ActionButton></ActionButton>
 
           <div style={{ height: "8px" }}></div>
+
           <Subtitle>Contratados</Subtitle>
           <CustomList
-            onClick={() => {}}
+            onClick={handleHiredListClick}
             indexSelected={indexHired}
             list={hireds}
+            onCheckChange={handleCheckChangeHired}
           />
+          <Dialog onClose={() => setOpenDialogPDF(false)} open={openDialogPDF}>
+            <DialogTitle>
+              <Grid container>
+                <Button variant="contained" color="primary" onChange={() => {}}>
+                  Anexar comprovante
+                </Button>
+                <div style={{ width: "16px" }}></div>
+                <Button variant="contained" color="primary" onChange={() => {}}>
+                  Ver PDF
+                </Button>
+                <div style={{ height: "16px" }}></div>
+              </Grid>
+            </DialogTitle>
+          </Dialog>
         </Grid>
       </StyledGrid>
     </>
