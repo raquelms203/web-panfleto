@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { AppBar, Button, Grid, Dialog, DialogTitle } from "@material-ui/core";
 import { apiStates, apiADM } from "../../services/api";
-import { StyledGrid, TitleAppBar, Separator, Subtitle } from "./styles";
+import { StyledGrid, TitleAppBar, Separator, Subtitle, LabelFilter } from "./styles";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import FilterPolitics from "../../components/FilterPolitics";
@@ -115,7 +115,7 @@ export default function Dashboard() {
     setFilterPoliticSelected(event.target.value);
   };
 
-  const handleFilters = async (event) => {
+  const handleFilters = async event => {
     if (citySelected === "" && filterPoliticSelected === 1) {
       setOpenDialog(false);
       return;
@@ -166,27 +166,54 @@ export default function Dashboard() {
     if (list.length === 0) {
       setManagers([]);
       setHireds([]);
-    }
+    } 
     setOpenDialog(false);
   };
 
   const removeFilterCity = async () => {
     setCitySelected("");
+    let fetch = await fetchPolitics();
     if (filterPoliticSelected !== 1) {
-      handleFilters();
+      let list = [];
+      let n = filterPoliticSelected - 1;
+      fetch.forEach(item => {
+        if (item.categoria === n) {
+          if (list.indexOf(item) === -1) {
+            list.push(item);
+          }
+        }
+      });
+      setPolitics(list);
+      if(list.length !== 0) {  
+      setManagers(fetch[0].gestores);
+      setHireds(fetch[0].gestores[0].contratados);
+      }
     } else {
-      let politicsAll = await fetchPolitics();
-      setPolitics(politicsAll);
+      setPolitics(fetch);
+      
     }
   };
 
   const removeFilterPolitic = async () => {
     setFilterPoliticSelected(1);
+
+    let fetch = await fetchPolitics();
     if (citySelected !== "") {
-      handleFilters();
+      let list = [];
+      fetch.forEach(item => {
+        if (item.cidade === citySelected) {
+          if (list.indexOf(item) === -1) {
+            list.push(item);
+          }
+        }
+      });
+      if(list.length !== 0) {  
+        setManagers(fetch[0].gestores);
+        setHireds(fetch[0].gestores[0].contratados);
+        }
+      setPolitics(list);
     } else {
-      let politicsAll = await fetchPolitics();
-      setPolitics(politicsAll);
+      setPolitics(fetch);
     }
   };
 
@@ -225,16 +252,22 @@ export default function Dashboard() {
                 </DialogTitle>
               </Dialog>
               {citySelected !== "" ? (
-                <Button onClick={removeFilterCity}>{citySelected}</Button>
+                <Button onClick={removeFilterCity}>
+                  {citySelected.length > 10 ? (
+                    <LabelFilter>{citySelected.substring(0, 10) + "... X"}</LabelFilter>
+                  ) : (
+                    <LabelFilter>{citySelected} X</LabelFilter>
+                  )}
+                </Button>
               ) : (
                 undefined
               )}
               {filterPoliticSelected !== 1 ? (
-                <Button onClick={removeFilterPolitic}>
+                <Button onClick={() => removeFilterPolitic()}>
                   {filterPoliticSelected === 2 ? (
-                    <span>Prefeitos</span>
+                    <LabelFilter>Prefeitos X</LabelFilter>
                   ) : (
-                    <span>Vereadores</span>
+                    <LabelFilter>Vereadores X</LabelFilter>
                   )}
                 </Button>
               ) : (
