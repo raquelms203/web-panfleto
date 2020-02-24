@@ -15,20 +15,17 @@ export default function Login() {
 
   return (
     <StyledGrid container justify="center" alignItems="center">
-        <Grid item sm={12} md={4}>
-          <Paper>
-            <CardLogin>
+        <Grid item justify="center" alignItems="center" >
+           <CardLogin>
               <img
                 src={Computer}
                 alt="login"
                 style={{maxHeight: "302px", maxWidth: "302px", justify: "center" }}
               ></img>
             </CardLogin>
-          </Paper>
         </Grid>
-        <Grid item sm={12} md={4}>
-          <Paper>
-            <form noValidate autoComplete="off">
+        <Grid item justify="center" alignItems="center" >
+           <form noValidate autoComplete="off">
               <CardLogin>
                 <Title>Faça login para entrar no sistema</Title>
                 <TextField label="Email" variant="outlined" />
@@ -40,7 +37,6 @@ export default function Login() {
                 </Link>
               </CardLogin>
             </form>
-          </Paper>
         </Grid>
      
     </StyledGrid>

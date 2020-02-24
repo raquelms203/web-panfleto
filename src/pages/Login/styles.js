@@ -13,7 +13,7 @@ export const CardLogin = styled.div`
   align-items: center; 
   flex-direction: column;
   padding: 20px;
-  width: 350px;
+  width: 380px;
   min-width: 100px;
   background-color: white;
   color: black;

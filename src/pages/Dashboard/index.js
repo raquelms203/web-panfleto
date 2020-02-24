@@ -6,12 +6,15 @@ import {
   TitleAppBar,
   Separator,
   Subtitle,
-  LabelFilter
+  LabelFilter,
+  ButtonName,
+  Logo
 } from "./styles";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import FilterPolitics from "../../components/FilterPolitics";
 import FilterCities from "../../components/FilterCities";
+import { Link, useHistory } from "react-router-dom";
 
 export default function Dashboard() {
   const [cities, setCities] = useState([]);
@@ -29,6 +32,7 @@ export default function Dashboard() {
   const [checkHired, setCheckHired] = useState([]);
   const [openDialogFilter, setOpenDialogFilter] = useState(false);
   const [openDialogPDF, setOpenDialogPDF] = useState(false);
+  const history = useHistory();
 
   const fetchCities = useCallback(async () => {
     if (cities.length === 0) {
@@ -260,14 +264,21 @@ export default function Dashboard() {
   return (
     <>
       <AppBar position="static">
-        <TitleAppBar>
-          <Button onClick={() => {}}>
-            <p>{user.nome}</p>
-          </Button>
-        </TitleAppBar>
+        <Grid container justify="space-between">
+          <Grid item>
+            <Logo>E - CONTRATO</Logo>
+          </Grid>
+          <Grid item>
+            <div style={{ marginRight: "20px" }}>
+              <Button color="inherit" onClick={() => {}}>
+                <p>{String(user.nome).split(" ")[0]}</p>
+              </Button>
+            </div>
+          </Grid>
+        </Grid>
       </AppBar>
       <StyledGrid container item justify="center">
-        <Grid item xs={3} sm={3} md={4}>
+        <Grid item xs={4} sm={4} md={4}>
           <Grid container alignItems="center" justify="space-between">
             <Grid item>
               <Button onClick={handleFilterClick}>
@@ -332,11 +343,13 @@ export default function Dashboard() {
             list={politics}
             onCheckChange={handleCheckChangePolitic}
             dropdownNames={["Adicionar assinatura", "Editar"]}
-            dropdownOnChange={[() => {}, () => {}]}
+            dropdownOnChange={[() => {  
+              history.push("/sign");
+            }, () => {}]}
           />
         </Grid>
         <Separator />
-        <Grid item xs={3} sm={3} md={3}>
+        <Grid item xs={3} sm={4} md={3}>
           <ActionButton></ActionButton>
 
           <div style={{ height: "8px" }}></div>
@@ -369,7 +382,16 @@ export default function Dashboard() {
               "Ver PDF",
               "Editar"
             ]}
-            dropdownOnChange={[() => {}, () => {}, () => {}, () => {}]}
+            dropdownOnChange={[
+              index => {},
+              index => {},
+              index => {
+                console.log("oi");
+                console.log(hireds[index]);
+                window.open(hireds[index].contrato);
+              },
+              index => {}
+            ]}
           />
         </Grid>
       </StyledGrid>

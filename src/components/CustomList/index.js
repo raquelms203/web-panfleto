@@ -9,8 +9,10 @@ import {
   Button,
   Menu,
   MenuItem,
-  ListItemSecondaryAction
+  ListItemSecondaryAction,
 } from "@material-ui/core";
+
+import { TextOverflow } from "./styles";
 
 import { MoreVert } from "@material-ui/icons";
 
@@ -43,21 +45,22 @@ export default function CustomList(props) {
         </Grid>
       ) : (
         <List component="nav" dense>
-          {list.map((item, index) => (
+          {list.map((itemList, indexList) => (
             <ListItem
-              key={index}
+              key={indexList}
               divider
               button
-              selected={indexSelected === index}
-              onClick={event => onClick(event, index)}
+              selected={indexSelected === indexList}
+              onClick={event => onClick(event, indexList)}
             >
               <Checkbox
                 edge="start"
                 tabIndex={-1}
                 disableRipple
-                onChange={(event, value) => onCheckChange(event, value, index)}
+                onChange={(event, value) => onCheckChange(event, value, indexList)}
               />
-              <ListItemText primary={item.nome}></ListItemText>
+             
+              <TextOverflow>{itemList.nome}</TextOverflow>
               <ListItemSecondaryAction>
                 <Button
                   aria-controls="simple-menu"
@@ -76,7 +79,7 @@ export default function CustomList(props) {
                   onClose={handleCloseMenu}
                 >
                   {dropdownNames.map((item, index) => (
-                    <MenuItem onClick={handleCloseMenu}>{item}</MenuItem>
+                    <MenuItem key={item} onClick={() => dropdownOnChange[index](0)}>{item}</MenuItem>
                   ))}
                 </Menu>
               </ListItemSecondaryAction>

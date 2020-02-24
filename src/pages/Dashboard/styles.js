@@ -1,31 +1,36 @@
 import styled from "styled-components";
-import { Grid } from "@material-ui/core";
-
+import { Grid, Button } from "@material-ui/core";
 
 export const StyledGrid = styled(Grid)`
   height: 100%;
   padding: 20px;
-
 `;
 
-export const TitleAppBar = styled.div`  
+export const Logo = styled.p`
+  font: 20px Marlett;
+  margin-left: 20px;
+  margin-top: 6px;
+`;
+
+
+export const TitleAppBar = styled.div`
   display: flex;
-  Button {  
+  button {
     margin-left: auto;
     color: inherit;
   }
 `;
 
-export const Separator = styled.div`  
-   width: 2px;
-    background: #babdc2;
+export const Separator = styled.div`
+  width: 2px;
+  background: #babdc2;
 `;
 
-export const Subtitle = styled.p`  
+export const Subtitle = styled.p`
   padding-left: 8px;
 `;
 
-export const LabelFilter = styled.p`  
+export const LabelFilter = styled.p`
   border-radius: 25px;
   border: 2px solid #b5c5fb;
   padding-left: 3px;
@@ -33,6 +38,5 @@ export const LabelFilter = styled.p`
   font: bold 12px Roboto, serif;
   letter-spacing: 0.8px;
   color: #000;
-  background:  #b5c5fb;
-
+  background: #b5c5fb;
 `;
