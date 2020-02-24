@@ -1,13 +1,30 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Grid } from "@material-ui/core";
+import { Title, Token, ButtonOK } from "./styles";
 
 export default function Sign(props) {
-  const { token } = props;
+  const { location } = props;
 
-  return (  
-    <Grid container direction="column">  
-    <p>Para concluir o cadastro acesse o aplicativo E-CONTRATO e use o código:</p>
+  return (
+    <Grid container direction="column" justify="center" alignItems="center">
+      <Grid item>
+        <Title>
+          Para concluir o cadastro baixe o aplicativo E-CONTRATO para celular e
+          use o código:
+        </Title>
+      </Grid>
+      <Grid item>
+        <Token>{location.state.token}</Token>
+      </Grid>
+      <Grid item>
+        <div style={{ height: "50px" }}></div>
+        <Link to="/dashboard">
+          <ButtonOK size="large" variant="contained" color="primary">
+            OK
+          </ButtonOK>
+        </Link>
+      </Grid>
     </Grid>
   );
 }

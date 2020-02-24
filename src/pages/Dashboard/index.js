@@ -52,7 +52,8 @@ export default function Dashboard() {
         categoria: item.categoria,
         cpf: item.cpf,
         cidade: item.cidade,
-        gestores: item.gestores
+        gestores: item.gestores,
+        token: item.token
       };
       politicsAll.push(p);
     });
@@ -343,8 +344,14 @@ export default function Dashboard() {
             list={politics}
             onCheckChange={handleCheckChangePolitic}
             dropdownNames={["Adicionar assinatura", "Editar"]}
-            dropdownOnChange={[() => {  
-              history.push("/sign");
+            dropdownOnChange={[(index) => {  
+              console.log(index);
+              history.push(
+                `/sign/${politics[index].token}`,
+                {  
+                  token: politics[index].token
+                }
+              );
             }, () => {}]}
           />
         </Grid>

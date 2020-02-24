@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
   List,
@@ -9,7 +9,7 @@ import {
   Button,
   Menu,
   MenuItem,
-  ListItemSecondaryAction,
+  ListItemSecondaryAction
 } from "@material-ui/core";
 
 import { TextOverflow } from "./styles";
@@ -57,9 +57,11 @@ export default function CustomList(props) {
                 edge="start"
                 tabIndex={-1}
                 disableRipple
-                onChange={(event, value) => onCheckChange(event, value, indexList)}
+                onChange={(event, value) =>
+                  onCheckChange(event, value, indexList)
+                }
               />
-             
+
               <TextOverflow>{itemList.nome}</TextOverflow>
               <ListItemSecondaryAction>
                 <Button
@@ -79,7 +81,12 @@ export default function CustomList(props) {
                   onClose={handleCloseMenu}
                 >
                   {dropdownNames.map((item, index) => (
-                    <MenuItem key={item} onClick={() => dropdownOnChange[index](0)}>{item}</MenuItem>
+                    <MenuItem
+                      key={item}
+                      onClick={() => dropdownOnChange[index](0)}
+                    >
+                      {item}
+                    </MenuItem>
                   ))}
                 </Menu>
               </ListItemSecondaryAction>
