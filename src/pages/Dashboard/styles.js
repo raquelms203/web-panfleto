@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Grid, Button } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 export const StyledGrid = styled(Grid)`
   height: 100%;
@@ -10,14 +10,6 @@ export const Logo = styled.p`
   font: 20px Marlett;
   margin-left: 20px;
   margin-top: 6px;
-`;
-
-export const TitleAppBar = styled.div`
-  display: flex;
-  button {
-    margin-left: auto;
-    color: inherit;
-  }
 `;
 
 export const Separator = styled.div`

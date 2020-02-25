@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import {
   List,
   ListItem,
-  ListItemText,
   Checkbox,
   Grid,
   Button,
@@ -41,7 +40,7 @@ export default function CustomList(props) {
       {list.length === 0 ? (
         <Grid container direction="column" alignItems="center">
           <div style={{ height: "50px" }}></div>
-          <strong> Não há registros</strong>
+          <strong style={{ padding: "8px" }}> Não há registros</strong>
         </Grid>
       ) : (
         <List component="nav" dense>

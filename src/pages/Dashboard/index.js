@@ -3,11 +3,9 @@ import { AppBar, Button, Grid, Dialog, DialogTitle } from "@material-ui/core";
 import { apiStates, apiADM } from "../../services/api";
 import {
   StyledGrid,
-  TitleAppBar,
   Separator,
   Subtitle,
   LabelFilter,
-  ButtonName,
   Footer,
   Logo
 } from "./styles";
@@ -15,7 +13,7 @@ import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import FilterPolitics from "../../components/FilterPolitics";
 import FilterCities from "../../components/FilterCities";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 export default function Dashboard() {
   const [cities, setCities] = useState([]);
@@ -32,7 +30,6 @@ export default function Dashboard() {
   const [indexHired, setIndexHired] = useState(0);
   const [checkHired, setCheckHired] = useState([]);
   const [openDialogFilter, setOpenDialogFilter] = useState(false);
-  const [openDialogPDF, setOpenDialogPDF] = useState(false);
   const history = useHistory();
 
   const fetchCities = useCallback(async () => {
@@ -128,7 +125,7 @@ export default function Dashboard() {
   };
 
   const handleHiredListClick = (event, index) => {
-    setIndexHired(index)
+    setIndexHired(index);
   };
 
   const handleCheckChangeManager = (event, value, indexList) => {
@@ -335,7 +332,7 @@ export default function Dashboard() {
               )}
             </Grid>
             <Grid item>
-              <ActionButton></ActionButton>
+              <ActionButton onClicks={[() => {}, () => {}]} />
             </Grid>
           </Grid>
           <Subtitle>Campanhas</Subtitle>
@@ -345,19 +342,19 @@ export default function Dashboard() {
             list={politics}
             onCheckChange={handleCheckChangePolitic}
             dropdownNames={["Adicionar assinatura", "Editar"]}
-            dropdownOnChange={[(index) => {  
-               history.push(
-                `/sign/${politics[index].token}`,
-                {  
+            dropdownOnChange={[
+              index => {
+                history.push(`/sign/${politics[index].token}`, {
                   token: politics[index].token
-                }
-              );
-            }, () => {}]}
+                });
+              },
+              () => {}
+            ]}
           />
         </Grid>
         <Separator />
         <Grid item xs={3} sm={3} md={4}>
-          <ActionButton></ActionButton>
+          <ActionButton onClicks={[() => {}, () => {}]} />
 
           <div style={{ height: "8px" }}></div>
 
@@ -373,8 +370,14 @@ export default function Dashboard() {
         </Grid>
         <Separator />
         <Grid item xs={3} sm={3} md={3}>
-          <ActionButton></ActionButton>
-
+          <ActionButton
+            onClicks={[
+              () => {
+               history.push("/hired");
+              },
+              () => {}
+            ]}
+          />
           <div style={{ height: "8px" }}></div>
 
           <Subtitle>Contratados</Subtitle>
@@ -390,13 +393,10 @@ export default function Dashboard() {
               "Editar"
             ]}
             dropdownOnChange={[
-              index => {  
-                history.push(
-                `/sign/${hireds[index].token}`,
-                {  
+              index => {
+                history.push(`/sign/${hireds[index].token}`, {
                   token: hireds[index].token
-                }
-              );
+                });
               },
               index => {},
               index => {

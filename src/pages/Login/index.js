@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import {
   CardLogin,
@@ -6,16 +6,16 @@ import {
   Title,
   StyledGrid
 } from "./styles";
-import { TextField, Grid, Paper } from "@material-ui/core";
+import { TextField, Grid } from "@material-ui/core";
 import Computer from "../../assets/computer.png";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
 
   return (
     <StyledGrid container justify="center" alignItems="center">
-        <Grid item justify="center" alignItems="center" >
+        <Grid item >
            <CardLogin>
               <img
                 src={Computer}
@@ -24,7 +24,7 @@ export default function Login() {
               ></img>
             </CardLogin>
         </Grid>
-        <Grid item justify="center" alignItems="center" >
+        <Grid item >
            <form noValidate autoComplete="off">
               <CardLogin>
                 <Title>Faça login para entrar no sistema</Title>
