@@ -47,6 +47,7 @@ export default function CustomList(props) {
         <List component="nav" dense>
           {list.map((itemList, indexList) => (
             <ListItem
+              style={{ paddingRight: "0" }}
               key={indexList}
               divider
               button
@@ -62,17 +63,25 @@ export default function CustomList(props) {
                 }
               />
 
-              <TextOverflow>{itemList.nome}</TextOverflow>
+              <Grid container justify="space-between" alignItems="center">
+                <Grid item xs={6} sm={6} md={6}>
+                  <TextOverflow>{itemList.nome}</TextOverflow>
+                </Grid>
+                <Grid item>
+                  <Button
+                    edge="end"
+                    aria-controls="simple-menu"
+                    aria-haspopup="true"
+                    onClick={handleClickMenu}
+                  >
+                    <MoreVert
+                      style={{ color: "#525252", transform: "scale(0.8)" }}
+                    />
+                  </Button>
+                </Grid>
+              </Grid>
+
               <ListItemSecondaryAction>
-                <Button
-                  aria-controls="simple-menu"
-                  aria-haspopup="true"
-                  onClick={handleClickMenu}
-                >
-                  <MoreVert
-                    style={{ color: "#525252", transform: "scale(0.8)" }}
-                  />
-                </Button>
                 <Menu
                   id="simple-menu"
                   anchorEl={anchorEl}
@@ -80,14 +89,16 @@ export default function CustomList(props) {
                   open={Boolean(anchorEl)}
                   onClose={handleCloseMenu}
                 >
-                  {dropdownNames.map((item, index) => (
-                    <MenuItem
-                      key={item}
-                      onClick={() => dropdownOnChange[index](0)}
-                    >
-                      {item}
-                    </MenuItem>
-                  ))}
+                  {dropdownNames.map(function(item, index) {
+                    return (
+                      <MenuItem
+                        key={index}
+                        onClick={() => dropdownOnChange[index](indexSelected)}
+                      >
+                        {item}
+                      </MenuItem>
+                    );
+                  })}
                 </Menu>
               </ListItemSecondaryAction>
             </ListItem>

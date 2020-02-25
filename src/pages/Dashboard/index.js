@@ -8,6 +8,7 @@ import {
   Subtitle,
   LabelFilter,
   ButtonName,
+  Footer,
   Logo
 } from "./styles";
 import ActionButton from "../../components/ActionButton";
@@ -28,7 +29,7 @@ export default function Dashboard() {
   const [indexManager, setIndexManager] = useState(0);
   const [checkManager, setCheckManager] = useState([]);
   const [hireds, setHireds] = useState([]);
-  const [indexHired, setIndexHired] = useState(-1);
+  const [indexHired, setIndexHired] = useState(0);
   const [checkHired, setCheckHired] = useState([]);
   const [openDialogFilter, setOpenDialogFilter] = useState(false);
   const [openDialogPDF, setOpenDialogPDF] = useState(false);
@@ -126,8 +127,8 @@ export default function Dashboard() {
     return false;
   };
 
-  const handleHiredListClick = () => {
-    setOpenDialogPDF(true);
+  const handleHiredListClick = (event, index) => {
+    setIndexHired(index)
   };
 
   const handleCheckChangeManager = (event, value, indexList) => {
@@ -345,8 +346,7 @@ export default function Dashboard() {
             onCheckChange={handleCheckChangePolitic}
             dropdownNames={["Adicionar assinatura", "Editar"]}
             dropdownOnChange={[(index) => {  
-              console.log(index);
-              history.push(
+               history.push(
                 `/sign/${politics[index].token}`,
                 {  
                   token: politics[index].token
@@ -356,7 +356,7 @@ export default function Dashboard() {
           />
         </Grid>
         <Separator />
-        <Grid item xs={3} sm={4} md={3}>
+        <Grid item xs={3} sm={3} md={4}>
           <ActionButton></ActionButton>
 
           <div style={{ height: "8px" }}></div>
@@ -390,11 +390,16 @@ export default function Dashboard() {
               "Editar"
             ]}
             dropdownOnChange={[
-              index => {},
+              index => {  
+                history.push(
+                `/sign/${hireds[index].token}`,
+                {  
+                  token: hireds[index].token
+                }
+              );
+              },
               index => {},
               index => {
-                console.log("oi");
-                console.log(hireds[index]);
                 window.open(hireds[index].contrato);
               },
               index => {}
@@ -402,6 +407,7 @@ export default function Dashboard() {
           />
         </Grid>
       </StyledGrid>
+      <Footer>Site desenvolvido por Easycode</Footer>
     </>
   );
 }

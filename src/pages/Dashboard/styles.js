@@ -12,7 +12,6 @@ export const Logo = styled.p`
   margin-top: 6px;
 `;
 
-
 export const TitleAppBar = styled.div`
   display: flex;
   button {
@@ -39,4 +38,15 @@ export const LabelFilter = styled.p`
   letter-spacing: 0.8px;
   color: #000;
   background: #b5c5fb;
+`;
+
+export const Footer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  color: white;
+  background: #454545;
+  font: 20px Microsoft New Tai Lue;
+  letter-spacing: 0.4px;
 `;
