@@ -8,8 +8,8 @@ export const theme = createMuiTheme({
       main: '#00695c',
     },
     secondary: {
-      light: fade("#26a69a", 0.15),
-      main:"#26a69a"
+      light: "#3daf8a",
+      main: "#3daf8a"
     },
     background: {
       default: "#FFF",

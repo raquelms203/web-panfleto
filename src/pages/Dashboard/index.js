@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { AppBar, Button, Grid, Dialog, DialogTitle } from "@material-ui/core";
+import { Button, Grid, Dialog, DialogTitle, AppBar } from "@material-ui/core";
 import { apiStates, apiADM } from "../../services/api";
 import {
   StyledGrid,
@@ -234,6 +234,8 @@ export default function Dashboard() {
       }
     } else {
       setPolitics(fetch);
+      setManagers(fetch[0].gestores);
+      setHireds(fetch[0].gestores[0].contratados);
     }
   };
 
@@ -250,25 +252,27 @@ export default function Dashboard() {
           }
         }
       });
+      setPolitics(list);
       if (list.length !== 0) {
         setManagers(list[0].gestores);
         setHireds(list[0].gestores[0].contratados);
       }
-      setPolitics(list);
     } else {
       setPolitics(fetch);
+      setManagers(fetch[0].gestores);
+      setHireds(fetch[0].gestores[0].contratados);
     }
   };
 
   return (
     <>
-      <AppBar position="static">
-        <Grid container justify="space-between">
+      <AppBar position="static" style={{ height: "42px" }}>
+        <Grid container justify="space-between" alignItems="baseline">
           <Grid item>
             <Logo>E - CONTRATO</Logo>
           </Grid>
           <Grid item>
-            <div style={{ marginRight: "20px" }}>
+            <div style={{ marginRight: "20px"}}>
               <Button color="inherit" onClick={() => {}}>
                 <p>{String(user.nome).split(" ")[0]}</p>
               </Button>
@@ -373,7 +377,7 @@ export default function Dashboard() {
           <ActionButton
             onClicks={[
               () => {
-               history.push("/hired");
+                history.push("/hired");
               },
               () => {}
             ]}
