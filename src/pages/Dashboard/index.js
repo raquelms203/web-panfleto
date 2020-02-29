@@ -13,6 +13,7 @@ import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import FilterPolitics from "../../components/FilterPolitics";
 import FilterCities from "../../components/FilterCities";
+import FormHired from "../../components/FormHired";
 import { useHistory } from "react-router-dom";
 
 export default function Dashboard() {
@@ -30,6 +31,7 @@ export default function Dashboard() {
   const [indexHired, setIndexHired] = useState(0);
   const [checkHired, setCheckHired] = useState([]);
   const [openDialogFilter, setOpenDialogFilter] = useState(false);
+  const [openDialogAddHired, setOpenDialogAddHired] = useState(false);
   const history = useHistory();
 
   const fetchCities = useCallback(async () => {
@@ -377,7 +379,7 @@ export default function Dashboard() {
           <ActionButton
             onClicks={[
               () => {
-                history.push("/hired");
+               setOpenDialogAddHired(true);
               },
               () => {}
             ]}
@@ -409,6 +411,14 @@ export default function Dashboard() {
               index => {}
             ]}
           />
+           <Dialog
+                onClose={() => setOpenDialogAddHired(false)}
+                open={openDialogAddHired}
+              >
+                <DialogTitle>
+                  <FormHired />
+                </DialogTitle>
+              </Dialog>
         </Grid>
       </StyledGrid>
       <Footer>Site desenvolvido por Easycode</Footer>

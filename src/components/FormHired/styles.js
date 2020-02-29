@@ -2,18 +2,32 @@ import styled from 'styled-components';
 import { Grid, TextField, Button } from "@material-ui/core";
 
 export const Container = styled(Grid)`
-  padding: 30px;
-  
+  padding: 10px;
+  height: 100%;
+  width: 100%;
 `;
 
-export const StyledTextField = styled(TextField)`  
-  width: 280px;
+export const StyledLargeTextField = styled(TextField)`  
   background: white;
+  width: 250px;
+
+`;
+
+export const StyledSmallTextField = styled(TextField)`  
+  background: white;
+  width: 120px;
+
+`;
+
+export const StyledMediumTextField = styled(TextField)`  
+  background: white;
+  width: 180px;
+
 `;
 
 export const StyledButton = styled(Button)`  
   margin-top: 30px;
-  width: 300px;
+  width: 150px;
 `;
 
 export const Title = styled.p`  
