@@ -15,7 +15,7 @@ export const StyledLargeTextField = styled(TextField)`
 
 export const StyledSmallTextField = styled(TextField)`  
   background: white;
-  width: 120px;
+  width: 110px;
 
 `;
 

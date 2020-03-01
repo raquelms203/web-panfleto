@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Grid, Button, AppBar } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import {
   Container,
   StyledSmallTextField,
@@ -9,11 +9,10 @@ import {
   Title,
   FontButton
 } from "./styles";
-import { Link } from "react-router-dom";
-import FilterCities from "../FilterCities";
-import { apiStates, apiADM } from "../../services/api";
+import FilterCities from "../DropdownCities";
+import { apiStates } from "../../services/api";
 
-export default function FormHired() {
+export default function FormHired(props) {
   const [cities, setCities] = useState([]);
 
   const fetchCities = useCallback(async () => {
@@ -27,6 +26,8 @@ export default function FormHired() {
   useEffect(() => {
     fetchCities();
   }, [fetchCities]);
+
+  const { onClick } = props;
 
   return (
     <Container container direction="column" justify="flex-start" spacing={2}>
@@ -46,7 +47,15 @@ export default function FormHired() {
           <StyledLargeTextField label="Telefone" variant="outlined" />
         </Grid>
         <Grid item>
+          <StyledLargeTextField label="Email" variant="outlined" />
+        </Grid>
+      </Grid>
+      <Grid item container spacing={2}>
+        <Grid item>
           <StyledLargeTextField label="CEP" variant="outlined" />
+        </Grid>
+        <Grid item>
+          <FilterCities list={cities} onChange={() => {}} />
         </Grid>
       </Grid>
       <Grid item container justify="space-between" spacing={2}>
@@ -60,28 +69,27 @@ export default function FormHired() {
           <StyledMediumTextField label="Bairro" variant="outlined" />
         </Grid>
       </Grid>
-      <Grid item container spacing={2}>
-        <Grid item>
-          <FilterCities list={cities} onChange={() => {}} />
-        </Grid>
-      </Grid>
+
       <Grid item container justify="space-between" spacing={2}>
         <Grid item>
           <StyledLargeTextField label="Email" variant="outlined" />
         </Grid>
         <Grid item>
-          <StyledSmallTextField label="Função" variant="outlined" />
+          <StyledSmallTextField label="Cargo" variant="outlined" />
         </Grid>
         <Grid item>
           <StyledSmallTextField label="Pagamento" variant="outlined" />
         </Grid>
       </Grid>
       <Grid item container direction="row-reverse">
-        <Link to="/dashboard">
-          <StyledButton variant="contained" size="large" color="secondary">
-            <FontButton>OK</FontButton>
-          </StyledButton>
-        </Link>
+        <StyledButton
+          variant="contained"
+          size="large"
+          color="secondary"
+          onClick={() => onClick()}
+        >
+          <FontButton>OK</FontButton>
+        </StyledButton>
       </Grid>
     </Container>
   );

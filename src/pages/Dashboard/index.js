@@ -11,9 +11,11 @@ import {
 } from "./styles";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
-import FilterPolitics from "../../components/FilterPolitics";
-import FilterCities from "../../components/FilterCities";
+import DropdownPolitics from "../../components/DropdownPolitics";
+import DropdownCities from "../../components/DropdownCities";
 import FormHired from "../../components/FormHired";
+import FormManager from "../../components/FormManager";
+import FormPolitic from "../../components/FormPolitic";
 import { useHistory } from "react-router-dom";
 
 export default function Dashboard() {
@@ -32,6 +34,8 @@ export default function Dashboard() {
   const [checkHired, setCheckHired] = useState([]);
   const [openDialogFilter, setOpenDialogFilter] = useState(false);
   const [openDialogAddHired, setOpenDialogAddHired] = useState(false);
+  const [openDialogAddManager, setOpenDialogAddManager] = useState(false);
+  const [openDialogAddPolitic, setOpenDialogAddPolitic] = useState(false);
   const history = useHistory();
 
   const fetchCities = useCallback(async () => {
@@ -274,7 +278,7 @@ export default function Dashboard() {
             <Logo>E - CONTRATO</Logo>
           </Grid>
           <Grid item>
-            <div style={{ marginRight: "20px"}}>
+            <div style={{ marginRight: "20px" }}>
               <Button color="inherit" onClick={() => {}}>
                 <p>{String(user.nome).split(" ")[0]}</p>
               </Button>
@@ -295,12 +299,12 @@ export default function Dashboard() {
               >
                 <DialogTitle>
                   <Grid container direction="column">
-                    <FilterPolitics onChange={handleFilterPolitic} />
+                    <DropdownPolitics isFilter onChange={handleFilterPolitic} />
                     <div style={{ height: "16px" }}></div>
-                    <FilterCities
+                    <DropdownCities
                       onChange={handleFilterCity}
                       list={cities}
-                    ></FilterCities>
+                    ></DropdownCities>
                     <div style={{ height: "16px" }}></div>
                     <Button
                       variant="contained"
@@ -338,7 +342,14 @@ export default function Dashboard() {
               )}
             </Grid>
             <Grid item>
-              <ActionButton onClicks={[() => {}, () => {}]} />
+              <ActionButton
+                onClicks={[
+                  () => {
+                    setOpenDialogAddPolitic(true);
+                  },
+                  () => {}
+                ]}
+              />
             </Grid>
           </Grid>
           <Subtitle>Campanhas</Subtitle>
@@ -357,10 +368,25 @@ export default function Dashboard() {
               () => {}
             ]}
           />
+          <Dialog
+            onClose={() => setOpenDialogAddPolitic(false)}
+            open={openDialogAddPolitic}
+          >
+            <DialogTitle>
+              <FormPolitic onClick={() => {setOpenDialogAddPolitic(false)}}/>
+            </DialogTitle>
+          </Dialog>
         </Grid>
         <Separator />
         <Grid item xs={3} sm={3} md={4}>
-          <ActionButton onClicks={[() => {}, () => {}]} />
+          <ActionButton
+            onClicks={[
+              () => {
+                setOpenDialogAddManager(true);
+              },
+              () => {}
+            ]}
+          />
 
           <div style={{ height: "8px" }}></div>
 
@@ -373,13 +399,21 @@ export default function Dashboard() {
             dropdownNames={["Editar"]}
             dropdownOnChange={[() => {}]}
           />
+          <Dialog
+            onClose={() => setOpenDialogAddManager(false)}
+            open={openDialogAddManager}
+          >
+            <DialogTitle>
+              <FormManager onClick={() => {setOpenDialogAddManager(false)}}/>
+            </DialogTitle>
+          </Dialog>
         </Grid>
         <Separator />
         <Grid item xs={3} sm={3} md={3}>
           <ActionButton
             onClicks={[
               () => {
-               setOpenDialogAddHired(true);
+                setOpenDialogAddHired(true);
               },
               () => {}
             ]}
@@ -411,14 +445,14 @@ export default function Dashboard() {
               index => {}
             ]}
           />
-           <Dialog
-                onClose={() => setOpenDialogAddHired(false)}
-                open={openDialogAddHired}
-              >
-                <DialogTitle>
-                  <FormHired />
-                </DialogTitle>
-              </Dialog>
+          <Dialog
+            onClose={() => setOpenDialogAddHired(false)}
+            open={openDialogAddHired}
+          >
+            <DialogTitle>
+              <FormHired onClick={() => {setOpenDialogAddHired(false)}}/>
+            </DialogTitle>
+          </Dialog>
         </Grid>
       </StyledGrid>
       <Footer>Site desenvolvido por Easycode</Footer>
