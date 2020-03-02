@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, InputLabel, InputAdornment,
+  OutlinedInput } from "@material-ui/core";
 import {
   Container,
   StyledSmallTextField,
@@ -78,7 +79,7 @@ export default function FormHired(props) {
           <StyledSmallTextField label="Cargo" variant="outlined" />
         </Grid>
         <Grid item>
-          <StyledSmallTextField label="Pagamento" variant="outlined" />
+        <StyledSmallTextField label="Pagamento" variant="outlined" />
         </Grid>
       </Grid>
       <Grid item container direction="row-reverse">

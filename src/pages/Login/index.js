@@ -28,9 +28,9 @@ export default function Login() {
            <form noValidate autoComplete="off">
               <CardLogin>
                 <Title>Faça login para entrar no sistema</Title>
-                <TextField label="Email" variant="outlined" />
+                <TextField style={{ width: 250 }} label="Email" variant="outlined" />
                 <div style={{ height: "15px" }}></div>
-                <TextField label="Senha" variant="outlined" />
+                <TextField style={{ width: 250 }} label="Senha" variant="outlined" />
                 <div style={{ height: "25px" }}></div>
                 <Link to="/dashboard">
                   <ButtonLogin>Entrar</ButtonLogin>
