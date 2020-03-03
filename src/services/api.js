@@ -6,4 +6,5 @@ export const apiStates = axios.create({
 
 export const apiADM = axios.create({  
   baseURL: "http://localhost:3333/user"
-})
+});
+

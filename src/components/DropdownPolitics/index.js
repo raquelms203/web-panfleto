@@ -17,7 +17,7 @@ export default function DropdownPolitics(props) {
         id="demo-simple-select-autowidth"
         onChange={onChange}
         defaultValue={1}
-        style={{ width: 250 }}
+        style={{ width: 255 }}
       >
         {isFilter ?
         <MenuItem key={1} value={1}>

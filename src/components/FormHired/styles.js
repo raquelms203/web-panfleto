@@ -9,13 +9,13 @@ export const Container = styled(Grid)`
 
 export const StyledLargeTextField = styled(TextField)`  
   background: white;
-  width: 250px;
+  width: 255px;
 
 `;
 
 export const StyledSmallTextField = styled(TextField)`  
   background: white;
-  width: 110px;
+  width: 120px;
 
 `;
 

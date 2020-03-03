@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Grid, InputLabel, InputAdornment,
-  OutlinedInput } from "@material-ui/core";
+import { Grid, Button, InputAdornment, OutlinedInput } from "@material-ui/core";
+import InputMask from "react-input-mask";
 import {
   Container,
   StyledSmallTextField,
@@ -11,10 +11,24 @@ import {
   FontButton
 } from "./styles";
 import FilterCities from "../DropdownCities";
-import { apiStates } from "../../services/api";
+import { apiStates, apiCEP } from "../../services/api";
+import axios from "axios";
 
 export default function FormHired(props) {
   const [cities, setCities] = useState([]);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [CPF, setCPF] = useState("");
+  const [phone, setPhone] = useState("");
+  const [CEP, setCEP] = useState("");
+  const [city, setCity] = useState("");
+  const [street, setStreet] = useState("");
+  const [number, setNumber] = useState("");
+  const [complement, setComplement] = useState("");
+  const [district, setDistrict] = useState("");
+  const [office, setOffice] = useState("");
+  const [payment, setPayment] = useState("");
+  const [visibleButtonCity, setVisibleButtonCity] = useState(false);
 
   const fetchCities = useCallback(async () => {
     if (cities.length === 0) {
@@ -23,6 +37,30 @@ export default function FormHired(props) {
       setCities(names);
     }
   }, [cities]);
+
+  const fetchCEP = async cep => {
+    let api = axios.create({
+      baseURL: `https://viacep.com.br/ws/${cep}/json/`
+    });
+    let response = await api.get();
+    console.log(response);
+    if (response.hasOwnProperty("erro")) {
+      console.log("oi");
+      return;
+    }
+    setStreet(response.data.logradouro);
+    setCity(response.data.localidade);
+    setVisibleButtonCity(true);
+    setDistrict(response.data.bairro);
+  };
+
+  const handleChangeCEP = event => {
+    let value = event.target.value;
+    setCEP(value);
+    if (value[8] !== "_") {
+      fetchCEP(value);
+    }
+  };
 
   useEffect(() => {
     fetchCities();
@@ -37,49 +75,127 @@ export default function FormHired(props) {
       </Grid>
       <Grid item container spacing={2}>
         <Grid item>
-          <StyledLargeTextField label="Nome completo" variant="outlined" />
+          <StyledLargeTextField
+            label="Nome completo"
+            variant="outlined"
+            value={name}
+            onChange={event => setName(event.target.value)}
+          />
         </Grid>
         <Grid item>
-          <StyledLargeTextField label="CPF" variant="outlined" />
+          <StyledLargeTextField
+            label="Email"
+            variant="outlined"
+            value={email}
+            onChange={event => setEmail(event.target.value)}
+          />
+        </Grid>
+      </Grid>
+      <Grid item container justify="space-between">
+        <Grid item>
+          <InputMask
+            mask="999.999.999-99"
+            value={CPF}
+            onChange={event => setCPF(event.target.value)}
+          >
+            {() => <StyledMediumTextField label="CPF" variant="outlined" />}
+          </InputMask>
+        </Grid>
+        <Grid item>
+          <InputMask
+            mask="(99)99999-9999"
+            onChange={event => setPhone(event.target.value)}
+            value={phone}
+          >
+            {() => (
+              <StyledMediumTextField label="Telefone" variant="outlined" />
+            )}
+          </InputMask>
+        </Grid>
+        <Grid item>
+          <InputMask mask="99999-999" value={CEP} onChange={handleChangeCEP}>
+            {() => <StyledSmallTextField label="CEP" variant="outlined" />}
+          </InputMask>
         </Grid>
       </Grid>
       <Grid item container spacing={2}>
         <Grid item>
-          <StyledLargeTextField label="Telefone" variant="outlined" />
+          {visibleButtonCity ? (
+            <Button
+              onClick={() => {
+                setVisibleButtonCity(false);
+                setCity("");
+              }}
+            >
+              {city}
+            </Button>
+          ) : (
+            <FilterCities
+              list={cities}
+              onChange={event => {
+                setCity(event.currentTarget.innerText);
+              }}
+            />
+          )}
         </Grid>
         <Grid item>
-          <StyledLargeTextField label="Email" variant="outlined" />
+          <StyledLargeTextField
+            label="Rua"
+            variant="outlined"
+            value={street}
+            onChange={event => setStreet(event.target.value)}
+          />
         </Grid>
       </Grid>
-      <Grid item container spacing={2}>
+      <Grid item container justify="space-between">
         <Grid item>
-          <StyledLargeTextField label="CEP" variant="outlined" />
+          <StyledSmallTextField
+            label="Número"
+            variant="outlined"
+            value={number}
+            onChange={event => setNumber(event.target.value)}
+          />
         </Grid>
         <Grid item>
-          <FilterCities list={cities} onChange={() => {}} />
-        </Grid>
-      </Grid>
-      <Grid item container justify="space-between" spacing={2}>
-        <Grid item>
-          <StyledMediumTextField label="Rua" variant="outlined" />
-        </Grid>
-        <Grid item>
-          <StyledSmallTextField label="Número" variant="outlined" />
+          <StyledMediumTextField
+            label="Complemento"
+            variant="outlined"
+            value={complement}
+            onChange={event => setComplement(event.target.value)}
+          />
         </Grid>
         <Grid item>
-          <StyledMediumTextField label="Bairro" variant="outlined" />
+          <StyledMediumTextField
+            label="Bairro"
+            variant="outlined"
+            value={district}
+            onChange={event => setDistrict(event.target.value)}
+          />
         </Grid>
       </Grid>
 
-      <Grid item container justify="space-between" spacing={2}>
+      <Grid item container justify="space-between">
         <Grid item>
-          <StyledLargeTextField label="Email" variant="outlined" />
+          <StyledLargeTextField
+            label="Cargo"
+            variant="outlined"
+            value={office}
+            onChange={event => setOffice(event.target.value)}
+          />
         </Grid>
+
         <Grid item>
-          <StyledSmallTextField label="Cargo" variant="outlined" />
-        </Grid>
-        <Grid item>
-        <StyledSmallTextField label="Pagamento" variant="outlined" />
+          <StyledLargeTextField
+            label="Pagamento"
+            variant="outlined"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">R$</InputAdornment>
+              )
+            }}
+            value={payment}
+            onChange={event => setPayment(event.target.value)}
+          />
         </Grid>
       </Grid>
       <Grid item container direction="row-reverse">
