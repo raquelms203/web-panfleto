@@ -19,6 +19,7 @@ import {
 import { DropdownCities } from "../DropdownCities";
 import { apiStates, apiCEP } from "../../services/api";
 import axios from "axios";
+import CurrencyInput from "react-currency-input";
 
 const styles = theme => ({
   input: {
@@ -76,16 +77,19 @@ export var FormHired = withStyles(styles)(props => {
     }
   };
 
-  const handleChangeNumber = event => {  
-    const { value } = event.target;
-    const parsedInt = parseInt(value);
-  
-    if (parsedInt) {
-      setNumber(parsedInt)
-    }
-  
-    return null;
-  }
+  const handleChangeName = event => {
+    let value = event.target.value;
+    value = value.replace(/[^A-Za-z" "]/gi, "");
+
+    setName(value);
+  };
+
+  const handleChangeNumber = event => {
+    let value = event.target.value;
+    value = value.replace(/[^0-9]/gi, "");
+
+    setNumber(value);
+  };
 
   useEffect(() => {
     fetchCities();
@@ -108,7 +112,7 @@ export var FormHired = withStyles(styles)(props => {
           label="Nome completo"
           variant="outlined"
           value={name}
-          onChange={event => setName(event.target.value)}
+          onChange={event => handleChangeName(event)}
         />
       </Grid>
 
@@ -176,7 +180,7 @@ export var FormHired = withStyles(styles)(props => {
             }}
           >
             <TextField
-            style={{ width: 255 }}
+              style={{ width: 255 }}
               value={city}
               InputLabelProps={{ shrink: true }}
               variant="filled"
@@ -245,19 +249,21 @@ export var FormHired = withStyles(styles)(props => {
         </Grid>
 
         <Grid item>
-          <StyledSmallTextField
-            inputProps={{ className: classes.input }}
-            InputLabelProps={{ shrink: true }}
-            label="Pagamento"
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">R$</InputAdornment>
-              )
-            }}
-            value={payment}
-            onChange={event => setPayment(event.target.value)}
-          />
+          <CurrencyInput>
+            <StyledSmallTextField
+              inputProps={{ className: classes.input }}
+              InputLabelProps={{ shrink: true }}
+              label="Pagamento"
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">R$</InputAdornment>
+                )
+              }}
+              value={payment}
+              onChange={event => setPayment(event.target.value)}
+            />
+          </CurrencyInput>
         </Grid>
       </Grid>
       <Grid item container direction="row-reverse">
