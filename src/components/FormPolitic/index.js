@@ -8,7 +8,7 @@ import {
   StyledButton,
   FontButton
 } from "../FormHired/styles";
-import FilterCities from "../DropdownCities";
+import { DropdownCities } from "../DropdownCities";
 
 export default function FormManager(props) {
   const [cities, setCities] = useState([]);
@@ -36,7 +36,7 @@ export default function FormManager(props) {
         <StyledLargeTextField label="CPF" variant="outlined" />
       </Grid>
       <Grid item>
-        <FilterCities list={cities} onChange={() => {}} />
+        <DropdownCities list={cities} onChange={() => {}} />
       </Grid>
       <Grid item>
         <StyledLargeTextField label="Partido/Coligação" variant="outlined" />

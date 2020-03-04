@@ -3,10 +3,8 @@ import {
   Grid,
   Button,
   InputAdornment,
-  OutlinedInput,
-  InputLabelProps,
-  InputProps,
-  withStyles
+  withStyles,
+  TextField
 } from "@material-ui/core";
 import InputMask from "react-input-mask";
 import {
@@ -18,13 +16,13 @@ import {
   Title,
   FontButton
 } from "./styles";
-import  DropdownCities  from "../DropdownCities";
+import { DropdownCities } from "../DropdownCities";
 import { apiStates, apiCEP } from "../../services/api";
 import axios from "axios";
 
 const styles = theme => ({
   input: {
-    height: 5
+    height: 8
   }
 });
 
@@ -42,6 +40,7 @@ export var FormHired = withStyles(styles)(props => {
   const [district, setDistrict] = useState("");
   const [office, setOffice] = useState("");
   const [payment, setPayment] = useState("");
+  const [filledFields, setFilledFields] = useState(false);
   const [visibleButtonCity, setVisibleButtonCity] = useState(false);
 
   const fetchCities = useCallback(async () => {
@@ -62,6 +61,7 @@ export var FormHired = withStyles(styles)(props => {
       console.log("oi");
       return;
     }
+    setFilledFields(true);
     setStreet(response.data.logradouro);
     setCity(response.data.localidade);
     setVisibleButtonCity(true);
@@ -75,6 +75,17 @@ export var FormHired = withStyles(styles)(props => {
       fetchCEP(value);
     }
   };
+
+  const handleChangeNumber = event => {  
+    const { value } = event.target;
+    const parsedInt = parseInt(value);
+  
+    if (parsedInt) {
+      setNumber(parsedInt)
+    }
+  
+    return null;
+  }
 
   useEffect(() => {
     fetchCities();
@@ -157,14 +168,21 @@ export var FormHired = withStyles(styles)(props => {
       </Grid>
       <Grid item>
         {visibleButtonCity ? (
-          <Button
+          <button
+            style={{ padding: 0, margin: 0, border: "none" }}
             onClick={() => {
               setVisibleButtonCity(false);
               setCity("");
             }}
           >
-            {city}
-          </Button>
+            <TextField
+            style={{ width: 255 }}
+              value={city}
+              InputLabelProps={{ shrink: true }}
+              variant="filled"
+              label="Cidade"
+            ></TextField>
+          </button>
         ) : (
           <DropdownCities
             list={cities}
@@ -179,7 +197,7 @@ export var FormHired = withStyles(styles)(props => {
           inputProps={{ className: classes.input }}
           InputLabelProps={{ shrink: true }}
           label="Rua"
-          variant="outlined"
+          variant={filledFields ? "filled" : "outlined"}
           value={street}
           onChange={event => setStreet(event.target.value)}
         />
@@ -191,7 +209,7 @@ export var FormHired = withStyles(styles)(props => {
           label="Número"
           variant="outlined"
           value={number}
-          onChange={event => setNumber(event.target.value)}
+          onChange={event => handleChangeNumber(event)}
         />
       </Grid>
       <Grid item>
@@ -209,7 +227,7 @@ export var FormHired = withStyles(styles)(props => {
           inputProps={{ className: classes.input }}
           InputLabelProps={{ shrink: true }}
           label="Bairro"
-          variant="outlined"
+          variant={filledFields ? "filled" : "outlined"}
           value={district}
           onChange={event => setDistrict(event.target.value)}
         />
