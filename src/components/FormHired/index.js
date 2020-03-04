@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Grid, Button, InputAdornment, OutlinedInput, InputLabelProps, InputProps, withStyles } from "@material-ui/core";
+import {
+  Grid,
+  Button,
+  InputAdornment,
+  OutlinedInput,
+  InputLabelProps,
+  InputProps,
+  withStyles
+} from "@material-ui/core";
 import InputMask from "react-input-mask";
 import {
   Container,
@@ -8,14 +16,14 @@ import {
   StyledLargeTextField,
   StyledButton,
   Title,
-  FontButton,
+  FontButton
 } from "./styles";
-import FilterCities from "../DropdownCities";
+import  DropdownCities  from "../DropdownCities";
 import { apiStates, apiCEP } from "../../services/api";
 import axios from "axios";
 
-const styles = theme => ({  
-  input: {  
+const styles = theme => ({
+  input: {
     height: 5
   }
 });
@@ -81,112 +89,136 @@ export var FormHired = withStyles(styles)(props => {
       <Grid item>
         <Title>[PSDB] Prefeito 1 | Gerente 1</Title>
       </Grid>
-      <Grid item container spacing={2}>
-        <Grid item>
-          <StyledLargeTextField
+
+      <Grid item>
+        <StyledLargeTextField
           inputProps={{ className: classes.input }}
           InputLabelProps={{ shrink: true }}
-            label="Nome completo"
-            variant="outlined"
-            value={name}
-            onChange={event => setName(event.target.value)}
-          />
-        </Grid>
-        <Grid item>
-          <StyledLargeTextField
-            label="Email"
-            variant="outlined"
-            value={email}
-            onChange={event => setEmail(event.target.value)}
-          />
-        </Grid>
-      </Grid>
-      <Grid item container justify="space-between">
-        <Grid item>
-          <InputMask
-            mask="999.999.999-99"
-            value={CPF}
-            onChange={event => setCPF(event.target.value)}
-          >
-            {() => <StyledMediumTextField label="CPF" variant="outlined" />}
-          </InputMask>
-        </Grid>
-        <Grid item>
-          <InputMask
-            mask="(99)99999-9999"
-            onChange={event => setPhone(event.target.value)}
-            value={phone}
-          >
-            {() => (
-              <StyledMediumTextField label="Telefone" variant="outlined" />
-            )}
-          </InputMask>
-        </Grid>
-        <Grid item>
-          <InputMask mask="99999-999" value={CEP} onChange={handleChangeCEP}>
-            {() => <StyledSmallTextField label="CEP" variant="outlined" />}
-          </InputMask>
-        </Grid>
-      </Grid>
-      <Grid item container spacing={2}>
-        <Grid item>
-          {visibleButtonCity ? (
-            <Button
-              onClick={() => {
-                setVisibleButtonCity(false);
-                setCity("");
-              }}
-            >
-              {city}
-            </Button>
-          ) : (
-            <FilterCities
-              list={cities}
-              onChange={event => {
-                setCity(event.currentTarget.innerText);
-              }}
-            />
-          )}
-        </Grid>
-        <Grid item>
-          <StyledLargeTextField
-            label="Rua"
-            variant="outlined"
-            value={street}
-            onChange={event => setStreet(event.target.value)}
-          />
-        </Grid>
-      </Grid>
-      <Grid item container justify="space-between">
-        <Grid item>
-          <StyledSmallTextField
-            label="Número"
-            variant="outlined"
-            value={number}
-            onChange={event => setNumber(event.target.value)}
-          />
-        </Grid>
-        <Grid item>
-          <StyledMediumTextField
-            label="Complemento"
-            variant="outlined"
-            value={complement}
-            onChange={event => setComplement(event.target.value)}
-          />
-        </Grid>
-        <Grid item>
-          <StyledMediumTextField
-            label="Bairro"
-            variant="outlined"
-            value={district}
-            onChange={event => setDistrict(event.target.value)}
-          />
-        </Grid>
+          label="Nome completo"
+          variant="outlined"
+          value={name}
+          onChange={event => setName(event.target.value)}
+        />
       </Grid>
 
-      <Grid item container justify="space-between">
+      <Grid item>
+        <StyledLargeTextField
+          inputProps={{ className: classes.input }}
+          InputLabelProps={{ shrink: true }}
+          label="Email"
+          variant="outlined"
+          value={email}
+          onChange={event => setEmail(event.target.value)}
+        />
+      </Grid>
+      <Grid item>
+        <InputMask
+          mask="999.999.999-99"
+          value={CPF}
+          onChange={event => setCPF(event.target.value)}
+        >
+          {() => (
+            <StyledMediumTextField
+              inputProps={{ className: classes.input }}
+              InputLabelProps={{ shrink: true }}
+              label="CPF"
+              variant="outlined"
+            />
+          )}
+        </InputMask>
+      </Grid>
+      <Grid item>
+        <InputMask
+          mask="(99)99999-9999"
+          onChange={event => setPhone(event.target.value)}
+          value={phone}
+        >
+          {() => (
+            <StyledMediumTextField
+              inputProps={{ className: classes.input }}
+              InputLabelProps={{ shrink: true }}
+              label="Telefone"
+              variant="outlined"
+            />
+          )}
+        </InputMask>
+      </Grid>
+      <Grid item>
+        <InputMask mask="99999-999" value={CEP} onChange={handleChangeCEP}>
+          {() => (
+            <StyledSmallTextField
+              inputProps={{ className: classes.input }}
+              InputLabelProps={{ shrink: true }}
+              label="CEP"
+              variant="outlined"
+            />
+          )}
+        </InputMask>
+      </Grid>
+      <Grid item>
+        {visibleButtonCity ? (
+          <Button
+            onClick={() => {
+              setVisibleButtonCity(false);
+              setCity("");
+            }}
+          >
+            {city}
+          </Button>
+        ) : (
+          <DropdownCities
+            list={cities}
+            onChange={event => {
+              setCity(event.currentTarget.innerText);
+            }}
+          />
+        )}
+      </Grid>
+      <Grid item>
+        <StyledLargeTextField
+          inputProps={{ className: classes.input }}
+          InputLabelProps={{ shrink: true }}
+          label="Rua"
+          variant="outlined"
+          value={street}
+          onChange={event => setStreet(event.target.value)}
+        />
+      </Grid>
+      <Grid item>
+        <StyledSmallTextField
+          inputProps={{ className: classes.input }}
+          InputLabelProps={{ shrink: true }}
+          label="Número"
+          variant="outlined"
+          value={number}
+          onChange={event => setNumber(event.target.value)}
+        />
+      </Grid>
+      <Grid item>
+        <StyledLargeTextField
+          inputProps={{ className: classes.input }}
+          InputLabelProps={{ shrink: true }}
+          label="Complemento (Opcional)"
+          variant="outlined"
+          value={complement}
+          onChange={event => setComplement(event.target.value)}
+        />
+      </Grid>
+      <Grid item>
+        <StyledMediumTextField
+          inputProps={{ className: classes.input }}
+          InputLabelProps={{ shrink: true }}
+          label="Bairro"
+          variant="outlined"
+          value={district}
+          onChange={event => setDistrict(event.target.value)}
+        />
+      </Grid>
+      <Grid item container spacing={1} justify="space-between">
         <Grid item>
-          <StyledLargeTextField
+          <StyledSmallTextField
+            inputProps={{ className: classes.input }}
+            InputLabelProps={{ shrink: true }}
             label="Cargo"
             variant="outlined"
             value={office}
@@ -195,7 +227,9 @@ export var FormHired = withStyles(styles)(props => {
         </Grid>
 
         <Grid item>
-          <StyledLargeTextField
+          <StyledSmallTextField
+            inputProps={{ className: classes.input }}
+            InputLabelProps={{ shrink: true }}
             label="Pagamento"
             variant="outlined"
             InputProps={{
