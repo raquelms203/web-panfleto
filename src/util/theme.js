@@ -25,7 +25,8 @@ export const theme = createMuiTheme({
     action: {
       active:"#000",
       selected:"#dadfd7"
-    }
+    },
+    
   },
   // overrides: {
   //   MuiDrawer: {
@@ -69,20 +70,20 @@ export const theme = createMuiTheme({
   //       }
   //     }
   //   },
-  //   MuiTextField: {
-  //     root: {
-  //       color: "#000",
-  //       "& .MuiFormLabel-root": {
-  //         color: "#000"
-  //       },
-  //       "& .MuiFormLabel-filled, label.Mui-focused": {
-  //         color: "#000"
-  //       },
-  //       "& .MuiSelect-icon": {
-  //         color: "#FFF"
-  //       }
-  //     }
-  //   }
+    // MuiTextField: {
+    //   root: {
+    //     color: "#000",
+    //     "& .MuiFormLabel-root": {
+    //       color: "#000"
+    //     },
+    //     "& .MuiFormLabel-filled, label.Mui-focused": {
+    //       color: "#000"
+    //     },
+    //     "& .MuiSelect-icon": {
+    //       color: "#FFF"
+    //     }
+    //   },
+    // }
   // }
 });
 

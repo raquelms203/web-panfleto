@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Grid, Button, InputAdornment, OutlinedInput } from "@material-ui/core";
+import { Grid, Button, InputAdornment, OutlinedInput, InputLabelProps, InputProps, withStyles } from "@material-ui/core";
 import InputMask from "react-input-mask";
 import {
   Container,
@@ -8,13 +8,19 @@ import {
   StyledLargeTextField,
   StyledButton,
   Title,
-  FontButton
+  FontButton,
 } from "./styles";
 import FilterCities from "../DropdownCities";
 import { apiStates, apiCEP } from "../../services/api";
 import axios from "axios";
 
-export default function FormHired(props) {
+const styles = theme => ({  
+  input: {  
+    height: 5
+  }
+});
+
+export var FormHired = withStyles(styles)(props => {
   const [cities, setCities] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -68,6 +74,8 @@ export default function FormHired(props) {
 
   const { onClick } = props;
 
+  const { classes } = props;
+
   return (
     <Container container direction="column" justify="flex-start" spacing={2}>
       <Grid item>
@@ -76,6 +84,8 @@ export default function FormHired(props) {
       <Grid item container spacing={2}>
         <Grid item>
           <StyledLargeTextField
+          inputProps={{ className: classes.input }}
+          InputLabelProps={{ shrink: true }}
             label="Nome completo"
             variant="outlined"
             value={name}
@@ -210,4 +220,4 @@ export default function FormHired(props) {
       </Grid>
     </Container>
   );
-}
+});
