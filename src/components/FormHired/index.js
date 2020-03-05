@@ -249,21 +249,19 @@ export var FormHired = withStyles(styles)(props => {
         </Grid>
 
         <Grid item>
-          <CurrencyInput>
-            <StyledSmallTextField
-              inputProps={{ className: classes.input }}
-              InputLabelProps={{ shrink: true }}
-              label="Pagamento"
-              variant="outlined"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">R$</InputAdornment>
-                )
-              }}
+          
+
+       
+          <CurrencyInput
+          style={{ height: 60, border:"none", font: "12px", background:"white" }}
+              decimalSeparator=","
+              thousandSeparator="."
+              prefix="R$ "
               value={payment}
-              onChange={event => setPayment(event.target.value)}
-            />
-          </CurrencyInput>
+              onChangeEvent={(event, maskedValue, floatValue) =>
+                setPayment(maskedValue)
+              }
+            ></CurrencyInput>
         </Grid>
       </Grid>
       <Grid item container direction="row-reverse">
