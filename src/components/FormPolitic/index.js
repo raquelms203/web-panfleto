@@ -8,7 +8,7 @@ import {
   StyledButton,
   FontButton
 } from "../FormHired/styles";
-import { DropdownCities } from "../DropdownCities";
+import  DropdownCities  from "../DropdownCities";
 
 export default function FormManager(props) {
   const [cities, setCities] = useState([]);

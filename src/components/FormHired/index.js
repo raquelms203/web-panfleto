@@ -1,19 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  Grid,
-  TextField
-} from "@material-ui/core";
+import { Grid, TextField } from "@material-ui/core";
 import InputMask from "react-input-mask";
 import {
   Container,
-  StyledSmallTextField,
-  StyledMediumTextField,
-  StyledLargeTextField,
+  StyledTextField,
   StyledButton,
   Title,
-  FontButton,
+  FontButton
 } from "./styles";
-import { DropdownCities } from "../DropdownCities";
+import DropdownCities from "../DropdownCities";
 import { apiStates } from "../../services/api";
 import axios from "axios";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
@@ -89,13 +84,20 @@ export default function FormHired(props) {
   const { onClick } = props;
 
   return (
-    <Container container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
+    <Container
+      container
+      direction="column"
+      justify="flex-start"
+      alignItems="stretch"
+      spacing={2}
+    >
       <Grid item>
         <Title>[PSDB] Prefeito 1 | Gerente 1</Title>
       </Grid>
 
-      <Grid item >
-        <StyledLargeTextField
+      <Grid item xs sm md>
+        <StyledTextField
+          fullWidth
           InputLabelProps={{ shrink: true }}
           size="small"
           label="Nome completo"
@@ -105,8 +107,9 @@ export default function FormHired(props) {
         />
       </Grid>
 
-      <Grid item>
-        <StyledLargeTextField
+      <Grid item xs sm md>
+        <StyledTextField
+          fullWidth
           InputLabelProps={{ shrink: true }}
           size="small"
           label="Email"
@@ -116,15 +119,15 @@ export default function FormHired(props) {
         />
       </Grid>
       <Grid item container spacing={1} justify="space-between">
-        {" "}
-        <Grid item>
+        <Grid item xs={12} sm={6} md={6}>
           <InputMask
             mask="999.999.999-99"
             value={CPF}
             onChange={event => setCPF(event.target.value)}
           >
             {() => (
-              <StyledMediumTextField
+              <StyledTextField
+                fullWidth
                 InputLabelProps={{ shrink: true }}
                 size="small"
                 label="CPF"
@@ -133,14 +136,15 @@ export default function FormHired(props) {
             )}
           </InputMask>
         </Grid>
-        <Grid item>
+        <Grid item xs={12} sm={6} md={6}>
           <InputMask
             mask="(99)99999-9999"
             onChange={event => setPhone(event.target.value)}
             value={phone}
           >
             {() => (
-              <StyledMediumTextField
+              <StyledTextField
+                fullWidth
                 InputLabelProps={{ shrink: true }}
                 size="small"
                 label="Celular (Opcional)"
@@ -151,10 +155,11 @@ export default function FormHired(props) {
         </Grid>
       </Grid>
       <Grid item container spacing={1} alignItems="center">
-        <Grid item>
+        <Grid item xs={12} sm={4} md={4}>
           <InputMask mask="99999-999" value={CEP} onChange={handleChangeCEP}>
             {() => (
-              <StyledSmallTextField
+              <StyledTextField
+                fullWidth
                 InputLabelProps={{ shrink: true }}
                 size="small"
                 label="CEP"
@@ -163,7 +168,7 @@ export default function FormHired(props) {
             )}
           </InputMask>
         </Grid>
-        <Grid item>
+        <Grid item xs={12} sm={8} md={8}>
           {visibleButtonCity ? (
             <div
               onClick={() => {
@@ -172,7 +177,8 @@ export default function FormHired(props) {
               }}
             >
               <TextField
-                style={{ width: 255, background: filledColor }}
+              fullWidth
+                style={{ background: filledColor }}
                 value={city}
                 InputLabelProps={{ shrink: true, readOnly: true }}
                 size="small"
@@ -191,8 +197,9 @@ export default function FormHired(props) {
         </Grid>
       </Grid>
       <Grid item container spacing={1}>
-        <Grid item>
-          <StyledLargeTextField
+        <Grid item xs={12} sm={8} md={8}>
+          <StyledTextField
+            fullWidth
             InputLabelProps={{ shrink: true }}
             size="small"
             label="Rua"
@@ -202,8 +209,9 @@ export default function FormHired(props) {
             onChange={event => setStreet(event.target.value)}
           />
         </Grid>
-        <Grid item>
-          <StyledSmallTextField
+        <Grid item xs={12} sm={4} md={4}>
+          <StyledTextField
+            fullWidth
             InputLabelProps={{ shrink: true }}
             size="small"
             label="Número"
@@ -213,30 +221,35 @@ export default function FormHired(props) {
           />
         </Grid>
       </Grid>
-      <Grid item>
-        <StyledLargeTextField
-          InputLabelProps={{ shrink: true }}
-          size="small"
-          label="Complemento (Opcional)"
-          variant="outlined"
-          value={complement}
-          onChange={event => setComplement(event.target.value)}
-        />
-      </Grid>
-      <Grid item>
-        <StyledMediumTextField
-          style={{ background: filledColor }}
-          InputLabelProps={{ shrink: true }}
-          size="small"
-          label="Bairro"
-          variant="outlined"
-          value={district}
-          onChange={event => setDistrict(event.target.value)}
-        />
+      <Grid item container spacing={1}>
+        <Grid item xs={12} sm={6} md={6}>
+          <StyledTextField
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            size="small"
+            label="Complemento (Opcional)"
+            variant="outlined"
+            value={complement}
+            onChange={event => setComplement(event.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6}>
+          <StyledTextField
+            fullWidth
+            style={{ background: filledColor }}
+            InputLabelProps={{ shrink: true }}
+            size="small"
+            label="Bairro"
+            variant="outlined"
+            value={district}
+            onChange={event => setDistrict(event.target.value)}
+          />
+        </Grid>
       </Grid>
       <Grid item container spacing={1} justify="space-between">
-        <Grid item>
-          <StyledMediumTextField
+        <Grid item xs={12} sm={8} md={8}>
+          <StyledTextField
+            fullWidth
             InputLabelProps={{ shrink: true }}
             size="small"
             label="Cargo"
@@ -246,25 +259,11 @@ export default function FormHired(props) {
           />
         </Grid>
 
-        <Grid item>
-          {/* <CurrencyInput
-            style={{
-              height: 60,
-              border: "none",
-              font: "12px",
-              background: "white"
-            }}
-            decimalSeparator=","
-            thousandSeparator="."
-            prefix="R$ "
-            value={payment}
-            onChangeEvent={(event, maskedValue, floatValue) =>
-              setPayment(maskedValue)
-            }
-          ></CurrencyInput> */}
+        <Grid item xs={12} sm={4} md={4}>
           <CurrencyTextField
+            fullWidth
             size="small"
-            style={{ background: "white", width: 180 }}
+            style={{ background: "white" }}
             label="Pagamento"
             variant="outlined"
             InputLabelProps={{ shrink: true }}

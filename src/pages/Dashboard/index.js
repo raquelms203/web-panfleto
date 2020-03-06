@@ -12,7 +12,7 @@ import {
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import DropdownPolitics from "../../components/DropdownPolitics";
-import { DropdownCities } from "../../components/DropdownCities";
+import  DropdownCities  from "../../components/DropdownCities";
 import  FormHired  from "../../components/FormHired/index";
 import FormManager from "../../components/FormManager";
 import FormPolitic from "../../components/FormPolitic";
