@@ -249,28 +249,32 @@ export var FormHired = withStyles(styles)(props => {
         </Grid>
 
         <Grid item>
-          
-
-       
           <CurrencyInput
-          style={{ height: 60, border:"none", font: "12px", background:"white" }}
-              decimalSeparator=","
-              thousandSeparator="."
-              prefix="R$ "
-              value={payment}
-              onChangeEvent={(event, maskedValue, floatValue) =>
-                setPayment(maskedValue)
-              }
-            ></CurrencyInput>
+            style={{
+              height: 60,
+              border: "none",
+              font: "12px",
+              background: "white"
+            }}
+            decimalSeparator=","
+            thousandSeparator="."
+            prefix="R$ "
+            value={payment}
+            onChangeEvent={(event, maskedValue, floatValue) =>
+              setPayment(maskedValue)
+            }
+          ></CurrencyInput>
         </Grid>
       </Grid>
+      <Grid item>
+        <TextField
+          variant="outlined"
+          InputLabelProps={{ shrink: true }}
+          size="small"
+          label="teste"
+        ></TextField>
+      </Grid>
       <Grid item container direction="row-reverse">
-        <StyledButton
-          variant="contained"
-          size="large"
-          color="secondary"
-          onClick={() => onClick()}
-        >
           <FontButton>OK</FontButton>
         </StyledButton>
       </Grid>

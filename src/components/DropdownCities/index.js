@@ -13,6 +13,7 @@ export var DropdownCities = withStyles(styles)(props => {
     
       <Autocomplete
         id="combo-box-demo"
+        size="small"
         options={list}
         onChange={onChange}
         getOptionLabel={option => option}
