@@ -7,7 +7,7 @@ const styles = theme => ({
 });
 
 export var DropdownCities = withStyles(styles)(props => {
-  const { list, onChange, classes } = props;
+  const { list, onChange } = props;
 
   return (
     
@@ -17,7 +17,7 @@ export var DropdownCities = withStyles(styles)(props => {
         options={list}
         onChange={onChange}
         getOptionLabel={option => option}
-        style={{ width: 250, background: "white" }}
+        style={{ width: 255, background: "white" }}
         renderInput={params => (
           <TextField
             {...params}

@@ -30,16 +30,16 @@ export default function FormManager(props) {
   return (
     <Container container direction="column" justify="flex-start" spacing={2}>
       <Grid item>
-        <StyledLargeTextField label="Nome completo" variant="outlined" />
+        <StyledLargeTextField size="small" label="Nome completo" variant="outlined" />
       </Grid>
       <Grid item>
-        <StyledLargeTextField label="CPF" variant="outlined" />
+        <StyledLargeTextField size="small" label="CPF" variant="outlined" />
       </Grid>
       <Grid item>
         <DropdownCities list={cities} onChange={() => {}} />
       </Grid>
       <Grid item>
-        <StyledLargeTextField label="Partido/Coligação" variant="outlined" />
+        <StyledLargeTextField size="small" label="Partido/Coligação" variant="outlined" />
       </Grid>
       <Grid item>
         <FilterPolitics isFilter={false} onChange={() => {}} />
