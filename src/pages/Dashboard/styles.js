@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Grid } from "@material-ui/core";
+import { Grid, Button } from "@material-ui/core";
 
 export const StyledGrid = styled(Grid)`
   height: 100%;
@@ -41,4 +41,13 @@ export const Footer = styled.div`
   background: #454545;
   font: 20px Microsoft New Tai Lue;
   letter-spacing: 0.4px;
+`;
+
+export const FontButton = styled.p`   
+  color: #FFF;
+`;
+
+export const StyledButton = styled(Button)`  
+  margin-top: 30px;
+  width: 150px;
 `;

@@ -7,13 +7,15 @@ import {
   Subtitle,
   LabelFilter,
   Footer,
-  Logo
+  Logo,
+  FontButton,
+  StyledButton
 } from "./styles";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import DropdownPolitics from "../../components/DropdownPolitics";
-import  DropdownCities  from "../../components/DropdownCities";
-import  FormHired  from "../../components/FormHired/index";
+import DropdownCities from "../../components/DropdownCities";
+import FormHired from "../../components/FormHired/index";
 import FormManager from "../../components/FormManager";
 import FormPolitic from "../../components/FormPolitic";
 import { useHistory } from "react-router-dom";
@@ -298,21 +300,30 @@ export default function Dashboard() {
                 open={openDialogFilter}
               >
                 <DialogTitle>
-                  <Grid container direction="column">
-                    <DropdownPolitics isFilter onChange={handleFilterPolitic} />
-                    <div style={{ height: "16px" }}></div>
-                    <DropdownCities
-                      onChange={handleFilterCity}
-                      list={cities}
-                    ></DropdownCities>
-                    <div style={{ height: "16px" }}></div>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleFilters}
-                    >
-                      OK
-                    </Button>
+                  <Grid container direction="column" spacing={3}>
+                    <div style={{ width: 400 }}></div>
+                    <Grid item xs sm={6} md={6}>
+                      <DropdownPolitics
+                        isFilter
+                        onChange={handleFilterPolitic}
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <DropdownCities
+                        onChange={handleFilterCity}
+                        list={cities}
+                      ></DropdownCities>
+                    </Grid>
+                    <Grid item container direction="row-reverse">
+                      <StyledButton
+                        variant="contained"
+                        size="large"
+                        color="secondary"
+                        onClick={(event) => handleFilters(event)}
+                      >
+                        <FontButton>OK</FontButton>
+                      </StyledButton>
+                    </Grid>
                   </Grid>
                 </DialogTitle>
               </Dialog>
@@ -373,7 +384,11 @@ export default function Dashboard() {
             open={openDialogAddPolitic}
           >
             <DialogTitle>
-              <FormPolitic onClick={() => {setOpenDialogAddPolitic(false)}}/>
+              <FormPolitic
+                onClick={() => {
+                  setOpenDialogAddPolitic(false);
+                }}
+              />
             </DialogTitle>
           </Dialog>
         </Grid>
@@ -403,8 +418,12 @@ export default function Dashboard() {
             onClose={() => setOpenDialogAddManager(false)}
             open={openDialogAddManager}
           >
-            <DialogTitle>
-              <FormManager onClick={() => {setOpenDialogAddManager(false)}}/>
+            <DialogTitle style={{ background: "#f5f3f3" }}>
+              <FormManager
+                onClick={() => {
+                  setOpenDialogAddManager(false);
+                }}
+              />
             </DialogTitle>
           </Dialog>
         </Grid>
@@ -450,7 +469,11 @@ export default function Dashboard() {
             open={openDialogAddHired}
           >
             <DialogTitle style={{ background: "#f5f3f3" }}>
-              <FormHired onClick={() => {setOpenDialogAddHired(false)}}/>
+              <FormHired
+                onClick={() => {
+                  setOpenDialogAddHired(false);
+                }}
+              />
             </DialogTitle>
           </Dialog>
         </Grid>

@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  FormControl,
   Select,
   FormHelperText,
   MenuItem
@@ -10,20 +9,16 @@ export default function DropdownPolitics(props) {
   const { onChange, isFilter } = props;
 
   return (
-    <FormControl>
+    <>
       <FormHelperText>Categoria</FormHelperText>
-      <Select
-        labelId="demo-simple-select-autowidth-label"
-        id="demo-simple-select-autowidth"
-        onChange={onChange}
-        defaultValue={1}
-        style={{ width: 255 }}
-      >
-        {isFilter ?
-        <MenuItem key={1} value={1}>
-          Todos
-        </MenuItem>
-        : undefined}
+      <Select fullWidth onChange={onChange} defaultValue={1}>
+        {isFilter ? (
+          <MenuItem key={1} value={1}>
+            Todos
+          </MenuItem>
+        ) : (
+          undefined
+        )}
         <MenuItem key={2} value={2}>
           Prefeitos
         </MenuItem>
@@ -31,6 +26,6 @@ export default function DropdownPolitics(props) {
           Vereadores
         </MenuItem>
       </Select>
-    </FormControl>
+    </>
   );
 }
