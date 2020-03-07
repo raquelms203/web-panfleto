@@ -47,14 +47,9 @@ export default function CustomList(props) {
           {list.map((itemList, indexList) => (
             <ListItem
               key={indexList}
-              style={{
-                paddingTop: 4,
-                paddingBottom: 4,
-                paddingLeft: 16,
-                paddingRight: 0
-              }}
               divider
               button
+              style={{ paddingRight: 0 }}
               selected={indexSelected === indexList}
               onClick={event => onClick(event, indexList)}
             >
@@ -67,10 +62,10 @@ export default function CustomList(props) {
                   }
                 />
                 <Grid container alignItems="center" justify="space-between">
-                  <Grid item xs={9}>
+                  <Grid item xs={8}>
                     <TextOverflow>{itemList.nome}</TextOverflow>
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item container xs={4} justify="flex-end">
                     <div
                      style={{ marginRight: 20 }}
                       onClick={handleClickMenu}

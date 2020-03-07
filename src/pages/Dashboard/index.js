@@ -19,6 +19,7 @@ import {
   FontButton,
   StyledButton
 } from "./styles";
+import SmallScreenDash from "../../components/SmallScreenDash";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import DropdownPolitics from "../../components/DropdownPolitics";
@@ -29,8 +30,7 @@ import FormPolitic from "../../components/FormPolitic";
 import { useHistory } from "react-router-dom";
 
 export default function Dashboard() {
-  const theme = useTheme();
-  const isLessThan442 = window.screen.availWidth < 442;
+  const isLessThan500 = window.screen.availWidth < 500;
   const [cities, setCities] = useState([]);
   const [citySelected, setCitySelected] = useState("");
   const [user, setUser] = useState({});
@@ -282,8 +282,12 @@ export default function Dashboard() {
     }
   };
 
-  return isLessThan442 ? (
-    <div>Recarregue a página</div>
+  return isLessThan500 ? (
+    <SmallScreenDash
+      onClick={() => {
+        window.location.reload();
+      }}
+    />
   ) : (
     <>
       <AppBar position="static" style={{ height: "42px" }}>
@@ -300,6 +304,7 @@ export default function Dashboard() {
           </Grid>
         </Grid>
       </AppBar>
+
       <StyledGrid container item justify="center">
         <Grid item xs={4} sm={4} md={4}>
           <Grid container alignItems="center" justify="space-between">
@@ -405,8 +410,9 @@ export default function Dashboard() {
           </Dialog>
         </Grid>
         <Separator />
+
         <Grid item xs={3} sm={3} md={4}>
-          {/* {isSM ? <div style={{ height: 28 }}></div> : undefined} */}
+          <div style={{ height: 4 }}></div>
           <ActionButton
             onClicks={[
               () => {
@@ -415,9 +421,7 @@ export default function Dashboard() {
               () => {}
             ]}
           />
-
-          <div style={{ height: "8px" }}></div>
-
+          <div style={{ height: "4.4px" }}></div>
           <Subtitle>Gestores</Subtitle>
           <CustomList
             onClick={handleManagerListClick}
@@ -441,7 +445,9 @@ export default function Dashboard() {
           </Dialog>
         </Grid>
         <Separator />
+
         <Grid item xs={3} sm={3} md={3}>
+        <div style={{ height: 4 }}></div>
           <ActionButton
             onClicks={[
               () => {
@@ -450,8 +456,7 @@ export default function Dashboard() {
               () => {}
             ]}
           />
-          <div style={{ height: "8px" }}></div>
-
+          <div style={{ height: "4.4px" }}></div>
           <Subtitle>Contratados</Subtitle>
           <CustomList
             onClick={handleHiredListClick}
