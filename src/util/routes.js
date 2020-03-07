@@ -9,8 +9,7 @@ export default function Routes() {
     <Switch>
     <Route path="/" exact component={Login}></Route>
     <Route path="/dashboard" component={Dashboard}></Route>
-    <Route path="/sign" component={Sign}></Route>
-    {/* <Route path="/hired" component={FormHired}></Route> */}
+    <Route path="/assinatura" component={Sign}></Route>
     </Switch>
   );
 }

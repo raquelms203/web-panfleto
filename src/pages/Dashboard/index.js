@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Button, Grid, Dialog, DialogTitle, AppBar } from "@material-ui/core";
+import {
+  Button,
+  Grid,
+  Dialog,
+  DialogTitle,
+  AppBar,
+  useMediaQuery
+} from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
 import { apiStates, apiADM } from "../../services/api";
 import {
   StyledGrid,
@@ -21,6 +29,8 @@ import FormPolitic from "../../components/FormPolitic";
 import { useHistory } from "react-router-dom";
 
 export default function Dashboard() {
+  const theme = useTheme();
+  const isLessThan442 = window.screen.availWidth < 442;
   const [cities, setCities] = useState([]);
   const [citySelected, setCitySelected] = useState("");
   const [user, setUser] = useState({});
@@ -272,7 +282,9 @@ export default function Dashboard() {
     }
   };
 
-  return (
+  return isLessThan442 ? (
+    <div>Recarregue a página</div>
+  ) : (
     <>
       <AppBar position="static" style={{ height: "42px" }}>
         <Grid container justify="space-between" alignItems="baseline">
@@ -302,7 +314,7 @@ export default function Dashboard() {
                 <DialogTitle>
                   <Grid container direction="column" spacing={3}>
                     <div style={{ width: 400 }}></div>
-                    <Grid item xs sm={6} md={6}>
+                    <Grid item xs sm={12} md={12}>
                       <DropdownPolitics
                         isFilter
                         onChange={handleFilterPolitic}
@@ -319,7 +331,7 @@ export default function Dashboard() {
                         variant="contained"
                         size="large"
                         color="secondary"
-                        onClick={(event) => handleFilters(event)}
+                        onClick={event => handleFilters(event)}
                       >
                         <FontButton>OK</FontButton>
                       </StyledButton>
@@ -372,7 +384,7 @@ export default function Dashboard() {
             dropdownNames={["Adicionar assinatura", "Editar"]}
             dropdownOnChange={[
               index => {
-                history.push(`/sign/${politics[index].token}`, {
+                history.push(`/assinatura/${politics[index].token}`, {
                   token: politics[index].token
                 });
               },
@@ -394,6 +406,7 @@ export default function Dashboard() {
         </Grid>
         <Separator />
         <Grid item xs={3} sm={3} md={4}>
+          {/* {isSM ? <div style={{ height: 28 }}></div> : undefined} */}
           <ActionButton
             onClicks={[
               () => {
@@ -453,7 +466,7 @@ export default function Dashboard() {
             ]}
             dropdownOnChange={[
               index => {
-                history.push(`/sign/${hireds[index].token}`, {
+                history.push(`/assinatura/${hireds[index].token}`, {
                   token: hireds[index].token
                 });
               },
@@ -478,7 +491,9 @@ export default function Dashboard() {
           </Dialog>
         </Grid>
       </StyledGrid>
-      <Footer>Site desenvolvido por Easycode</Footer>
+      <Footer>
+        Site desenvolvido por<pre> Easycode </pre>- 2020
+      </Footer>
     </>
   );
 }

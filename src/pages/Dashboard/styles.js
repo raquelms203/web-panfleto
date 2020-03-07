@@ -3,7 +3,7 @@ import { Grid, Button } from "@material-ui/core";
 
 export const StyledGrid = styled(Grid)`
   height: 100%;
-  padding: 20px;
+  padding-top: 20px;
 `;
 
 export const Logo = styled.p`
@@ -39,8 +39,13 @@ export const Footer = styled.div`
   height: 40px;
   color: white;
   background: #454545;
-  font: 20px Microsoft New Tai Lue;
+  font: 15px Microsoft New Tai Lue;
   letter-spacing: 0.4px;
+  pre {  
+    color: #3daf8a;
+    font: 15px Microsoft New Tai Lue;
+
+  }
 `;
 
 export const FontButton = styled.p`   

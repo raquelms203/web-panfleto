@@ -84,7 +84,7 @@ export default function FormManager(props) {
           onChange={event => setGroup(event.target.value)}
         />
       </Grid>
-      <Grid item xs sm={6} md={6}>
+      <Grid item xs sm={12} md={12}>
         <FilterPolitics
           isFilter={false}
           onChange={event => setType(event.target.value)}
