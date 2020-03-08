@@ -8,7 +8,7 @@ import {
   useMediaQuery
 } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
-import { apiStates, apiADM } from "../../services/api";
+import { apiCities, apiADM } from "../../services/api";
 import {
   StyledGrid,
   Separator,
@@ -52,8 +52,8 @@ export default function Dashboard() {
 
   const fetchCities = useCallback(async () => {
     if (cities.length === 0) {
-      let response = await apiStates.get();
-      let names = response.data.map(item => item.nome);
+      let response = await apiCities.get();
+      let names = response.data.map(item => item.nome + " - " + item.municipio.microrregiao.mesorregiao.UF.sigla);
       setCities(names);
     }
   }, [cities]);

@@ -1,6 +1,6 @@
 import { Grid } from "@material-ui/core";
 import React, { useState, useEffect, useCallback } from "react";
-import { apiStates } from "../../services/api";
+import { apiCities } from "../../services/api";
 import FilterPolitics from "../DropdownPolitics";
 import {
   Container,
@@ -17,27 +17,33 @@ export default function FormManager(props) {
   const [group, setGroup] = useState("");
   const [type, setType] = useState("");
   const [CPF, setCPF] = useState("");
+  const { onClick } = props;
 
   const fetchCities = useCallback(async () => {
     if (cities.length === 0) {
-      let response = await apiStates.get();
-      let names = response.data.map(item => item.nome);
-      setCities(names);
+      if (cities.length === 0) {
+        let response = await apiCities.get();
+        let names = response.data.map(item => item.nome + " - " + item.municipio.microrregiao.mesorregiao.UF.sigla);
+        setCities(names);
+      }
     }
   }, [cities]);
-
-  useEffect(() => {
-    fetchCities();
-  }, [fetchCities]);
-
-  const { onClick } = props;
-
+  
   const handleChangeName = event => {
     let value = event.target.value;
     value = value.replace(/[^A-Za-z" "]/gi, "");
 
     setName(value);
   };
+
+  
+  useEffect(() => {
+
+    fetchCities();
+
+
+  }, [fetchCities]);
+
 
   return (
     <Container container direction="column" justify="flex-start" spacing={2}>

@@ -9,7 +9,7 @@ import {
   FontButton
 } from "./styles";
 import DropdownCities from "../DropdownCities";
-import { apiStates } from "../../services/api";
+import { apiCities } from "../../services/api";
 import axios from "axios";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
 
@@ -32,8 +32,8 @@ export default function FormHired(props) {
 
   const fetchCities = useCallback(async () => {
     if (cities.length === 0) {
-      let response = await apiStates.get();
-      let names = response.data.map(item => item.nome);
+      let response = await apiCities.get();
+      let names = response.data.map(item => item.nome + " - " + item.municipio.microrregiao.mesorregiao.UF.sigla);
       setCities(names);
     }
   }, [cities]);
@@ -50,7 +50,7 @@ export default function FormHired(props) {
     }
     setFilledColor("#dfdfdf");
     setStreet(response.data.logradouro);
-    setCity(response.data.localidade);
+    setCity(response.data.localidade + " - " + response.data.uf);
     setVisibleButtonCity(true);
     setDistrict(response.data.bairro);
   };
