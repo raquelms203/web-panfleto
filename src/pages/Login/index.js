@@ -17,8 +17,8 @@ export default function Login() {
               src={Computer}
               alt="login"
               style={{
-                maxHeight: "312px",
-                maxWidth: "312px",
+                maxHeight: "311.6px",
+                maxWidth: "311.6px",
                 justify: "center"
               }}
             ></img>
