@@ -402,6 +402,7 @@ export default function Dashboard() {
           >
             <DialogTitle>
               <FormPolitic
+              cities={cities}
                 onClick={() => {
                   setOpenDialogAddPolitic(false);
                 }}
@@ -488,6 +489,7 @@ export default function Dashboard() {
           >
             <DialogTitle style={{ background: "#f5f3f3" }}>
               <FormHired
+                cities={cities}
                 onClick={() => {
                   setOpenDialogAddHired(false);
                 }}

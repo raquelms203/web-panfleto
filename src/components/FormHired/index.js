@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import { Grid, TextField } from "@material-ui/core";
 import InputMask from "react-input-mask";
 import {
@@ -9,12 +9,11 @@ import {
   FontButton
 } from "./styles";
 import DropdownCities from "../DropdownCities";
-import { apiCities } from "../../services/api";
 import axios from "axios";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
 
 export default function FormHired(props) {
-  const [cities, setCities] = useState([]);
+  
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [CPF, setCPF] = useState("");
@@ -30,15 +29,7 @@ export default function FormHired(props) {
   const [visibleButtonCity, setVisibleButtonCity] = useState(false);
   const [filledColor, setFilledColor] = useState("white");
 
-  const fetchCities = useCallback(async () => {
-    if (cities.length === 0) {
-      let response = await apiCities.get();
-      let names = response.data.map(item => item.nome + " - " + item.municipio.microrregiao.mesorregiao.UF.sigla);
-      setCities(names);
-    }
-  }, [cities]);
-
-  const fetchCEP = async cep => {
+   const fetchCEP = async cep => {
     let api = axios.create({
       baseURL: `https://viacep.com.br/ws/${cep}/json/`
     });
@@ -77,11 +68,8 @@ export default function FormHired(props) {
     setNumber(value);
   };
 
-  useEffect(() => {
-    fetchCities();
-  }, [fetchCities]);
-
-  const { onClick } = props;
+  
+  const { onClick, cities } = props;
 
   return (
     <Container
