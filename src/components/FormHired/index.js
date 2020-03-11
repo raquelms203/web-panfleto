@@ -249,9 +249,6 @@ export var FormHired = withStyles(styles)(props => {
         </Grid>
 
         <Grid item>
-          
-
-       
           <CurrencyInput
           style={{ height: 60, border:"none", font: "12px", background:"white" }}
               decimalSeparator=","
