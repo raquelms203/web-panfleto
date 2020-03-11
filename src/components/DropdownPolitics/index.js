@@ -1,36 +1,23 @@
-import React from "react";
-import {
-  FormControl,
-  Select,
-  FormHelperText,
-  MenuItem
-} from "@material-ui/core";
+import React, { useEffect } from "react";
+import { Select, FormHelperText, MenuItem } from "@material-ui/core";
 
 export default function DropdownPolitics(props) {
-  const { onChange, isFilter } = props;
+  const { onChange, isFilter, showAll } = props;
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    if (isFilter === 1) setOptions(["Todos", "Prefeitos", "Vereadores"]);
+    else setOptions(["Prefeitos", "Vereadores"]);
+  }, [setOptions]);
 
   return (
-    <FormControl>
+    <>
       <FormHelperText>Categoria</FormHelperText>
-      <Select
-        labelId="demo-simple-select-autowidth-label"
-        id="demo-simple-select-autowidth"
-        onChange={onChange}
-        defaultValue={1}
-        style={{ width: 255 }}
-      >
-        {isFilter ?
-        <MenuItem key={1} value={1}>
-          Todos
-        </MenuItem>
-        : undefined}
-        <MenuItem key={2} value={2}>
-          Prefeitos
-        </MenuItem>
-        <MenuItem key={3} value={3}>
-          Vereadores
-        </MenuItem>
+      <Select fullWidth onChange={onChange} defaultValue={1}>
+      {isFilter ? options.map((item, index) => <MenuItem key={index} value={index}>{item}</MenuItem>)
+      : <><MenuItem key={0} value={0}>""</MenuItem>
+      {options.map((item, index) => <MenuItem key={index+1} value={index+1}>{item}</MenuItem>)}</>}
       </Select>
-    </FormControl>
+    </>
   );
 }

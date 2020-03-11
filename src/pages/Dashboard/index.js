@@ -1,24 +1,36 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Button, Grid, Dialog, DialogTitle, AppBar } from "@material-ui/core";
-import { apiStates, apiADM } from "../../services/api";
+import {
+  Button,
+  Grid,
+  Dialog,
+  DialogTitle,
+  AppBar,
+  useMediaQuery
+} from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
+import { apiCities, apiADM } from "../../services/api";
 import {
   StyledGrid,
   Separator,
   Subtitle,
   LabelFilter,
   Footer,
-  Logo
+  Logo,
+  FontButton,
+  StyledButton
 } from "./styles";
+import SmallScreenDash from "../../components/SmallScreenDash";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import DropdownPolitics from "../../components/DropdownPolitics";
-import { DropdownCities } from "../../components/DropdownCities";
-import { FormHired } from "../../components/FormHired/index";
+import DropdownCities from "../../components/DropdownCities";
+import FormHired from "../../components/FormHired/index";
 import FormManager from "../../components/FormManager";
 import FormPolitic from "../../components/FormPolitic";
 import { useHistory } from "react-router-dom";
 
 export default function Dashboard() {
+  const isLessThan500 = window.screen.availWidth < 500;
   const [cities, setCities] = useState([]);
   const [citySelected, setCitySelected] = useState("");
   const [user, setUser] = useState({});
@@ -40,8 +52,8 @@ export default function Dashboard() {
 
   const fetchCities = useCallback(async () => {
     if (cities.length === 0) {
-      let response = await apiStates.get();
-      let names = response.data.map(item => item.nome);
+      let response = await apiCities.get();
+      let names = response.data.map(item => item.nome + " - " + item.municipio.microrregiao.mesorregiao.UF.sigla);
       setCities(names);
     }
   }, [cities]);
@@ -270,7 +282,13 @@ export default function Dashboard() {
     }
   };
 
-  return (
+  return isLessThan500 ? (
+    <SmallScreenDash
+      onClick={() => {
+        window.location.reload();
+      }}
+    />
+  ) : (
     <>
       <AppBar position="static" style={{ height: "42px" }}>
         <Grid container justify="space-between" alignItems="baseline">
@@ -286,6 +304,7 @@ export default function Dashboard() {
           </Grid>
         </Grid>
       </AppBar>
+
       <StyledGrid container item justify="center">
         <Grid item xs={4} sm={4} md={4}>
           <Grid container alignItems="center" justify="space-between">
@@ -298,21 +317,30 @@ export default function Dashboard() {
                 open={openDialogFilter}
               >
                 <DialogTitle>
-                  <Grid container direction="column">
-                    <DropdownPolitics isFilter onChange={handleFilterPolitic} />
-                    <div style={{ height: "16px" }}></div>
-                    <DropdownCities
-                      onChange={handleFilterCity}
-                      list={cities}
-                    ></DropdownCities>
-                    <div style={{ height: "16px" }}></div>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleFilters}
-                    >
-                      OK
-                    </Button>
+                  <Grid container direction="column" spacing={3}>
+                    <div style={{ width: 400 }}></div>
+                    <Grid item xs sm={12} md={12}>
+                      <DropdownPolitics
+                        isFilter
+                        onChange={handleFilterPolitic}
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <DropdownCities
+                        onChange={handleFilterCity}
+                        list={cities}
+                      ></DropdownCities>
+                    </Grid>
+                    <Grid item container direction="row-reverse">
+                      <StyledButton
+                        variant="contained"
+                        size="large"
+                        color="secondary"
+                        onClick={event => handleFilters(event)}
+                      >
+                        <FontButton>OK</FontButton>
+                      </StyledButton>
+                    </Grid>
                   </Grid>
                 </DialogTitle>
               </Dialog>
@@ -361,7 +389,7 @@ export default function Dashboard() {
             dropdownNames={["Adicionar assinatura", "Editar"]}
             dropdownOnChange={[
               index => {
-                history.push(`/sign/${politics[index].token}`, {
+                history.push(`/assinatura/${politics[index].token}`, {
                   token: politics[index].token
                 });
               },
@@ -373,12 +401,19 @@ export default function Dashboard() {
             open={openDialogAddPolitic}
           >
             <DialogTitle>
-              <FormPolitic onClick={() => {setOpenDialogAddPolitic(false)}}/>
+              <FormPolitic
+              cities={cities}
+                onClick={() => {
+                  setOpenDialogAddPolitic(false);
+                }}
+              />
             </DialogTitle>
           </Dialog>
         </Grid>
         <Separator />
+
         <Grid item xs={3} sm={3} md={4}>
+          <div style={{ height: 4 }}></div>
           <ActionButton
             onClicks={[
               () => {
@@ -387,9 +422,7 @@ export default function Dashboard() {
               () => {}
             ]}
           />
-
-          <div style={{ height: "8px" }}></div>
-
+          <div style={{ height: "4.4px" }}></div>
           <Subtitle>Gestores</Subtitle>
           <CustomList
             onClick={handleManagerListClick}
@@ -403,13 +436,19 @@ export default function Dashboard() {
             onClose={() => setOpenDialogAddManager(false)}
             open={openDialogAddManager}
           >
-            <DialogTitle>
-              <FormManager onClick={() => {setOpenDialogAddManager(false)}}/>
+            <DialogTitle style={{ background: "#f5f3f3" }}>
+              <FormManager
+                onClick={() => {
+                  setOpenDialogAddManager(false);
+                }}
+              />
             </DialogTitle>
           </Dialog>
         </Grid>
         <Separator />
+
         <Grid item xs={3} sm={3} md={3}>
+        <div style={{ height: 4 }}></div>
           <ActionButton
             onClicks={[
               () => {
@@ -418,8 +457,7 @@ export default function Dashboard() {
               () => {}
             ]}
           />
-          <div style={{ height: "8px" }}></div>
-
+          <div style={{ height: "4.4px" }}></div>
           <Subtitle>Contratados</Subtitle>
           <CustomList
             onClick={handleHiredListClick}
@@ -434,7 +472,7 @@ export default function Dashboard() {
             ]}
             dropdownOnChange={[
               index => {
-                history.push(`/sign/${hireds[index].token}`, {
+                history.push(`/assinatura/${hireds[index].token}`, {
                   token: hireds[index].token
                 });
               },
@@ -450,12 +488,19 @@ export default function Dashboard() {
             open={openDialogAddHired}
           >
             <DialogTitle style={{ background: "#f5f3f3" }}>
-              <FormHired onClick={() => {setOpenDialogAddHired(false)}}/>
+              <FormHired
+                cities={cities}
+                onClick={() => {
+                  setOpenDialogAddHired(false);
+                }}
+              />
             </DialogTitle>
           </Dialog>
         </Grid>
       </StyledGrid>
-      <Footer>Site desenvolvido por Easycode</Footer>
+      <Footer>
+        Site desenvolvido por<pre> Easycode </pre>- 2020
+      </Footer>
     </>
   );
 }

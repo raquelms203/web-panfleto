@@ -5,9 +5,9 @@ import { apiStates } from "../../services/api";
 import FilterPolitics from "../DropdownPolitics";
 import {
   Container,
-  StyledLargeTextField,
   StyledButton,
-  FontButton
+  FontButton,
+  StyledTextField
 } from "../FormHired/styles";
 import { DropdownCities } from "../DropdownCities";
 import { validationSchema } from "./validation_schema";
@@ -30,11 +30,8 @@ export default function FormManager(props) {
     }
   }, [cities]);
 
-  useEffect(() => {
-    fetchCities();
-  }, [fetchCities]);
-
-  const { onClick } = props;
+    setName(value);
+  };
 
   return (
     <Formik

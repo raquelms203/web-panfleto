@@ -46,40 +46,36 @@ export default function CustomList(props) {
         <List component="nav" dense>
           {list.map((itemList, indexList) => (
             <ListItem
-              style={{ paddingRight: "0" }}
               key={indexList}
               divider
               button
+              style={{ paddingRight: 0 }}
               selected={indexSelected === indexList}
               onClick={event => onClick(event, indexList)}
             >
-              <Checkbox
-                edge="start"
-                tabIndex={-1}
-                disableRipple
-                onChange={(event, value) =>
-                  onCheckChange(event, value, indexList)
-                }
-              />
-
-              <Grid container justify="space-between" alignItems="center">
-                <Grid item xs={6} sm={6} md={6}>
-                  <TextOverflow>{itemList.nome}</TextOverflow>
+                <Checkbox
+                  edge="start"
+                  tabIndex={-1}
+                  disableRipple
+                  onChange={(event, value) =>
+                    onCheckChange(event, value, indexList)
+                  }
+                />
+                <Grid container alignItems="center" justify="space-between">
+                  <Grid item xs={8}>
+                    <TextOverflow>{itemList.nome}</TextOverflow>
+                  </Grid>
+                  <Grid item container xs={4} justify="flex-end">
+                    <div
+                     style={{ marginRight: 20 }}
+                      onClick={handleClickMenu}
+                    >
+                      <MoreVert
+                        style={{ color: "#525252", transform: "scale(0.8)" }}
+                      />
+                    </div>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <Button
-                    edge="end"
-                    aria-controls="simple-menu"
-                    aria-haspopup="true"
-                    onClick={handleClickMenu}
-                  >
-                    <MoreVert
-                      style={{ color: "#525252", transform: "scale(0.8)" }}
-                    />
-                  </Button>
-                </Grid>
-              </Grid>
-
               <ListItemSecondaryAction>
                 <Menu
                   id="simple-menu"

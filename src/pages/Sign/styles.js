@@ -3,14 +3,15 @@ import { Button } from "@material-ui/core";
 
 export const Title = styled.p`
   font: 20px Roboto, serif;
-  margin-top: 100px;
+  margin-top: 40px;
   margin-left: 20px;
   margin-right: 20px;
+  text-align: left;
 `;
 
 export const Token = styled.p`
   font: bold 40px Roboto, serif;
-  margin-top: 50px;
+  margin-top: 40px;
   margin-left: 20px;
   margin-right: 20px;
   letter-spacing: 10px;

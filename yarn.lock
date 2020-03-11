@@ -1582,6 +1582,13 @@
     semver "^6.3.0"
     tsutils "^3.17.1"
 
+"@unicef/material-ui-currency-textfield@^0.8.6":
+  version "0.8.6"
+  resolved "https://registry.yarnpkg.com/@unicef/material-ui-currency-textfield/-/material-ui-currency-textfield-0.8.6.tgz#a14e33a134a894e8e799cf6cec002864dceb541b"
+  integrity sha512-zXhwJbz8mRa4xVZ6zkkyn9UyXHT4CXFn1JuvkVhDFqtqPkjQXBg+/dWMlJAfX6m1CvwfxwiF9giJxJqFEsTUqg==
+  dependencies:
+    autonumeric "^4.5.4"
+
 "@webassemblyjs/ast@1.8.5":
   version "1.8.5"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.8.5.tgz#51b1c5fe6576a34953bf4b253df9f0d490d9e359"
@@ -2158,6 +2165,11 @@ atob@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
+
+autonumeric@^4.5.4:
+  version "4.5.13"
+  resolved "https://registry.yarnpkg.com/autonumeric/-/autonumeric-4.5.13.tgz#945f8182970383b27beee54de1596549124eb161"
+  integrity sha512-GHpM0cGWTzFVDQyOgpXlNoqe8fDn6minpGEauLgDnGb4k24WmF8GInLnhIGWoJXisHZuWmTeKqFcIBnf5c2DaA==
 
 autoprefixer@^9.6.1:
   version "9.7.4"
@@ -10352,6 +10364,10 @@ react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.0, react-is@^16.8.1, react-is
   version "16.12.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
+
+"react-materialui-currency@git+https://github.com/helderfarias/react-materialui-currency.git":
+  version "1.0.0"
+  resolved "git+https://github.com/helderfarias/react-materialui-currency.git#221d50b1b91db314ec300e02ba1388999de80904"
 
 react-router-dom@^5.1.2:
   version "5.1.2"
