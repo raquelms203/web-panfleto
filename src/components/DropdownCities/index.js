@@ -51,7 +51,7 @@ export default function DropdownCities(props) {
       onClose={() => {
         setOpen(false);
       }}
-      onChange={() => onChange()}
+      onChange={(event) => onChange(event)}
       getOptionSelected={(option, value) => option === value}
       getOptionLabel={option => option}
       options={options}
