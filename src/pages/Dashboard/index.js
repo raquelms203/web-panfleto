@@ -19,7 +19,7 @@ import {
   FontButton,
   StyledButton
 } from "./styles";
-import SmallScreenDash from "../../components/SmallScreenDash";
+import SmallScreenDash from "../SmallScreenDash";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import DropdownPolitics from "../../components/DropdownPolitics";
@@ -28,6 +28,7 @@ import FormHired from "../../components/FormHired/index";
 import FormManager from "../../components/FormManager";
 import FormPolitic from "../../components/FormPolitic";
 import { useHistory } from "react-router-dom";
+import ConfirmDelete from "../../components/ConfirmDelete";
 
 export default function Dashboard() {
   const isLessThan500 = window.screen.availWidth < 500;
@@ -48,12 +49,20 @@ export default function Dashboard() {
   const [openDialogAddHired, setOpenDialogAddHired] = useState(false);
   const [openDialogAddManager, setOpenDialogAddManager] = useState(false);
   const [openDialogAddPolitic, setOpenDialogAddPolitic] = useState(false);
+  const [openDialogDelete, setOpenDialogDelete] = useState({
+    open: false,
+    list: [],
+    type: ""
+  });
   const history = useHistory();
 
   const fetchCities = useCallback(async () => {
     if (cities.length === 0) {
       let response = await apiCities.get();
-      let names = response.data.map(item => item.nome + " - " + item.municipio.microrregiao.mesorregiao.UF.sigla);
+      let names = response.data.map(
+        item =>
+          item.nome + " - " + item.municipio.microrregiao.mesorregiao.UF.sigla
+      );
       setCities(names);
     }
   }, [cities]);
@@ -91,7 +100,9 @@ export default function Dashboard() {
       setPolitics(politicsAll);
       setManagers(politicsAll[0].gestores);
       setHireds(politicsAll[0].gestores[0].contratados);
-      setCheckPolitic(Array(politicsAll.length).fill(false));
+      setCheckPolitic(
+        Array(politicsAll.length).fill({ isSelected: false, id: "" })
+      );
     }
   }, [user]);
 
@@ -104,13 +115,16 @@ export default function Dashboard() {
     setIndexPolitic(index);
     setIndexManager(0);
     setManagers(politics[index].gestores);
+    setCheckManager(
+      Array(politics[index].gestores.length).fill({ isSelected: false, id: "" })
+    );
     setHireds(politics[index].gestores[0].contratados);
   };
 
   const isTwoPoliticsSelected = () => {
     let counter = 0;
     checkPolitic.forEach(item => {
-      if (item) counter++;
+      if (item.isChecked) counter++;
       if (counter >= 2) return;
     });
     if (counter >= 2) return true;
@@ -119,7 +133,7 @@ export default function Dashboard() {
 
   const handleCheckChangePolitic = (event, value, indexList) => {
     let list = checkPolitic;
-    list[indexList] = value;
+    list[indexList] = { isChecked: value, id: politics[indexList].token };
     setCheckPolitic(list);
     if (isTwoPoliticsSelected()) {
       setManagers([]);
@@ -130,34 +144,40 @@ export default function Dashboard() {
   const handleManagerListClick = (event, index) => {
     setIndexManager(index);
     setHireds(managers[index].contratados);
+    setCheckHired(
+      Array(managers[index].contratados.length).fill({
+        isSelected: false,
+        id: ""
+      })
+    );
   };
 
   const isTwoManagersSelected = () => {
     let counter = 0;
     checkManager.forEach(item => {
-      if (item) counter++;
+      if (item.isChecked) counter++;
       if (counter >= 2) return;
     });
     if (counter >= 2) return true;
     return false;
   };
 
-  const handleHiredListClick = (event, index) => {
-    setIndexHired(index);
-  };
-
   const handleCheckChangeManager = (event, value, indexList) => {
     let list = checkManager;
-    list[indexList] = value;
+    list[indexList] = { isChecked: value, id: managers[indexList].id };
     setCheckManager(list);
     if (isTwoManagersSelected()) {
       setHireds([]);
     }
   };
 
+  const handleHiredListClick = (event, index) => {
+    setIndexHired(index);
+  };
+
   const handleCheckChangeHired = (event, value, indexList) => {
     let list = checkHired;
-    list[indexList] = value;
+    list[indexList] = { isChecked: value, id: hireds[indexList].id };
     setCheckHired(list);
     console.log(list);
   };
@@ -375,7 +395,13 @@ export default function Dashboard() {
                   () => {
                     setOpenDialogAddPolitic(true);
                   },
-                  () => {}
+                  () => {
+                    setOpenDialogDelete({
+                      open: true,
+                      list: checkPolitic.filter(item => item.isChecked),
+                      type: "politic"
+                    });
+                  }
                 ]}
               />
             </Grid>
@@ -402,10 +428,26 @@ export default function Dashboard() {
           >
             <DialogTitle>
               <FormPolitic
-              cities={cities}
+                cities={cities}
                 onClick={() => {
                   setOpenDialogAddPolitic(false);
                 }}
+              />
+            </DialogTitle>
+          </Dialog>
+          <Dialog
+            onClose={() =>
+              setOpenDialogDelete({ open: false, list: [], type: "" })
+            }
+            open={openDialogDelete.open}
+          >
+            <DialogTitle>
+              <ConfirmDelete
+                type={openDialogDelete.type}
+                list={openDialogDelete.list}
+                onClickNo={() => setOpenDialogDelete({ open: false, list: [], type: "" })}
+                onClickYes={() => {}}
+
               />
             </DialogTitle>
           </Dialog>
@@ -448,7 +490,7 @@ export default function Dashboard() {
         <Separator />
 
         <Grid item xs={3} sm={3} md={3}>
-        <div style={{ height: 4 }}></div>
+          <div style={{ height: 4 }}></div>
           <ActionButton
             onClicks={[
               () => {
