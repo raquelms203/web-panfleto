@@ -1,13 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  Button,
-  Grid,
-  Dialog,
-  DialogTitle,
-  AppBar,
-  useMediaQuery
-} from "@material-ui/core";
-import { useTheme } from "@material-ui/core/styles";
+import { Button, Grid, Dialog, DialogTitle, AppBar } from "@material-ui/core";
 import { apiCities, apiADM } from "../../services/api";
 import {
   StyledGrid,
@@ -19,7 +11,7 @@ import {
   FontButton,
   StyledButton
 } from "./styles";
-import SmallScreenDash from "../SmallScreenDash";
+import SmallScreenAlert from "../SmallScreenAlert";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
 import DropdownPolitics from "../../components/DropdownPolitics";
@@ -31,12 +23,12 @@ import { useHistory } from "react-router-dom";
 import ConfirmDelete from "../../components/ConfirmDelete";
 
 export default function Dashboard() {
-  const isLessThan500 = window.screen.availWidth < 500;
+  const [isLessThan500, setIsLessThan500] = useState(false);
   const [cities, setCities] = useState([]);
   const [citySelected, setCitySelected] = useState("");
   const [user, setUser] = useState({});
   const [politics, setPolitics] = useState([]);
-  const [filterPoliticSelected, setFilterPoliticSelected] = useState(1);
+  const [filterPoliticSelected, setFilterPoliticSelected] = useState(0);
   const [checkPolitic, setCheckPolitic] = useState([]);
   const [indexPolitic, setIndexPolitic] = useState(0);
   const [managers, setManagers] = useState([]);
@@ -100,40 +92,48 @@ export default function Dashboard() {
       setPolitics(politicsAll);
       setManagers(politicsAll[0].gestores);
       setHireds(politicsAll[0].gestores[0].contratados);
-      setCheckPolitic(
-        Array(politicsAll.length).fill({ isSelected: false, id: "" })
-      );
     }
   }, [user]);
+
+  const onOrientationChange = useCallback(() => {
+    if (window.screen.availWidth < 500) {
+      setIsLessThan500(true);
+    }
+    window.addEventListener("orientationchange", function() {
+      if (window.matchMedia("(orientation: landscape)").matches)
+        if (window.screen.availWidth < 500) {
+          setIsLessThan500(true);
+        } else setIsLessThan500(false);
+      else setIsLessThan500(false);
+    });
+  }, [setIsLessThan500]);
 
   useEffect(() => {
     fetchCities();
     fetchUser();
-  }, [fetchCities, fetchUser]);
+    onOrientationChange();
+  }, [fetchCities, fetchUser, onOrientationChange]);
 
   const handlePoliticListClick = (event, index) => {
     setIndexPolitic(index);
     setIndexManager(0);
     setManagers(politics[index].gestores);
-    setCheckManager(
-      Array(politics[index].gestores.length).fill({ isSelected: false, id: "" })
-    );
     setHireds(politics[index].gestores[0].contratados);
   };
 
   const isTwoPoliticsSelected = () => {
-    let counter = 0;
-    checkPolitic.forEach(item => {
-      if (item.isChecked) counter++;
-      if (counter >= 2) return;
-    });
-    if (counter >= 2) return true;
-    return false;
+    return checkPolitic.length > 1;
   };
 
   const handleCheckChangePolitic = (event, value, indexList) => {
     let list = checkPolitic;
-    list[indexList] = { isChecked: value, id: politics[indexList].token };
+    if (list === undefined) list = [];
+    if (value) {
+      list.push(politics[indexList].token);
+    } else {
+      let indexRemove = list.findIndex(item => item === politics[indexList].id);
+      list.splice(indexRemove, 1);
+    }
     setCheckPolitic(list);
     if (isTwoPoliticsSelected()) {
       setManagers([]);
@@ -144,27 +144,21 @@ export default function Dashboard() {
   const handleManagerListClick = (event, index) => {
     setIndexManager(index);
     setHireds(managers[index].contratados);
-    setCheckHired(
-      Array(managers[index].contratados.length).fill({
-        isSelected: false,
-        id: ""
-      })
-    );
   };
 
   const isTwoManagersSelected = () => {
-    let counter = 0;
-    checkManager.forEach(item => {
-      if (item.isChecked) counter++;
-      if (counter >= 2) return;
-    });
-    if (counter >= 2) return true;
-    return false;
+    return checkManager.length > 1;
   };
 
   const handleCheckChangeManager = (event, value, indexList) => {
     let list = checkManager;
-    list[indexList] = { isChecked: value, id: managers[indexList].id };
+    if (list === undefined) list = [];
+    if (value) {
+      list.push(managers[indexList].id);
+    } else {
+      let indexRemove = list.findIndex(item => item === managers[indexList].id);
+      list.splice(indexRemove, 1);
+    }
     setCheckManager(list);
     if (isTwoManagersSelected()) {
       setHireds([]);
@@ -177,7 +171,13 @@ export default function Dashboard() {
 
   const handleCheckChangeHired = (event, value, indexList) => {
     let list = checkHired;
-    list[indexList] = { isChecked: value, id: hireds[indexList].id };
+    if (list === undefined) list = [];
+    if (value) {
+      list.push(hireds[indexList].id);
+    } else {
+      let indexRemove = list.findIndex(item => item === hireds[indexList].id);
+      list.splice(indexRemove, 1);
+    }
     setCheckHired(list);
     console.log(list);
   };
@@ -195,33 +195,31 @@ export default function Dashboard() {
   };
 
   const handleFilters = async event => {
-    if (citySelected === "" && filterPoliticSelected === 1) {
+    if (citySelected === "" && filterPoliticSelected === 0) {
       setOpenDialogFilter(false);
       return;
     }
     let fetch = await fetchPolitics();
     let list = [];
-    console.log("cidade" + citySelected);
-    console.log(`tipo ${filterPoliticSelected}`);
-    if (citySelected !== "" && filterPoliticSelected !== 1) {
+    if (citySelected !== "" && filterPoliticSelected !== 0) {
       fetch.forEach(item => {
         if (item.cidade === citySelected) {
           if (list.indexOf(item) === -1) {
-            let n = filterPoliticSelected - 1;
+            let n = filterPoliticSelected + 1;
             if (item.categoria === n) {
               if (list.indexOf(item) === -1) list.push(item);
             }
           }
         }
       });
-    } else if (filterPoliticSelected !== 1 && citySelected === "") {
-      let n = filterPoliticSelected - 1;
+    } else if (filterPoliticSelected !== 0 && citySelected === "") {
+      let n = filterPoliticSelected + 1;
       fetch.forEach(item => {
         if (item.categoria === n) {
           if (list.indexOf(item) === -1) list.push(item);
         }
       });
-    } else if (filterPoliticSelected === 1 && citySelected !== "") {
+    } else if (filterPoliticSelected === 0 && citySelected !== "") {
       fetch.forEach(item => {
         if (item.cidade === citySelected) {
           if (list.indexOf(item) === -1) {
@@ -255,9 +253,9 @@ export default function Dashboard() {
   const removeFilterCity = async () => {
     setCitySelected("");
     let fetch = await fetchPolitics();
-    if (filterPoliticSelected !== 1) {
+    if (filterPoliticSelected !== 0) {
       let list = [];
-      let n = filterPoliticSelected - 1;
+      let n = filterPoliticSelected + 1;
       fetch.forEach(item => {
         if (item.categoria === n) {
           if (list.indexOf(item) === -1) {
@@ -278,7 +276,7 @@ export default function Dashboard() {
   };
 
   const removeFilterPolitic = async () => {
-    setFilterPoliticSelected(1);
+    setFilterPoliticSelected(0);
 
     let fetch = await fetchPolitics();
     if (citySelected !== "") {
@@ -303,11 +301,7 @@ export default function Dashboard() {
   };
 
   return isLessThan500 ? (
-    <SmallScreenDash
-      onClick={() => {
-        window.location.reload();
-      }}
-    />
+    <SmallScreenAlert />
   ) : (
     <>
       <AppBar position="static" style={{ height: "42px" }}>
@@ -318,7 +312,11 @@ export default function Dashboard() {
           <Grid item>
             <div style={{ marginRight: "20px" }}>
               <Button color="inherit" onClick={() => {}}>
-                <p>{String(user.nome).split(" ")[0]}</p>
+                {String(user.nome) === "undefined" ? (
+                  <p></p>
+                ) : (
+                  <p>{String(user.nome).split(" ")[0]}</p>
+                )}
               </Button>
             </div>
           </Grid>
@@ -336,7 +334,7 @@ export default function Dashboard() {
                 onClose={() => setOpenDialogFilter(false)}
                 open={openDialogFilter}
               >
-                <DialogTitle>
+                <DialogTitle style={{ background: "#f5f3f3" }}>
                   <Grid container direction="column" spacing={3}>
                     <div style={{ width: 400 }}></div>
                     <Grid item xs sm={12} md={12}>
@@ -377,9 +375,9 @@ export default function Dashboard() {
               ) : (
                 undefined
               )}
-              {filterPoliticSelected !== 1 ? (
+              {filterPoliticSelected !== 0 ? (
                 <Button onClick={() => removeFilterPolitic()}>
-                  {filterPoliticSelected === 2 ? (
+                  {filterPoliticSelected === 1 ? (
                     <LabelFilter>Prefeitos X</LabelFilter>
                   ) : (
                     <LabelFilter>Vereadores X</LabelFilter>
@@ -398,7 +396,7 @@ export default function Dashboard() {
                   () => {
                     setOpenDialogDelete({
                       open: true,
-                      list: checkPolitic.filter(item => item.isChecked),
+                      list: checkPolitic,
                       type: "politic"
                     });
                   }
@@ -422,11 +420,11 @@ export default function Dashboard() {
               () => {}
             ]}
           />
-          <Dialog
+          <Dialog 
             onClose={() => setOpenDialogAddPolitic(false)}
             open={openDialogAddPolitic}
           >
-            <DialogTitle>
+            <DialogTitle style={{ background: "#f5f3f3" }}>
               <FormPolitic
                 cities={cities}
                 onClick={() => {
@@ -437,7 +435,7 @@ export default function Dashboard() {
           </Dialog>
           <Dialog
             onClose={() =>
-              setOpenDialogDelete({ open: false, list: [], type: "" })
+              setOpenDialogDelete({ open: false, list: undefined, type: "" })
             }
             open={openDialogDelete.open}
           >
@@ -445,9 +443,14 @@ export default function Dashboard() {
               <ConfirmDelete
                 type={openDialogDelete.type}
                 list={openDialogDelete.list}
-                onClickNo={() => setOpenDialogDelete({ open: false, list: [], type: "" })}
+                onClickNo={() =>
+                  setOpenDialogDelete({
+                    open: false,
+                    list: undefined,
+                    type: ""
+                  })
+                }
                 onClickYes={() => {}}
-
               />
             </DialogTitle>
           </Dialog>
@@ -461,7 +464,13 @@ export default function Dashboard() {
               () => {
                 setOpenDialogAddManager(true);
               },
-              () => {}
+              () => {
+                setOpenDialogDelete({
+                  open: true,
+                  list: checkManager,
+                  type: "manager"
+                });
+              }
             ]}
           />
           <div style={{ height: "4.4px" }}></div>
@@ -486,6 +495,27 @@ export default function Dashboard() {
               />
             </DialogTitle>
           </Dialog>
+          <Dialog
+            onClose={() =>
+              setOpenDialogDelete({ open: false, list: undefined, type: "" })
+            }
+            open={openDialogDelete.open}
+          >
+            <DialogTitle>
+              <ConfirmDelete
+                type={openDialogDelete.type}
+                list={openDialogDelete.list}
+                onClickNo={() =>
+                  setOpenDialogDelete({
+                    open: false,
+                    list: undefined,
+                    type: ""
+                  })
+                }
+                onClickYes={() => {}}
+              />
+            </DialogTitle>
+          </Dialog>
         </Grid>
         <Separator />
 
@@ -496,7 +526,13 @@ export default function Dashboard() {
               () => {
                 setOpenDialogAddHired(true);
               },
-              () => {}
+              () => {
+                setOpenDialogDelete({
+                  open: true,
+                  list: checkHired,
+                  type: "hired"
+                });
+              }
             ]}
           />
           <div style={{ height: "4.4px" }}></div>
@@ -535,6 +571,27 @@ export default function Dashboard() {
                 onClick={() => {
                   setOpenDialogAddHired(false);
                 }}
+              />
+            </DialogTitle>
+          </Dialog>
+          <Dialog
+            onClose={() =>
+              setOpenDialogDelete({ open: false, list: undefined, type: "" })
+            }
+            open={openDialogDelete.open}
+          >
+            <DialogTitle>
+              <ConfirmDelete
+                type={openDialogDelete.type}
+                list={openDialogDelete.list}
+                onClickNo={() =>
+                  setOpenDialogDelete({
+                    open: false,
+                    list: undefined,
+                    type: ""
+                  })
+                }
+                onClickYes={() => {}}
               />
             </DialogTitle>
           </Dialog>

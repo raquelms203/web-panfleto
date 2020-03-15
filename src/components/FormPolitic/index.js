@@ -13,7 +13,7 @@ import InputMask from "react-input-mask";
 export default function FormManager(props) {
   const [name, setName] = useState("");
   const [group, setGroup] = useState("");
-  const [type, setType] = useState("");
+ // const [type, setType] = useState("");
   const [CPF, setCPF] = useState("");
   const { onClick, cities } = props;
 
@@ -72,7 +72,7 @@ export default function FormManager(props) {
       <Grid item xs sm={12} md={12}>
         <FilterPolitics
           isFilter={false}
-          onChange={event => setType(event.target.value)}
+         // onChange={event => setType(event.target.value)}
         />
       </Grid>
       <div style={{ height: 8 }}></div>
