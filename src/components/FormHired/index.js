@@ -13,7 +13,6 @@ import axios from "axios";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
 
 export default function FormHired(props) {
-  
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [CPF, setCPF] = useState("");
@@ -29,7 +28,7 @@ export default function FormHired(props) {
   const [visibleButtonCity, setVisibleButtonCity] = useState(false);
   const [filledColor, setFilledColor] = useState("white");
 
-   const fetchCEP = async cep => {
+  const fetchCEP = async cep => {
     let api = axios.create({
       baseURL: `https://viacep.com.br/ws/${cep}/json/`
     });
@@ -68,7 +67,6 @@ export default function FormHired(props) {
     setNumber(value);
   };
 
-  
   const { onClick, cities } = props;
 
   return (
@@ -165,7 +163,7 @@ export default function FormHired(props) {
               }}
             >
               <TextField
-              fullWidth
+                fullWidth
                 style={{ background: filledColor }}
                 value={city}
                 InputLabelProps={{ shrink: true, readOnly: true }}
@@ -235,18 +233,6 @@ export default function FormHired(props) {
         </Grid>
       </Grid>
       <Grid item container spacing={1} justify="space-between">
-        <Grid item xs={12} sm={8} md={8}>
-          <StyledTextField
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-            size="small"
-            label="Cargo"
-            variant="outlined"
-            value={office}
-            onChange={event => setOffice(event.target.value)}
-          />
-        </Grid>
-
         <Grid item xs={12} sm={4} md={4}>
           <CurrencyTextField
             fullWidth
@@ -262,6 +248,18 @@ export default function FormHired(props) {
             decimalCharacter=","
             digitGroupSeparator="."
             onChange={(event, value) => setPayment(value)}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={8} md={8}>
+          <StyledTextField
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            size="small"
+            label="Cargo"
+            variant="outlined"
+            value={office}
+            onChange={event => setOffice(event.target.value)}
           />
         </Grid>
       </Grid>

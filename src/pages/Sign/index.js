@@ -14,6 +14,8 @@ export default function Sign(props) {
           use o código:
         </Title>
       </Grid>
+      <Grid item><Title>Código gerado às 19h36. Válido até 20h36.</Title></Grid>
+
       <Grid item>
         <Token>{location.state.token}</Token>
       </Grid>

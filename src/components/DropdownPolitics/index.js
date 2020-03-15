@@ -12,36 +12,39 @@ export default function DropdownPolitics(props) {
 
   if (isFilter)
     return (
-      <div  style={{ background: "white" }}>
-        <FormHelperText>Categoria</FormHelperText>
+      <>
+        <FormHelperText style={{ marginLeft: "12px" }}>
+          Categoria
+        </FormHelperText>
         <Select
           fullWidth
+          variant="outlined"
+          size="small"
           onChange={onChange}
           defaultValue={0}
-         
+          style={{ background: "white", height: 42 }}
         >
-          <MenuItem key={0} value={0}>
-            Todos
-          </MenuItem>
           {options.map((item, index) => (
-            <MenuItem key={index + 1} value={index + 1}>
+            <MenuItem key={index} value={index}>
               {item}
             </MenuItem>
           ))}
         </Select>
-      </div>
+      </>
     );
   else
     return (
-      <>     
+      <>
+        <FormHelperText style={{ marginLeft: "12px" }}>
+          Categoria
+        </FormHelperText>
         <Select
           fullWidth
-          variant= "outlined"
-          label="Categoria"
-          InputLabelProps={{ shrink: true }}
+          variant="outlined"
+          size="small"
           onChange={onChange}
-          defaultValue={1}
-          style={{ background: "white" }}
+          defaultValue={0}
+          style={{ background: "white", height: 42 }}
         >
           <MenuItem key={0} value={0}></MenuItem>
           {options.map((item, index) => (

@@ -1,9 +1,8 @@
 import React from "react";
-import { Grid, Button } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { Title } from "../../pages/Sign/styles";
 
 export default function SmallScreenAlert(props) {
-  const { onClick } = props;
 
   return (
     <Grid

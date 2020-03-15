@@ -58,23 +58,24 @@ export default function FormManager(props) {
       <Grid item xs>
         <DropdownCities list={cities} onChange={() => {}} />
       </Grid>
-      <Grid item xs>
+      <Grid item xs style={{ paddingTop: 0 }}>
+        <FilterPolitics
+          isFilter={false}
+          onChange={() => {}}
+        />
+      </Grid>
+      <Grid item xs >
         <StyledTextField
           fullWidth
           InputLabelProps={{ shrink: true }}
           size="small"
-          label="Nome completo"
+          label="Partido ou coligação"
           variant="outlined"
           value={group}
           onChange={event => setGroup(event.target.value)}
         />
       </Grid>
-      <Grid item xs sm={12} md={12}>
-        <FilterPolitics
-          isFilter={false}
-         // onChange={event => setType(event.target.value)}
-        />
-      </Grid>
+      
       <div style={{ height: 8 }}></div>
       <Grid item container direction="row-reverse">
         <StyledButton
