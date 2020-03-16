@@ -307,7 +307,7 @@ export default function Dashboard() {
       <AppBar position="static" style={{ height: "42px" }}>
         <Grid container justify="space-between" alignItems="baseline">
           <Grid item>
-            <Logo>E - CONTRATO</Logo>
+            <Logo>E - Contrato</Logo>
           </Grid>
           <Grid item>
             <div style={{ marginRight: "20px" }}>
@@ -420,7 +420,7 @@ export default function Dashboard() {
               () => {}
             ]}
           />
-          <Dialog 
+          <Dialog
             onClose={() => setOpenDialogAddPolitic(false)}
             open={openDialogAddPolitic}
           >
@@ -437,9 +437,9 @@ export default function Dashboard() {
             onClose={() =>
               setOpenDialogDelete({ open: false, list: undefined, type: "" })
             }
-            open={openDialogDelete.open}
+            open={openDialogDelete.open && openDialogDelete.type === "politic"}
           >
-            <DialogTitle>
+            <DialogTitle style={{ background: "#f5f3f3" }}>
               <ConfirmDelete
                 type={openDialogDelete.type}
                 list={openDialogDelete.list}
@@ -499,9 +499,9 @@ export default function Dashboard() {
             onClose={() =>
               setOpenDialogDelete({ open: false, list: undefined, type: "" })
             }
-            open={openDialogDelete.open}
+            open={openDialogDelete.open && openDialogDelete.type === "manager"}
           >
-            <DialogTitle>
+            <DialogTitle style={{ background: "#f5f3f3" }}>
               <ConfirmDelete
                 type={openDialogDelete.type}
                 list={openDialogDelete.list}
@@ -578,9 +578,9 @@ export default function Dashboard() {
             onClose={() =>
               setOpenDialogDelete({ open: false, list: undefined, type: "" })
             }
-            open={openDialogDelete.open}
+            open={openDialogDelete.open && openDialogDelete.type === "hired"}
           >
-            <DialogTitle>
+            <DialogTitle style={{ background: "#f5f3f3" }}>
               <ConfirmDelete
                 type={openDialogDelete.type}
                 list={openDialogDelete.list}

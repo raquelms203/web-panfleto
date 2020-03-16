@@ -7,7 +7,8 @@ export const StyledGrid = styled(Grid)`
 `;
 
 export const Logo = styled.p`
-  font: 20px Marlett;
+  font: 20px Libre Baskerville;
+  letter-spacing: 2px;
   margin-left: 20px;
   margin-top: 6px;
 `;
