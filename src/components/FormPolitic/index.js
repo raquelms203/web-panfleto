@@ -31,7 +31,7 @@ export default function FormManager(props) {
   }, [cities]);
 
     setName(value);
-  };
+  
 
   return (
     <Formik
