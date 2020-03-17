@@ -10,10 +10,14 @@ export default function Sign(props) {
     <Grid container direction="column" justify="center" alignItems="center">
       <Grid item>
         <Title>
+          Código gerado 19h36. Válido até 20h36.
+          <br />
+          <br />
           Para concluir o cadastro baixe o aplicativo E-CONTRATO para celular e
           use o código:
         </Title>
       </Grid>
+
       <Grid item>
         <Token>{location.state.token}</Token>
       </Grid>
