@@ -1,5 +1,7 @@
+import React, { useState, useEffect, useCallback } from "react";
+import { Formik, Form, Field } from "formik";
 import { Grid } from "@material-ui/core";
-import React, { useState, } from "react";
+import { apiStates } from "../../services/api";
 import FilterPolitics from "../DropdownPolitics";
 import {
   Container,
@@ -7,86 +9,88 @@ import {
   FontButton,
   StyledTextField
 } from "../FormHired/styles";
-import DropdownCities from "../DropdownCities";
-import InputMask from "react-input-mask";
+import { DropdownCities } from "../DropdownCities";
+import { validationSchema } from "./validation_schema";
 
 export default function FormManager(props) {
-  const [name, setName] = useState("");
-  const [group, setGroup] = useState("");
- // const [type, setType] = useState("");
-  const [CPF, setCPF] = useState("");
-  const { onClick, cities } = props;
+  const initialValues = {
+    name: "",
+    city: ""
+  };
+  const [cities, setCities] = useState([]);
 
-  const handleChangeName = event => {
-    let value = event.target.value;
-    value = value.replace(/[^A-Za-z" "]/gi, "");
+  const handleSubmit = values => {
+    console.log(values);
+  };
+  const fetchCities = useCallback(async () => {
+    if (cities.length === 0) {
+      let response = await apiStates.get();
+      let names = response.data.map(item => item.nome);
+      setCities(names);
+    }
+  }, [cities]);
 
     setName(value);
-  };
+  
 
   return (
-    <Container container direction="column" justify="flex-start" spacing={2}>
-      <div style={{ width: 400 }}></div>
-      <Grid item xs>
-        <StyledTextField
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          size="small"
-          label="Nome completo"
-          variant="outlined"
-          value={name}
-          onChange={event => handleChangeName(event)}
-        />
-      </Grid>
-      <Grid item xs>
-        <InputMask
-          mask="999.999.999-99"
-          value={CPF}
-          onChange={event => setCPF(event.target.value)}
-        >
-          {() => (
-            <StyledTextField
-              fullWidth
-              InputLabelProps={{ shrink: true }}
-              size="small"
-              label="CPF"
-              variant="outlined"
-            />
-          )}
-        </InputMask>
-      </Grid>
-      <Grid item xs>
-        <DropdownCities list={cities} onChange={() => {}} />
-      </Grid>
-      <Grid item xs style={{ paddingTop: 0 }}>
-        <FilterPolitics
-          isFilter={false}
-          onChange={() => {}}
-        />
-      </Grid>
-      <Grid item xs >
-        <StyledTextField
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          size="small"
-          label="Partido ou coligação"
-          variant="outlined"
-          value={group}
-          onChange={event => setGroup(event.target.value)}
-        />
-      </Grid>
-      
-      <div style={{ height: 8 }}></div>
-      <Grid item container direction="row-reverse">
-        <StyledButton
-          variant="contained"
-          size="large"
-          color="secondary"
-          onClick={() => onClick()}
-        >
-          <FontButton>OK</FontButton>
-        </StyledButton>
-      </Grid>
-    </Container>
+    <Formik
+      validationSchema={validationSchema}
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validateOnChange={false}
+      validateOnBlur={false}
+    >
+      {({ errors }) => (
+        <Form>
+          <Container
+            container
+            direction="column"
+            justify="flex-start"
+            spacing={2}
+          >
+            <Grid item>
+              <Field name="name">
+                {({ field }) => (
+                  <StyledLargeTextField
+                    {...field}
+                    label="Nome completo"
+                    variant="outlined"
+                    error={errors.name}
+                    helperText={errors.name}
+                  />
+                )}
+              </Field>
+            </Grid>
+            <Grid item>
+              <StyledLargeTextField label="CPF" variant="outlined" />
+            </Grid>
+            <Grid item>
+              <DropdownCities list={cities} onChange={() => {}} />
+            </Grid>
+            <Grid item>
+              <StyledLargeTextField
+                label="Partido/Coligação"
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item>
+              <FilterPolitics isFilter={false} onChange={() => {}} />
+            </Grid>
+            <div style={{ height: 8 }}></div>
+            <Grid item container direction="row-reverse">
+              <StyledButton
+                type="submit"
+                variant="contained"
+                size="large"
+                color="secondary"
+              >
+                <FontButton>OK</FontButton>
+              </StyledButton>
+            </Grid>
+          </Container>
+        </Form>
+      )}
+    </Formik>
   );
 }
