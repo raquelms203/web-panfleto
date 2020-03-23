@@ -19,84 +19,306 @@ import FormHired from "../../components/FormHired/index";
 import FormManager from "../../components/FormManager";
 import FormPolitic from "../../components/FormPolitic";
 import ConfirmDelete from "../../components/ConfirmDelete";
-import * as functions from "./functions";
 import { useHistory } from "react-router-dom";
 
-export const history = useHistory();
+import { apiADM, apiCities } from "../../services/api";
+import { useState } from "react";
 
 export default function Dashboard() {
-  // const fetchCities = useCallback(async () => {
-  //   if (functions.cities.length === 0) {
-  //     let response = await functions.apiCities.get();
-  //     let names = response.data.map(
-  //       item =>
-  //         item.nome + " - " + item.municipio.microrregiao.mesorregiao.UF.sigla
-  //     );
-  //     functions.setCities(names);
-  //   }
-  // }, []);
+  const history = useHistory();
+  const [isLessThan500, setIsLessThan500] = useState(false);
+  const [cities, setCities] = useState([]);
+  const [citySelected, setCitySelected] = useState("");
+  const [user, setUser] = useState({});
+  const [politics, setPolitics] = useState([]);
+  const [filterPoliticSelected, setFilterPoliticSelected] = useState(0);
+  const [checkPolitic, setCheckPolitic] = useState([]);
+  const [indexPolitic, setIndexPolitic] = useState(0);
+  const [managers, setManagers] = useState([]);
+  const [indexManager, setIndexManager] = useState(0);
+  const [checkManager, setCheckManager] = useState([]);
+  const [hireds, setHireds] = useState([]);
+  const [indexHired, setIndexHired] = useState(0);
+  const [checkHired, setCheckHired] = useState([]);
+  const [openDialogFilter, setOpenDialogFilter] = useState(false);
+  const [openDialogAddHired, setOpenDialogAddHired] = useState(false);
+  const [openDialogAddManager, setOpenDialogAddManager] = useState(false);
+  const [openDialogAddPolitic, setOpenDialogAddPolitic] = useState(false);
+  const [openDialogDelete, setOpenDialogDelete] = useState({
+    open: false,
+    list: [],
+    type: ""
+  });
 
-  // const fetchPolitics = async () => {
-  //   let response = await functions.apiADM.get();
-  //   let politicsAll = [];
+  const fetchCities = useCallback(async () => {
+    if (cities.length === 0) {
+      let response = await apiCities.get();
+      let names = response.data.map(
+        item =>
+          item.nome + " - " + item.municipio.microrregiao.mesorregiao.UF.sigla
+      );
+      setCities(names);
+    }
+  }, [cities]);
 
-  //   response.data.politicos.forEach(item => {
-  //     let p = {
-  //       nome: item.nome,
-  //       categoria: item.categoria,
-  //       cpf: item.cpf,
-  //       cidade: item.cidade,
-  //       gestores: item.gestores,
-  //       token: item.token
-  //     };
-  //     politicsAll.push(p);
-  //   });
+  const fetchPolitics = async () => {
+    let response = await apiADM.get();
+    let politicsAll = [];
 
-  //   return politicsAll;
-  // };
+    response.data.politicos.forEach(item => {
+      let p = {
+        nome: item.nome,
+        categoria: item.categoria,
+        cpf: item.cpf,
+        cidade: item.cidade,
+        gestores: item.gestores,
+        token: item.token
+      };
+      politicsAll.push(p);
+    });
 
-  // const fetchUser = useCallback(async () => {
-  //   if (Object.entries(user).length === 0) {
-  //     let response = await apiADM.get();
-  //     let user = {
-  //       nome: response.data.nome,
-  //       partido: response.data.partido,
-  //       corPrimaria: response.data.corPrimaria
-  //     };
-  //     let politicsAll = await fetchPolitics();
+    return politicsAll;
+  };
 
-  //     setUser(user);
-  //     setPolitics(politicsAll);
-  //     setManagers(politicsAll[0].gestores);
-  //     setHireds(politicsAll[0].gestores[0].contratados);
-  //   }
-  // }, [user]);
+  const fetchUser = useCallback(async () => {
+    if (Object.entries(user).length === 0) {
+      let response = await apiADM.get();
+      let user = {
+        nome: response.data.nome,
+        partido: response.data.partido,
+        corPrimaria: response.data.corPrimaria
+      };
+      let politicsAll = await fetchPolitics();
 
-  // const onOrientationChange = useCallback(() => {
-  //   if (window.screen.availWidth < 500) {
-  //     setIsLessThan500(true);
-  //   }
-  //   window.addEventListener("orientationchange", function() {
-  //     if (window.matchMedia("(orientation: landscape)").matches)
-  //       if (window.screen.availWidth < 500) {
-  //         setIsLessThan500(true);
-  //       } else setIsLessThan500(false);
-  //     else setIsLessThan500(false);
-  //   });
-  // }, [setIsLessThan500]);
+      setUser(user);
+      setPolitics(politicsAll);
+      setManagers(politicsAll[0].gestores);
+      setHireds(politicsAll[0].gestores[0].contratados);
+    }
+  }, [user]);
 
-  const test = useCallback(async ()  => {
-    await functions.fetchCities();
-  }, []);
-
-  useEffect(() => {
-    test();
-   
+  const onOrientationChange = useCallback(() => {
+    if (window.screen.availWidth < 500) {
+      setIsLessThan500(true);
+    }
+    window.addEventListener("orientationchange", function() {
+      if (window.matchMedia("(orientation: landscape)").matches) {
+        if (
+          !openDialogAddHired &&
+          !openDialogAddManager &&
+          !openDialogAddPolitic &&
+          !openDialogDelete &&
+          !openDialogFilter
+        ) {
+          if (window.screen.availWidth < 500) {
+            setIsLessThan500(true);
+          } else setIsLessThan500(false);
+        }
+      } else setIsLessThan500(false);
+    });
   }, [
-    test
+    setIsLessThan500,
+    openDialogDelete,
+    openDialogAddPolitic,
+    openDialogAddHired,
+    openDialogFilter,
+    openDialogAddManager
   ]);
 
-  return functions.isLessThan500 ? (
+  const handlePoliticListClick = (event, index) => {
+    setIndexPolitic(index);
+    setIndexManager(0);
+    setManagers(politics[index].gestores);
+    setHireds(politics[index].gestores[0].contratados);
+  };
+
+  const isTwoPoliticsSelected = () => {
+    return checkPolitic.length > 1;
+  };
+
+  const handleCheckChangePolitic = (event, value, indexList) => {
+    let list = checkPolitic;
+    if (list === undefined) list = [];
+    if (value) {
+      list.push(politics[indexList].token);
+    } else {
+      let indexRemove = list.findIndex(item => item === politics[indexList].id);
+      list.splice(indexRemove, 1);
+    }
+    setCheckPolitic(list);
+    if (isTwoPoliticsSelected()) {
+      setManagers([]);
+      setHireds([]);
+    }
+  };
+
+  const handleManagerListClick = (event, index) => {
+    setIndexManager(index);
+    setHireds(managers[index].contratados);
+  };
+
+  const isTwoManagersSelected = () => {
+    return checkManager.length > 1;
+  };
+
+  const handleCheckChangeManager = (event, value, indexList) => {
+    let list = checkManager;
+    if (list === undefined) list = [];
+    if (value) {
+      list.push(managers[indexList].id);
+    } else {
+      let indexRemove = list.findIndex(item => item === managers[indexList].id);
+      list.splice(indexRemove, 1);
+    }
+    setCheckManager(list);
+    if (isTwoManagersSelected()) {
+      setHireds([]);
+    }
+  };
+
+  const handleHiredListClick = (event, index) => {
+    setIndexHired(index);
+  };
+
+  const handleCheckChangeHired = (event, value, indexList) => {
+    let list = checkHired;
+    if (list === undefined) list = [];
+    if (value) {
+      list.push(hireds[indexList].id);
+    } else {
+      let indexRemove = list.findIndex(item => item === hireds[indexList].id);
+      list.splice(indexRemove, 1);
+    }
+    setCheckHired(list);
+    console.log(list);
+  };
+
+  const handleFilterClick = event => {
+    setOpenDialogFilter(true);
+  };
+
+  const handleFilterCity = (event, value) => {
+    console.log(value);
+    setCitySelected(value);
+  };
+
+  const handleFilterPolitic = event => {
+    setFilterPoliticSelected(event.target.value);
+  };
+
+  const handleFilters = async event => {
+    if (citySelected === "" && filterPoliticSelected === 0) {
+      setOpenDialogFilter(false);
+      return;
+    }
+    let fetch = await fetchPolitics();
+    let list = [];
+    if (citySelected !== "" && filterPoliticSelected !== 0) {
+      fetch.forEach(item => {
+        if (item.cidade === citySelected) {
+          if (list.indexOf(item) === -1) {
+            let n = filterPoliticSelected + 1;
+            if (item.categoria === n) {
+              if (list.indexOf(item) === -1) list.push(item);
+            }
+          }
+        }
+      });
+    } else if (filterPoliticSelected !== 0 && citySelected === "") {
+      let n = filterPoliticSelected + 1;
+      fetch.forEach(item => {
+        if (item.categoria === n) {
+          if (list.indexOf(item) === -1) list.push(item);
+        }
+      });
+    } else if (filterPoliticSelected === 0 && citySelected !== "") {
+      fetch.forEach(item => {
+        if (item.cidade === citySelected) {
+          if (list.indexOf(item) === -1) {
+            list.push(item);
+          }
+        }
+      });
+    }
+
+    list.sort(function(a, b) {
+      if (a.nome < b.nome) {
+        return -1;
+      }
+      if (a.nome > b.nome) {
+        return 1;
+      }
+      return 0;
+    });
+    console.log(list);
+    setPolitics(list);
+    if (list.length === 0) {
+      setManagers([]);
+      setHireds([]);
+    } else {
+      setManagers(list[0].gestores);
+      setHireds(list[0].gestores[0].contratados);
+    }
+    setOpenDialogFilter(false);
+  };
+
+  const removeFilterCity = async () => {
+    setCitySelected("");
+    let fetch = await fetchPolitics();
+    if (filterPoliticSelected !== 0) {
+      let list = [];
+      let n = filterPoliticSelected + 1;
+      fetch.forEach(item => {
+        if (item.categoria === n) {
+          if (list.indexOf(item) === -1) {
+            list.push(item);
+          }
+        }
+      });
+      setPolitics(list);
+      if (list.length !== 0) {
+        setManagers(list[0].gestores);
+        setHireds(list[0].gestores[0].contratados);
+      }
+    } else {
+      setPolitics(fetch);
+      setManagers(fetch[0].gestores);
+      setHireds(fetch[0].gestores[0].contratados);
+    }
+  };
+
+  const removeFilterPolitic = async () => {
+    setFilterPoliticSelected(0);
+
+    let fetch = await fetchPolitics();
+    if (citySelected !== "") {
+      let list = [];
+      fetch.forEach(item => {
+        if (item.cidade === citySelected) {
+          if (list.indexOf(item) === -1) {
+            list.push(item);
+          }
+        }
+      });
+      setPolitics(list);
+      if (list.length !== 0) {
+        setManagers(list[0].gestores);
+        setHireds(list[0].gestores[0].contratados);
+      }
+    } else {
+      setPolitics(fetch);
+      setManagers(fetch[0].gestores);
+      setHireds(fetch[0].gestores[0].contratados);
+    }
+  };
+
+  useEffect(() => {
+    fetchCities();
+    fetchUser();
+    onOrientationChange();
+  }, [fetchCities, fetchUser, onOrientationChange]);
+
+  return isLessThan500 ? (
     <SmallScreenAlert />
   ) : (
     <>
@@ -108,10 +330,10 @@ export default function Dashboard() {
           <Grid item>
             <div style={{ marginRight: "20px" }}>
               <Button color="inherit" onClick={() => {}}>
-                {String(functions.user.nome) === "undefined" ? (
+                {String(user.nome) === "undefined" ? (
                   <p></p>
                 ) : (
-                  <p>{String(functions.user.nome).split(" ")[0]}</p>
+                  <p>{String(user.nome).split(" ")[0]}</p>
                 )}
               </Button>
             </div>
@@ -123,12 +345,12 @@ export default function Dashboard() {
         <Grid item xs={4} sm={4} md={4}>
           <Grid container alignItems="center" justify="space-between">
             <Grid item>
-              <Button onClick={functions.handleFilterClick}>
+              <Button onClick={handleFilterClick}>
                 <strong>Filtrar</strong>
               </Button>
               <Dialog
-                onClose={() => functions.setOpenDialogFilter(false)}
-                open={functions.openDialogFilter}
+                onClose={() => setOpenDialogFilter(false)}
+                open={openDialogFilter}
               >
                 <DialogTitle style={{ background: "#f5f3f3" }}>
                   <Grid container direction="column" spacing={3}>
@@ -136,13 +358,13 @@ export default function Dashboard() {
                     <Grid item xs sm={12} md={12}>
                       <DropdownPolitics
                         isFilter
-                        onChange={functions.handleFilterPolitic}
+                        onChange={handleFilterPolitic}
                       />
                     </Grid>
                     <Grid item xs>
                       <DropdownCities
-                        onChange={functions.handleFilterCity}
-                        list={functions.cities}
+                        onChange={handleFilterCity}
+                        list={cities}
                       ></DropdownCities>
                     </Grid>
                     <Grid item container direction="row-reverse">
@@ -150,7 +372,7 @@ export default function Dashboard() {
                         variant="contained"
                         size="large"
                         color="secondary"
-                        onClick={event => functions.handleFilters(event)}
+                        onClick={event => handleFilters(event)}
                       >
                         <FontButton>OK</FontButton>
                       </StyledButton>
@@ -158,22 +380,22 @@ export default function Dashboard() {
                   </Grid>
                 </DialogTitle>
               </Dialog>
-              {functions.citySelected !== "" ? (
-                <Button onClick={functions.removeFilterCity}>
-                  {functions.citySelected.length > 10 ? (
+              {citySelected !== "" ? (
+                <Button onClick={removeFilterCity}>
+                  {citySelected.length > 10 ? (
                     <LabelFilter>
-                      {functions.citySelected.substring(0, 10) + "... X"}
+                      {citySelected.substring(0, 10) + "... X"}
                     </LabelFilter>
                   ) : (
-                    <LabelFilter>{functions.citySelected} X</LabelFilter>
+                    <LabelFilter>{citySelected} X</LabelFilter>
                   )}
                 </Button>
               ) : (
                 undefined
               )}
-              {functions.filterPoliticSelected !== 0 ? (
-                <Button onClick={() => functions.removeFilterPolitic()}>
-                  {functions.filterPoliticSelected === 1 ? (
+              {filterPoliticSelected !== 0 ? (
+                <Button onClick={() => removeFilterPolitic()}>
+                  {filterPoliticSelected === 1 ? (
                     <LabelFilter>Prefeitos X</LabelFilter>
                   ) : (
                     <LabelFilter>Vereadores X</LabelFilter>
@@ -187,12 +409,12 @@ export default function Dashboard() {
               <ActionButton
                 onClicks={[
                   () => {
-                    functions.setOpenDialogAddPolitic(true);
+                    setOpenDialogAddPolitic(true);
                   },
                   () => {
-                    functions.setOpenDialogDelete({
+                    setOpenDialogDelete({
                       open: true,
-                      list: functions.checkPolitic,
+                      list: checkPolitic,
                       type: "politic"
                     });
                   }
@@ -202,52 +424,49 @@ export default function Dashboard() {
           </Grid>
           <Subtitle>Campanhas</Subtitle>
           <CustomList
-            onClick={functions.handlePoliticListClick}
-            indexSelected={functions.indexPolitic}
-            list={functions.politics}
-            onCheckChange={functions.handleCheckChangePolitic}
+            onClick={handlePoliticListClick}
+            indexSelected={indexPolitic}
+            list={politics}
+            onCheckChange={handleCheckChangePolitic}
             dropdownNames={["Adicionar assinatura", "Editar"]}
             dropdownOnChange={[
               index => {
-                history.push(`/assinatura/${functions.politics[index].token}`, {
-                  token: functions.politics[index].token
+                history.push(`/assinatura/${politics[index].token}`, {
+                  token: politics[index].token
                 });
               },
               () => {}
             ]}
           />
           <Dialog
-            onClose={() => functions.setOpenDialogAddPolitic(false)}
-            open={functions.openDialogAddPolitic}
+            onClose={() => setOpenDialogAddPolitic(false)}
+            open={openDialogAddPolitic}
           >
             <DialogTitle style={{ background: "#f5f3f3" }}>
               <FormPolitic
-                cities={functions.cities}
+                cities={cities}
                 onClick={() => {
-                  functions.setOpenDialogAddPolitic(false);
+                  setOpenDialogAddPolitic(false);
                 }}
               />
             </DialogTitle>
           </Dialog>
           <Dialog
             onClose={() =>
-              functions.setOpenDialogDelete({
+              setOpenDialogDelete({
                 open: false,
                 list: undefined,
                 type: ""
               })
             }
-            open={
-              functions.openDialogDelete.open &&
-              functions.openDialogDelete.type === "politic"
-            }
+            open={openDialogDelete.open && openDialogDelete.type === "politic"}
           >
             <DialogTitle style={{ background: "#f5f3f3" }}>
               <ConfirmDelete
-                type={functions.openDialogDelete.type}
-                list={functions.openDialogDelete.list}
+                type={openDialogDelete.type}
+                list={openDialogDelete.list}
                 onClickNo={() =>
-                  functions.setOpenDialogDelete({
+                  setOpenDialogDelete({
                     open: false,
                     list: undefined,
                     type: ""
@@ -265,12 +484,12 @@ export default function Dashboard() {
           <ActionButton
             onClicks={[
               () => {
-                functions.setOpenDialogAddManager(true);
+                setOpenDialogAddManager(true);
               },
               () => {
-                functions.setOpenDialogDelete({
+                setOpenDialogDelete({
                   open: true,
-                  list: functions.checkManager,
+                  list: checkManager,
                   type: "manager"
                 });
               }
@@ -279,44 +498,41 @@ export default function Dashboard() {
           <div style={{ height: "4.4px" }}></div>
           <Subtitle>Gestores</Subtitle>
           <CustomList
-            onClick={functions.handleManagerListClick}
-            indexSelected={functions.indexManager}
-            list={functions.managers}
-            onCheckChange={functions.handleCheckChangeManager}
+            onClick={handleManagerListClick}
+            indexSelected={indexManager}
+            list={managers}
+            onCheckChange={handleCheckChangeManager}
             dropdownNames={["Editar"]}
             dropdownOnChange={[() => {}]}
           />
           <Dialog
-            onClose={() => functions.setOpenDialogAddManager(false)}
-            open={functions.openDialogAddManager}
+            onClose={() => setOpenDialogAddManager(false)}
+            open={openDialogAddManager}
           >
             <DialogTitle style={{ background: "#f5f3f3" }}>
               <FormManager
                 onClick={() => {
-                  functions.setOpenDialogAddManager(false);
+                  setOpenDialogAddManager(false);
                 }}
               />
             </DialogTitle>
           </Dialog>
           <Dialog
             onClose={() =>
-              functions.setOpenDialogDelete({
+              setOpenDialogDelete({
                 open: false,
                 list: undefined,
                 type: ""
               })
             }
-            open={
-              functions.openDialogDelete.open &&
-              functions.openDialogDelete.type === "manager"
-            }
+            open={openDialogDelete.open && openDialogDelete.type === "manager"}
           >
             <DialogTitle style={{ background: "#f5f3f3" }}>
               <ConfirmDelete
-                type={functions.openDialogDelete.type}
-                list={functions.openDialogDelete.list}
+                type={openDialogDelete.type}
+                list={openDialogDelete.list}
                 onClickNo={() =>
-                  functions.setOpenDialogDelete({
+                  setOpenDialogDelete({
                     open: false,
                     list: undefined,
                     type: ""
@@ -334,12 +550,12 @@ export default function Dashboard() {
           <ActionButton
             onClicks={[
               () => {
-                functions.setOpenDialogAddHired(true);
+                setOpenDialogAddHired(true);
               },
               () => {
-                functions.setOpenDialogDelete({
+                setOpenDialogDelete({
                   open: true,
-                  list: functions.checkHired,
+                  list: checkHired,
                   type: "hired"
                 });
               }
@@ -348,10 +564,10 @@ export default function Dashboard() {
           <div style={{ height: "4.4px" }}></div>
           <Subtitle>Contratados</Subtitle>
           <CustomList
-            onClick={functions.handleHiredListClick}
-            indexSelected={functions.indexHired}
-            list={functions.hireds}
-            onCheckChange={functions.handleCheckChangeHired}
+            onClick={handleHiredListClick}
+            indexSelected={indexHired}
+            list={hireds}
+            onCheckChange={handleCheckChangeHired}
             dropdownNames={[
               "Adicionar assinatura",
               "Adicionar comprovante",
@@ -360,49 +576,46 @@ export default function Dashboard() {
             ]}
             dropdownOnChange={[
               index => {
-                history.push(`/assinatura/${functions.hireds[index].token}`, {
-                  token: functions.hireds[index].token
+                history.push(`/assinatura/${hireds[index].token}`, {
+                  token: hireds[index].token
                 });
               },
               index => {},
               index => {
-                window.open(functions.hireds[index].contrato);
+                window.open(hireds[index].contrato);
               },
               index => {}
             ]}
           />
           <Dialog
-            onClose={() => functions.setOpenDialogAddHired(false)}
-            open={functions.openDialogAddHired}
+            onClose={() => setOpenDialogAddHired(false)}
+            open={openDialogAddHired}
           >
             <DialogTitle style={{ background: "#f5f3f3" }}>
               <FormHired
-                cities={functions.cities}
+                cities={cities}
                 onClick={() => {
-                  functions.setOpenDialogAddHired(false);
+                  setOpenDialogAddHired(false);
                 }}
               />
             </DialogTitle>
           </Dialog>
           <Dialog
             onClose={() =>
-              functions.setOpenDialogDelete({
+              setOpenDialogDelete({
                 open: false,
                 list: undefined,
                 type: ""
               })
             }
-            open={
-              functions.openDialogDelete.open &&
-              functions.openDialogDelete.type === "hired"
-            }
+            open={openDialogDelete.open && openDialogDelete.type === "hired"}
           >
             <DialogTitle style={{ background: "#f5f3f3" }}>
               <ConfirmDelete
-                type={functions.openDialogDelete.type}
-                list={functions.openDialogDelete.list}
+                type={openDialogDelete.type}
+                list={openDialogDelete.list}
                 onClickNo={() =>
-                  functions.setOpenDialogDelete({
+                  setOpenDialogDelete({
                     open: false,
                     list: undefined,
                     type: ""

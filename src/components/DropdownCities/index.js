@@ -43,6 +43,7 @@ export default function DropdownCities(props) {
 
   return (
     <Autocomplete
+    autoHighlight
       size="small"
       open={open}
       onOpen={() => {
@@ -51,7 +52,7 @@ export default function DropdownCities(props) {
       onClose={() => {
         setOpen(false);
       }}
-      onChange={(event) => onChange(event)}
+      onChange={(event, value) => onChange(event, value) }
       getOptionSelected={(option, value) => option === value}
       getOptionLabel={option => option}
       options={options}
@@ -59,8 +60,8 @@ export default function DropdownCities(props) {
       renderInput={params => (
         <TextField
           {...params}
-          fullWidth
           label="Selecione a cidade"
+          fullWidth
           variant="outlined"
           style={{ background: "white" }}
           InputLabelProps={{ shrink: true }}

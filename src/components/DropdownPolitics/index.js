@@ -13,7 +13,7 @@ export default function DropdownPolitics(props) {
   if (isFilter)
     return (
       <>
-        <FormHelperText style={{ marginLeft: "12px" }}>
+        <FormHelperText style={{ marginLeft: "12px", marginBottom: "-3px"  }}>
           Categoria
         </FormHelperText>
         <Select
@@ -35,7 +35,7 @@ export default function DropdownPolitics(props) {
   else
     return (
       <>
-        <FormHelperText style={{ marginLeft: "12px" }}>
+        <FormHelperText style={{ marginLeft: "12px", marginBottom: "-3px" }}>
           Categoria
         </FormHelperText>
         <Select
@@ -43,10 +43,10 @@ export default function DropdownPolitics(props) {
           variant="outlined"
           size="small"
           onChange={onChange}
-          defaultValue={0}
+          defaultValue={1}
           style={{ background: "white", height: 42 }}
         >
-          <MenuItem key={0} value={0}></MenuItem>
+          <MenuItem key={0} value={0} disabled></MenuItem>
           {options.map((item, index) => (
             <MenuItem key={index + 1} value={index + 1}>
               {item}

@@ -1,15 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
-import { Grid } from "@material-ui/core";
-import { apiStates } from "../../services/api";
+import { Grid, TextField } from "@material-ui/core";
 import FilterPolitics from "../DropdownPolitics";
-import {
-  Container,
-  StyledButton,
-  FontButton,
-  StyledTextField
-} from "../FormHired/styles";
-import { DropdownCities } from "../DropdownCities";
+import { Container, StyledButton, FontButton } from "../FormHired/styles";
+import DropdownCities from "../DropdownCities";
 import { validationSchema } from "./validation_schema";
 
 export default function FormManager(props) {
@@ -17,21 +11,19 @@ export default function FormManager(props) {
     name: "",
     city: ""
   };
-  const [cities, setCities] = useState([]);
+  // const [cities, setCities] = useState([]);
+  const [cities] = useState([]);
 
   const handleSubmit = values => {
     console.log(values);
   };
-  const fetchCities = useCallback(async () => {
-    if (cities.length === 0) {
-      let response = await apiStates.get();
-      let names = response.data.map(item => item.nome);
-      setCities(names);
-    }
-  }, [cities]);
-
-    setName(value);
-  
+  // const fetchCities = useCallback(async () => {
+  //   if (cities.length === 0) {
+  //     let response = await apiCities.get();
+  //     let names = response.data.map(item => item.nome);
+  //     setCities(names);
+  //   }
+  // }, [cities]);
 
   return (
     <Formik
@@ -49,10 +41,17 @@ export default function FormManager(props) {
             justify="flex-start"
             spacing={2}
           >
-            <Grid item>
+            <Grid item xs sm md>
+              <div style={{ width: 400 }}></div>
+            </Grid>
+            <Grid item xs sm md>
               <Field name="name">
                 {({ field }) => (
-                  <StyledLargeTextField
+                  <TextField
+                    style={{ background: "white" }}
+                    InputLabelProps={{ shrink: true }}
+                    size="small"
+                    fullWidth
                     {...field}
                     label="Nome completo"
                     variant="outlined"
@@ -62,23 +61,34 @@ export default function FormManager(props) {
                 )}
               </Field>
             </Grid>
-            <Grid item>
-              <StyledLargeTextField label="CPF" variant="outlined" />
+            <Grid item xs sm md>
+              <TextField
+                style={{ background: "white" }}
+                InputLabelProps={{ shrink: true }}
+                size="small"
+                fullWidth
+                label="CPF"
+                variant="outlined"
+              />
             </Grid>
-            <Grid item>
+            <Grid item xs sm md>
               <DropdownCities list={cities} onChange={() => {}} />
             </Grid>
-            <Grid item>
-              <StyledLargeTextField
+            <Grid item xs sm md>
+              <TextField
+                style={{ background: "white" }}
+                InputLabelProps={{ shrink: true }}
+                size="small"
+                fullWidth
                 label="Partido/Coligação"
                 variant="outlined"
               />
             </Grid>
-            <Grid item>
+            <Grid item xs sm md style={{ paddingTop: 0 }}>
               <FilterPolitics isFilter={false} onChange={() => {}} />
             </Grid>
             <div style={{ height: 8 }}></div>
-            <Grid item container direction="row-reverse">
+            <Grid item container direction="row-reverse" xs sm md>
               <StyledButton
                 type="submit"
                 variant="contained"
