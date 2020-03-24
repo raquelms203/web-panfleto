@@ -6,32 +6,27 @@ import { Container, StyledButton, FontButton } from "../FormHired/styles";
 import DropdownCities from "../DropdownCities";
 import { validationSchema } from "./validation_schema";
 
-export default function FormManager(props) {
+export default function FormPolitic(props) {
   const initialValues = {
     name: "",
-    city: ""
+    city: "",
+    cpf: "",
+    group: "",
+    type: ""
   };
-  // const [cities, setCities] = useState([]);
-  const [cities] = useState([]);
+
+  const { cities } = props;
 
   const handleSubmit = values => {
-    console.log(values);
-  };
-  // const fetchCities = useCallback(async () => {
-  //   if (cities.length === 0) {
-  //     let response = await apiCities.get();
-  //     let names = response.data.map(item => item.nome);
-  //     setCities(names);
-  //   }
-  // }, [cities]);
+   console.log("oi")  };
 
   return (
     <Formik
       validationSchema={validationSchema}
       initialValues={initialValues}
-      onSubmit={handleSubmit}
       validateOnChange={false}
       validateOnBlur={false}
+      onSubmit={(values) => console.log("values")}
     >
       {({ errors }) => (
         <Form>
@@ -55,37 +50,69 @@ export default function FormManager(props) {
                     {...field}
                     label="Nome completo"
                     variant="outlined"
-                    error={errors.name}
+                    error={Boolean(errors.name)}
                     helperText={errors.name}
                   />
                 )}
               </Field>
             </Grid>
             <Grid item xs sm md>
-              <TextField
-                style={{ background: "white" }}
-                InputLabelProps={{ shrink: true }}
-                size="small"
-                fullWidth
-                label="CPF"
-                variant="outlined"
-              />
+              <Field name="cpf">
+                {({ field }) => (
+                  <TextField
+                    style={{ background: "white" }}
+                    InputLabelProps={{ shrink: true }}
+                    size="small"
+                    fullWidth
+                    {...field}
+                    label="CPF"
+                    variant="outlined"
+                    error={Boolean(errors.cpf)}
+                    helperText={errors.cpf}
+                  />
+                )}
+              </Field>
             </Grid>
             <Grid item xs sm md>
-              <DropdownCities list={cities} onChange={() => {}} />
+              <Field name="city">
+                {({ field }) => (
+                  <DropdownCities
+                    list={cities}
+                    error={Boolean(errors.city)}
+                    helperText={errors.city}
+                    {...field}
+                  />
+                )}
+              </Field>
             </Grid>
             <Grid item xs sm md>
-              <TextField
-                style={{ background: "white" }}
-                InputLabelProps={{ shrink: true }}
-                size="small"
-                fullWidth
-                label="Partido/Coligação"
-                variant="outlined"
-              />
+              <Field name="group">
+                {({ field }) => (
+                  <TextField
+                    style={{ background: "white" }}
+                    InputLabelProps={{ shrink: true }}
+                    size="small"
+                    fullWidth
+                    {...field}
+                    label="Partido/Coligação"
+                    variant="outlined"
+                    error={Boolean(errors.group)}
+                    helperText={errors.group}
+                  />
+                )}
+              </Field>
             </Grid>
             <Grid item xs sm md style={{ paddingTop: 0 }}>
-              <FilterPolitics isFilter={false} onChange={() => {}} />
+              <Field name="type">
+                {({ field }) => (
+                  <FilterPolitics
+                    isFilter={false}
+                    error={Boolean(errors.type)}
+                    helperText={errors.type}
+                    {...field}
+                  />
+                )}
+              </Field>
             </Grid>
             <div style={{ height: 8 }}></div>
             <Grid item container direction="row-reverse" xs sm md>
