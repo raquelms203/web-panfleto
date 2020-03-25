@@ -20,7 +20,7 @@ export default function FormPolitic(props) {
   const [type, setType] = useState("");
 
   const handleSubmit = values => {
-    console.log("values");
+    console.log(values);
   };
 
   return (
@@ -31,8 +31,7 @@ export default function FormPolitic(props) {
       validateOnBlur={false}
       onSubmit={handleSubmit}
     >
-      {({ errors, handleChange, setFieldValue }) => {
-        console.log(errors);
+      {({ errors, setFieldValue }) => {
         return (
           <Form>
             <Container
@@ -74,7 +73,6 @@ export default function FormPolitic(props) {
                       variant="outlined"
                       error={Boolean(errors.cpf)}
                       helperText={errors.cpf}
-                      {...console.log(field)}
                     />
                   )}
                 </Field>
@@ -126,7 +124,6 @@ export default function FormPolitic(props) {
                         else if (number === 2)
                           setFieldValue("type", "Vereadores");
                       }}
-                      {...console.log(field.value)}
                     />
                   )}
                 </Field>

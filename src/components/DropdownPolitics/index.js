@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Select, FormHelperText, MenuItem } from "@material-ui/core";
+import { Select, MenuItem, withStyles } from "@material-ui/core";
 
-import { ErrorText, StyledSelect } from "./styles";
-
-
-
+import { ErrorText, StyledSelect, StyledFormHelperText } from "./styles";
 
 export default function DropdownPolitics(props) {
-  const { onChange, isFilter, error, } = props;
+  const { onChange, isFilter, error, classes } = props;
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
@@ -15,26 +12,17 @@ export default function DropdownPolitics(props) {
     else setOptions(["Prefeitos", "Vereadores"]);
   }, [setOptions, isFilter]);
 
-  const styles = theme => ({
-    select: {
-      "&:before": {
-        borderColor: "red"
-      }
-    }
-  });
-
   if (isFilter)
     return (
       <>
-        <FormHelperText style={{ marginLeft: "12px", marginBottom: "-3px" }}>
+        <StyledFormHelperText style={{ color: error ? "red" : "black" }}>
           Categoria
-        </FormHelperText>
+        </StyledFormHelperText>
         <StyledSelect
           fullWidth
           variant="outlined"
           size="small"
           onChange={onChange}
-          style={{ outlineColor: error? "red" : "black"}}
         >
           {options.map((item, index) => (
             <MenuItem key={index} value={index}>
@@ -48,17 +36,15 @@ export default function DropdownPolitics(props) {
   else
     return (
       <>
-        <FormHelperText style={{ marginLeft: "12px", marginBottom: "-3px" }}>
+        <StyledFormHelperText style={{ color: error ? "red" : "black" }}>
           Categoria
-        </FormHelperText>
-        <Select
-        className={{ classes.select }}
-      
+        </StyledFormHelperText>
+        <StyledSelect
           fullWidth
           variant="outlined"
           size="small"
           onChange={onChange}
-          style={{ background: "white", height: 42 }}
+          style={{ border: error ? "1px solid red" : "1px solid #f3f5f5" }}
         >
           <MenuItem key={0} value={0} disabled></MenuItem>
           {options.map((item, index) => (
@@ -66,7 +52,7 @@ export default function DropdownPolitics(props) {
               {item}
             </MenuItem>
           ))}
-        </Select>
+        </StyledSelect>
         {error ? <ErrorText>Selecione uma categoria</ErrorText> : undefined}
       </>
     );
