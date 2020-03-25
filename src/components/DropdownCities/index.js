@@ -13,7 +13,7 @@ export default function DropdownCities(props) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const loading = open && options.length === 0;
-  const { list, onChange } = props;
+  const { list, onChange, error, helperText } = props;
 
   React.useEffect(() => {
     let active = true;
@@ -60,6 +60,8 @@ export default function DropdownCities(props) {
       renderInput={params => (
         <TextField
           {...params}
+          error={error}
+          helperText={helperText}
           label="Selecione a cidade"
           fullWidth
           variant="outlined"

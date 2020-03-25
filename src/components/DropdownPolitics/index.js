@@ -21,7 +21,6 @@ export default function DropdownPolitics(props) {
           variant="outlined"
           size="small"
           onChange={onChange}
-          defaultValue={0}
           style={{ background: "white", height: 42 }}
         >
           {options.map((item, index) => (
@@ -30,6 +29,7 @@ export default function DropdownPolitics(props) {
             </MenuItem>
           ))}
         </Select>
+        <p>Erro!</p>
       </>
     );
   else
@@ -43,7 +43,6 @@ export default function DropdownPolitics(props) {
           variant="outlined"
           size="small"
           onChange={onChange}
-          defaultValue={1}
           style={{ background: "white", height: 42 }}
         >
           <MenuItem key={0} value={0} disabled></MenuItem>
