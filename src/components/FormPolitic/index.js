@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
+import InputMask from "react-input-mask";
 import { Grid, TextField } from "@material-ui/core";
+
 import DropdownPolitics from "../DropdownPolitics";
 import { Container, StyledButton, FontButton } from "../FormHired/styles";
 import DropdownCities from "../DropdownCities";
@@ -62,7 +64,7 @@ export default function FormPolitic(props) {
               </Grid>
               <Grid item xs sm md>
                 <Field name="cpf">
-                  {({ field }) => (
+                  {/* {({ field }) => (
                     <TextField
                       style={{ background: "white" }}
                       InputLabelProps={{ shrink: true }}
@@ -74,6 +76,34 @@ export default function FormPolitic(props) {
                       error={Boolean(errors.cpf)}
                       helperText={errors.cpf}
                     />
+                  )} */}
+                  {({ field }) => (
+                    <InputMask
+                      mask="999.999.999-99"
+                      onChange={event => {
+                        console.log(event.target.value);
+                        setFieldValue(
+                          "cpf",
+                          event.target.value !== null
+                            ? event.target.value
+                            : initialValues.cpf
+                        );
+                      }}
+                    >
+                      {() => (
+                        <TextField
+                          style={{ background: "white" }}
+                          InputLabelProps={{ shrink: true }}
+                          fullWidth
+                          InputLabelProps={{ shrink: true }}
+                          size="small"
+                          label="CPF"
+                          variant="outlined"
+                          error={Boolean(errors.cpf)}
+                          helperText={errors.cpf}
+                        />
+                      )}
+                    </InputMask>
                   )}
                 </Field>
               </Grid>
