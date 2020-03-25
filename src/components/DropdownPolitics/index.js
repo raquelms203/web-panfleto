@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Select, FormHelperText, MenuItem } from "@material-ui/core";
 
+import { ErrorText, StyledSelect } from "./styles";
+
+
+
+
 export default function DropdownPolitics(props) {
-  const { onChange, isFilter } = props;
+  const { onChange, isFilter, error, } = props;
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
@@ -10,26 +15,34 @@ export default function DropdownPolitics(props) {
     else setOptions(["Prefeitos", "Vereadores"]);
   }, [setOptions, isFilter]);
 
+  const styles = theme => ({
+    select: {
+      "&:before": {
+        borderColor: "red"
+      }
+    }
+  });
+
   if (isFilter)
     return (
       <>
-        <FormHelperText style={{ marginLeft: "12px", marginBottom: "-3px"  }}>
+        <FormHelperText style={{ marginLeft: "12px", marginBottom: "-3px" }}>
           Categoria
         </FormHelperText>
-        <Select
+        <StyledSelect
           fullWidth
           variant="outlined"
           size="small"
           onChange={onChange}
-          style={{ background: "white", height: 42 }}
+          style={{ outlineColor: error? "red" : "black"}}
         >
           {options.map((item, index) => (
             <MenuItem key={index} value={index}>
               {item}
             </MenuItem>
           ))}
-        </Select>
-        <p>Erro!</p>
+        </StyledSelect>
+        {error ? <ErrorText>Selecione uma categoria</ErrorText> : undefined}
       </>
     );
   else
@@ -39,6 +52,8 @@ export default function DropdownPolitics(props) {
           Categoria
         </FormHelperText>
         <Select
+        className={{ classes.select }}
+      
           fullWidth
           variant="outlined"
           size="small"
@@ -52,6 +67,7 @@ export default function DropdownPolitics(props) {
             </MenuItem>
           ))}
         </Select>
+        {error ? <ErrorText>Selecione uma categoria</ErrorText> : undefined}
       </>
     );
 }

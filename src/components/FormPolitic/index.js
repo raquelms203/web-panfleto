@@ -120,7 +120,6 @@ export default function FormPolitic(props) {
                     <DropdownPolitics
                       isFilter={false}
                       error={Boolean(errors.type)}
-                      helperText={errors.type}
                       onChange={event => {
                         let number = event.target.value;
                         if (number === 1) setFieldValue("type", "Prefeitos");
