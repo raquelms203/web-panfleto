@@ -17,8 +17,9 @@ export default function FormPolitic(props) {
 
   const { cities } = props;
 
-  const handleSubmit = values => {
-   console.log("oi")  };
+  const handleSubmit = (event, values) => {  
+    console.log(values);
+  }
 
   return (
     <Formik
@@ -26,7 +27,7 @@ export default function FormPolitic(props) {
       initialValues={initialValues}
       validateOnChange={false}
       validateOnBlur={false}
-      onSubmit={(values) => console.log("values")}
+      onSubmit={handleSubmit}     
     >
       {({ errors }) => (
         <Form>

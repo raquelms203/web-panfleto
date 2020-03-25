@@ -20,9 +20,11 @@ import FormManager from "../../components/FormManager";
 import FormPolitic from "../../components/FormPolitic";
 import ConfirmDelete from "../../components/ConfirmDelete";
 import { useHistory } from "react-router-dom";
+import { useState } from "react";
 
 import { apiADM, apiCities } from "../../services/api";
-import { useState } from "react";
+import LogoImg from "../../assets/logo.svg";
+
 
 export default function Dashboard() {
   const history = useHistory();
@@ -322,10 +324,10 @@ export default function Dashboard() {
     <SmallScreenAlert />
   ) : (
     <>
-      <AppBar position="static" style={{ height: "42px" }}>
-        <Grid container justify="space-between" alignItems="baseline">
+      <AppBar position="static" >
+        <Grid container justify="space-between" alignItems="center" style={{ height: 42 }}>
           <Grid item>
-            <Logo>E - Contrato</Logo>
+            <Logo src={LogoImg} />
           </Grid>
           <Grid item>
             <div style={{ marginRight: "20px" }}>

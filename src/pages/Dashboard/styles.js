@@ -6,12 +6,19 @@ export const StyledGrid = styled(Grid)`
   padding-top: 20px;
 `;
 
-export const Logo = styled.p`
-  font: 20px Libre Baskerville;
-  letter-spacing: 2px;
+export const Logo = styled.img`  
+  padding: 0;
+  margin: 0;
+  height: 27px;
   margin-left: 20px;
-  margin-top: 6px;
 `;
+
+// export const Logo = styled.img`
+//   font: 20px Libre Baskerville;
+//   letter-spacing: 2px;
+//   margin-left: 20px;
+//   margin-top: 6px;
+// `;
 
 export const Separator = styled.div`
   width: 2px;

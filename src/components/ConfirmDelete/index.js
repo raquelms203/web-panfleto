@@ -9,14 +9,15 @@ export default function ConfirmDelete(props) {
   if (list === undefined) return <EmptyDialog />;
   else if (list.length > 0)
     return (
-      <div style={{ width: 270 }}>
+      <div style={{ width: 300 }}>
 
         <Grid container direction="column">
           <Grid item>
-            <p>Deseja apagar {list.length} item(s)?</p>
+            <p>Essa ação é permanente.</p>
+            <p> Deseja mesmo apagar {list.length} item(s)?</p>
           </Grid>
 
-          <div style={{ height: 20 }}></div>
+          <div style={{ height: 30 }}></div>
 
           <Grid item container justify="flex-end" spacing={3}>
             <ButtonDialog style={{ color: "black" }} onClick={onClickNo}>
@@ -40,17 +41,19 @@ export default function ConfirmDelete(props) {
   else if (list.length === 0)
     return (
       <>
+      <div style={{ height: 10, width: 300 }}></div>
+
         <p>Selecione pelo menos um item</p>
 
-        <div style={{ height: 10 }}></div>
+        <div style={{ height: 30 }}></div>
 
         <Grid container justify="flex-end">
-          <ButtonDialog style={{ color: "black" }} onClick={onClickNo}>
+          <ButtonDialog style={{ color: "black", marginRight: 25 }} onClick={onClickNo}>
             <p>VOLTAR</p>
           </ButtonDialog>
         </Grid>
 
-        <div style={{ height: 10 }}></div>
+        <div style={{ height: 30 }}></div>
       </>
     );
 }
