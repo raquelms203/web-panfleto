@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Select, MenuItem, withStyles } from "@material-ui/core";
+import { MenuItem } from "@material-ui/core";
 
 import { ErrorText, StyledSelect, StyledFormHelperText } from "./styles";
 
 export default function DropdownPolitics(props) {
-  const { onChange, isFilter, error, classes } = props;
+  const { onChange, isFilter, error } = props;
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function DropdownPolitics(props) {
   if (isFilter)
     return (
       <>
-        <StyledFormHelperText style={{ color: error ? "red" : "black" }}>
+        <StyledFormHelperText style={{ color: error ? "#ef9a9a" : "black" }}>
           Categoria
         </StyledFormHelperText>
         <StyledSelect
@@ -23,6 +23,7 @@ export default function DropdownPolitics(props) {
           variant="outlined"
           size="small"
           onChange={onChange}
+          style={{ border: error ? "1px solid #ef5350" : "1px solid #f3f5f5" }}
         >
           {options.map((item, index) => (
             <MenuItem key={index} value={index}>
@@ -36,15 +37,16 @@ export default function DropdownPolitics(props) {
   else
     return (
       <>
-        <StyledFormHelperText style={{ color: error ? "red" : "black" }}>
+        <StyledFormHelperText style={{ color: error ? "#ef5350" : "black" }}>
           Categoria
         </StyledFormHelperText>
         <StyledSelect
+          defaultValue=""
           fullWidth
           variant="outlined"
           size="small"
           onChange={onChange}
-          style={{ border: error ? "1px solid red" : "1px solid #f3f5f5" }}
+          style={{ border: error ? "1px solid #ef5350" : "1px solid #f3f5f5" }}
         >
           <MenuItem key={0} value={0} disabled></MenuItem>
           {options.map((item, index) => (

@@ -38,9 +38,7 @@ export default function FormHired(props) {
       baseURL: `https://viacep.com.br/ws/${cep}/json/`
     });
     let response = await api.get();
-    console.log(response);
     if (response.hasOwnProperty("erro")) {
-      console.log("oi");
       return;
     }
     setFilledColor("#dfdfdf");

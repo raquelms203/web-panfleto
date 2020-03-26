@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { Select, FormHelperText } from "@material-ui/core";
+import { Select } from "@material-ui/core";
 
 export const ErrorText = styled.p`
   padding-left: 13px;
   padding-top: 3px;
-  font-size: 13px;
+  font-size: 12px;
   color: red;
   background: white;
 `;
@@ -15,6 +15,8 @@ export const StyledSelect = styled(Select)`
   border: 1px solid red;
 `;
 
-export const StyledFormHelperText = styled(FormHelperText)`
+export const StyledFormHelperText = styled.p`
   padding-left: 15px;
+  font-size: 12px;
+  margin-bottom: -3px;
 `;

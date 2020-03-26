@@ -1,5 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Grid } from "@material-ui/core";
+import InputMask from "react-input-mask";
+import { Formik, Form, Field } from "formik";
+
+import { validationSchema } from "./validation_schema";
 import {
   Container,
   StyledTextField,
@@ -7,82 +11,115 @@ import {
   FontButton,
   StyledButton
 } from "../FormHired/styles";
-import InputMask from "react-input-mask";
 
 export default function FormManager(props) {
-  const { onClick } = props;
-  const [name, setName] = useState("");
-  const [CPF, setCPF] = useState("");
-  const [email, setEmail] = useState("");
+  const initialValues = {
+    name: "",
+    cpf: "",
+    email: ""
+  };
 
-  const handleChangeName = event => {
-    let value = event.target.value;
-    value = value.replace(/[^A-Za-z" "]/gi, "");
-
-    setName(value);
+  const handleSubmit = values => {
+    console.log(values);
   };
 
   return (
-    <Container
-      container
-      direction="column"
-      justify="flex-start"
-      alignItems="stretch"
-      spacing={2}
+    <Formik
+      validationSchema={validationSchema}
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validateOnChange={false}
+      validateOnBlur={false}
     >
-      <Grid item xs>
-        <Title>[PSDB] Prefeito 1</Title>
-      </Grid>
-      <div style={{ width: 400 }}></div>
-      <Grid item xs>
-        <StyledTextField
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          size="small"
-          label="Nome completo"
-          variant="outlined"
-          value={name}
-          onChange={event => handleChangeName(event)}
-        />
-      </Grid>
-      <Grid item xs>
-          <InputMask
-            mask="999.999.999-99"
-           value={CPF}
-           onChange={event => setCPF(event.target.value)}
-          >
-            {() => (
-              <StyledTextField
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-                size="small"
-                label="CPF"
-                variant="outlined"
-              />
-            )}
-          </InputMask>
-        </Grid>
-      <Grid item xs sm md={12}>
-        <StyledTextField
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          size="small"
-          label="Email"
-          variant="outlined"
-          value={email}
-          onChange={event => setEmail(event.target.value)}
-        />
-      </Grid>
-      <Grid item container direction="row-reverse">
-        <StyledButton
-          variant="contained"
-          size="large"
-          color="secondary"
-          onClick={() => onClick()}
-        >
-          <FontButton>OK</FontButton>
-        </StyledButton>
-      </Grid>
-    </Container>
+      {({ errors, setFieldValue }) => {
+        return (
+          <Form>
+            <Container
+              container
+              direction="column"
+              justify="flex-start"
+              alignItems="stretch"
+              spacing={2}
+            >
+              <Grid item xs>
+                <Title>[PSDB] Prefeito 1</Title>
+              </Grid>
+              <div style={{ width: 400 }}></div>
+              <Grid item xs>
+                <Field name="name">
+                  {({ field }) => (
+                    <StyledTextField
+                      {...field}
+                      fullWidth
+                      InputLabelProps={{ shrink: true }}
+                      size="small"
+                      label="Nome completo"
+                      variant="outlined"
+                      error={Boolean(errors.name)}
+                      helperText={errors.name}
+                    />
+                  )}
+                </Field>
+              </Grid>
+              <Grid item xs>
+                <Field name="cpf">
+                  {({ field }) => (
+                    <InputMask
+                      mask="999.999.999-99"
+                      onChange={event =>
+                        setFieldValue(
+                          "cpf",
+                          event.target.value !== null
+                            ? event.target.value
+                            : initialValues.cpf
+                        )
+                      }
+                    >
+                      {() => (
+                        <StyledTextField
+                          fullWidth
+                          InputLabelProps={{ shrink: true }}
+                          size="small"
+                          label="CPF"
+                          variant="outlined"
+                          error={Boolean(errors.cpf)}
+                          helperText={errors.cpf}
+                        />
+                      )}
+                    </InputMask>
+                  )}
+                </Field>
+              </Grid>
+              <Grid item xs sm md={12}>
+                <Field name="email">
+                  {({ field }) => (
+                    <StyledTextField
+                      {...field}
+                      fullWidth
+                      InputLabelProps={{ shrink: true }}
+                      size="small"
+                      label="Email"
+                      variant="outlined"
+                      error={Boolean(errors.email)}
+                      helperText={errors.email}
+                    />
+                  )}
+                </Field>
+              </Grid>
+              <Grid item container direction="row-reverse">
+                <StyledButton
+                  type="submit"
+                  variant="contained"
+                  size="large"
+                  color="secondary"
+                >
+                  <FontButton>OK</FontButton>
+                </StyledButton>
+              </Grid>
+            </Container>
+          </Form>
+        );
+      }}
+    </Formik>
   );
 }

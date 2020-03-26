@@ -192,7 +192,6 @@ export default function Dashboard() {
       list.splice(indexRemove, 1);
     }
     setCheckHired(list);
-    console.log(list);
   };
 
   const handleFilterClick = event => {
@@ -200,7 +199,6 @@ export default function Dashboard() {
   };
 
   const handleFilterCity = (event, value) => {
-    console.log(value);
     setCitySelected(value);
   };
 
@@ -252,7 +250,6 @@ export default function Dashboard() {
       }
       return 0;
     });
-    console.log(list);
     setPolitics(list);
     if (list.length === 0) {
       setManagers([]);

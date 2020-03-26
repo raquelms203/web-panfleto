@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Formik, Form, Field } from "formik";
 import InputMask from "react-input-mask";
 import { Grid, TextField } from "@material-ui/core";
@@ -18,8 +18,6 @@ export default function FormPolitic(props) {
   };
 
   const { cities } = props;
-  const [city, setCity] = useState("");
-  const [type, setType] = useState("");
 
   const handleSubmit = values => {
     console.log(values);
@@ -64,24 +62,10 @@ export default function FormPolitic(props) {
               </Grid>
               <Grid item xs sm md>
                 <Field name="cpf">
-                  {/* {({ field }) => (
-                    <TextField
-                      style={{ background: "white" }}
-                      InputLabelProps={{ shrink: true }}
-                      size="small"
-                      fullWidth
-                      {...field}
-                      label="CPF"
-                      variant="outlined"
-                      error={Boolean(errors.cpf)}
-                      helperText={errors.cpf}
-                    />
-                  )} */}
                   {({ field }) => (
                     <InputMask
                       mask="999.999.999-99"
                       onChange={event => {
-                        console.log(event.target.value);
                         setFieldValue(
                           "cpf",
                           event.target.value !== null
@@ -95,7 +79,6 @@ export default function FormPolitic(props) {
                           style={{ background: "white" }}
                           InputLabelProps={{ shrink: true }}
                           fullWidth
-                          InputLabelProps={{ shrink: true }}
                           size="small"
                           label="CPF"
                           variant="outlined"
@@ -125,6 +108,22 @@ export default function FormPolitic(props) {
                   )}
                 </Field>
               </Grid>
+              <Grid item xs sm md style={{ paddingTop: 0 }}>
+                <Field name="type">
+                  {({ field }) => (
+                    <DropdownPolitics
+                      isFilter={false}
+                      error={Boolean(errors.type)}
+                      onChange={event => {
+                        let number = event.target.value;
+                        if (number === 1) setFieldValue("type", "Prefeitos");
+                        else if (number === 2)
+                          setFieldValue("type", "Vereadores");
+                      }}
+                    />
+                  )}
+                </Field>
+              </Grid>
               <Grid item xs sm md>
                 <Field name="group">
                   {({ field }) => (
@@ -138,22 +137,6 @@ export default function FormPolitic(props) {
                       variant="outlined"
                       error={Boolean(errors.group)}
                       helperText={errors.group}
-                    />
-                  )}
-                </Field>
-              </Grid>
-              <Grid item xs sm md style={{ paddingTop: 0 }}>
-                <Field name="type">
-                  {({ field }) => (
-                    <DropdownPolitics
-                      isFilter={false}
-                      error={Boolean(errors.type)}
-                      onChange={event => {
-                        let number = event.target.value;
-                        if (number === 1) setFieldValue("type", "Prefeitos");
-                        else if (number === 2)
-                          setFieldValue("type", "Vereadores");
-                      }}
                     />
                   )}
                 </Field>
