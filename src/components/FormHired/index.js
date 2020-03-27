@@ -51,7 +51,9 @@ export default function FormHired(props) {
   const handleChangeCEP = event => {
     let value = event.target.value;
     setCEP(value);
-    if (value[8] !== "_") {
+    console.log(value);
+    if (!String(value).includes("_")) {
+      console.log("oi");
       fetchCEP(value);
     }
   };
