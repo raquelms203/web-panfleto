@@ -594,7 +594,7 @@ export default function Dashboard() {
               <FormHired
                 cities={cities}
                 onClick={() => {
-                  setOpenDialogAddHired(false);
+                  // setOpenDialogAddHired(false);
                 }}
               />
             </DialogTitle>
