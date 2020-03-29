@@ -17,16 +17,16 @@ import * as validate from "./validationSchema";
 export default function FormHired(props) {
   const [name, setName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
-  const [CPF, setCPF] = useState("");
-  const [phone, setPhone] = useState("");
-  const [CEP, setCEP] = useState("");
-  const [city, setCity] = useState("");
-  const [street, setStreet] = useState("");
-  const [number, setNumber] = useState("");
-  const [complement, setComplement] = useState("");
-  const [district, setDistrict] = useState("");
-  const [office, setOffice] = useState("");
-  const [payment, setPayment] = useState("");
+  const [CPF, setCPF] = useState({ value: "", error: "" });
+  const [phone, setPhone] = useState({ value: "", error: "" });
+  const [CEP, setCEP] = useState({ value: "", error: "" });
+  const [city, setCity] = useState({ value: "", error: "" });
+  const [street, setStreet] = useState({ value: "", error: "" });
+  const [number, setNumber] = useState({ value: "", error: "" });
+  const [complement, setComplement] = useState({ value: "", error: "" });
+  const [district, setDistrict] = useState({ value: "", error: "" });
+  const [office, setOffice] = useState({ value: "", error: "" });
+  const [payment, setPayment] = useState({ value: "", error: "" });
   const [visibleButtonCity, setVisibleButtonCity] = useState(false);
   const [filledColor, setFilledColor] = useState("white");
   const [openDialogConfirmInfo, setOpenDialogConfirmInfo] = useState({
@@ -59,7 +59,7 @@ export default function FormHired(props) {
 
   const handleChangeName = event => {
     let name = event.target.value;
-    setName({ value: name, error: name.error});
+    setName({ value: name, error: name.error });
   };
 
   const handleChangeNumber = event => {
@@ -69,26 +69,89 @@ export default function FormHired(props) {
     setNumber(value);
   };
 
-  const validateFields = () => {  
-    let nameValidate = validate.validateName(name.value);
-    if(nameValidate !== "") {  
-      setName({ value: name.value, error: nameValidate});
-    }  if (validate.validateEmail(email.value) !== "") {  
-      setEmail({ value: email.value, error: validate.validateEmail(email.value)});
-      return;
+  const validateFields = () => {
+    let allValid = true;
+    if (validate.validateName(name.value) !== "") {
+      setName({ value: name.value, error: validate.validateName(name.value) });
+      allValid = false;
     }
-  }
+    if (validate.validateEmail(email.value) !== "") {
+      setEmail({
+        value: email.value,
+        error: validate.validateEmail(email.value)
+      });
+      allValid = false;
+    }
+    if (validate.validateMask(CPF.value) !== "") {
+      setCPF({ value: CPF.value, error: validate.validateMask(CPF.value) });
+      allValid = false;
+    }
+    if (validate.validateMask(phone.value) !== "") {
+      setPhone({
+        value: phone.value,
+        error: validate.validateMask(phone.value)
+      });
+      allValid = false;
+    }
+    if (validate.validateMask(CEP.value) !== "") {
+      setCEP({ value: CEP.value, error: validate.validateMask(CEP.value) });
+      allValid = false;
+    }
+    if (validate.validateSelect(city.value) !== "") {
+      setCity({
+        value: city.value,
+        error: validate.validateSelect(city.value)
+      });
+      allValid = false;
+    }
+    if (validate.validateNotEmpty(street.value) !== "") {
+      setStreet({
+        value: street.value,
+        error: validate.validateNotEmpty(street.value)
+      });
+      allValid = false;
+    }
+    if (validate.validateNotEmpty(number.value) !== "") {
+      setNumber({
+        value: number.value,
+        error: validate.validateNotEmpty(number.value)
+      });
+      allValid = false;
+    }
+    if (validate.validateNotEmpty(district.value) !== "") {
+      setDistrict({
+        value: district.value,
+        error: validate.validateNotEmpty(district.value)
+      });
+      allValid = false;
+    }
+    if (validate.validateNotEmpty(office.value) !== "") {
+      setCPF({
+        value: office.value,
+        error: validate.validateNotEmpty(office.value)
+      });
+      allValid = false;
+    }
+    if (validate.validateNotEmpty(payment.value) !== "") {
+      setPayment({
+        value: payment.value,
+        error: validate.validateNotEmpty(payment.value)
+      });
+      allValid = false;
+    }
+    console.log(allValid);
+  };
 
   const handleSubmit = event => {
     event.preventDefault();
-   validateFields();
+    console.log(event);
+    validateFields();
   };
 
   const { onClick, cities } = props;
 
   return (
     <form onSubmit={handleSubmit}>
-      {" "}
       <Container
         container
         direction="column"
@@ -125,18 +188,24 @@ export default function FormHired(props) {
                 value={email.value}
                 error={Boolean(email.error)}
                 helperText={email.error}
-                onChange={event => setEmail({value: event.target.value, error: email.error})}
+                onChange={event =>
+                  setEmail({ value: event.target.value, error: email.error })
+                }
               />
             </Grid>
             <Grid item container spacing={1} justify="space-between">
               <Grid item xs={12} sm={6} md={6}>
                 <InputMask
                   mask="999.999.999-99"
-                  value={CPF.name}
-                  onChange={event => setCPF(event.target.value)}
+                  value={CPF.value}
+                  onChange={event =>
+                    setCPF({ value: event.target.value, error: CPF.error })
+                  }
                 >
                   {() => (
                     <StyledTextField
+                      error={Boolean(cpf.error)}
+                      helperText={cpf.error}
                       fullWidth
                       InputLabelProps={{ shrink: true }}
                       size="small"
@@ -149,11 +218,13 @@ export default function FormHired(props) {
               <Grid item xs={12} sm={6} md={6}>
                 <InputMask
                   mask="(99)99999-9999"
-                  onChange={event => setPhone(event.target.value)}
+                  onChange={event => setPhone({value: event.target.value, error: phone.error})}
                   value={phone}
                 >
                   {() => (
                     <StyledTextField
+                     error={Boolean(phone.error)}
+                      helperText={phone.error}
                       fullWidth
                       InputLabelProps={{ shrink: true }}
                       size="small"
@@ -169,10 +240,12 @@ export default function FormHired(props) {
                 <InputMask
                   mask="99999-999"
                   value={CEP}
-                  onChange={handleChangeCEP}
+                  onChange={set}
                 >
                   {() => (
                     <StyledTextField
+                     error={Boolean(cep.error)}
+                      helperText={cep.error}
                       fullWidth
                       InputLabelProps={{ shrink: true }}
                       size="small"
@@ -269,13 +342,15 @@ export default function FormHired(props) {
                   label="Pagamento"
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
-                  value={payment}
+                  value={payment.value}
                   currencySymbol="R$ "
                   //minimumValue="0"
                   outputFormat="string"
                   decimalCharacter=","
                   digitGroupSeparator="."
-                  onChange={(event, value) => setPayment(value)}
+                  onChange={(event, input) =>
+                    setPayment({ value: input, error: payment.error })
+                  }
                 />
               </Grid>
 
