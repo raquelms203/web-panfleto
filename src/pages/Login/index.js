@@ -5,11 +5,28 @@ import { TextField, Grid } from "@material-ui/core";
 import Computer from "../../assets/computer.png";
 import { ButtonLogin, Title, StyledGrid } from "./styles";
 import * as validate from "./validationSchema";
+import { apiADM } from "../../services/api";
 
 export default function Login() {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
   const history = useHistory();
+
+  const sendLogin = async () => {
+    await apiADM
+      .post("/login", {
+        email: email.value,
+        password: password.value
+      })
+      .then(function(response) {
+        localStorage.setItem("tokenADM", response.data.token);
+        console.log(response);
+        history.push("/dashboard");
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  };
 
   const validateField = () => {
     let allValid = true;
@@ -28,7 +45,7 @@ export default function Login() {
       allValid = false;
     }
     if (allValid) {
-      history.push("/dashboard");
+      sendLogin();
     }
   };
 
@@ -38,72 +55,76 @@ export default function Login() {
   };
 
   return (
-      <StyledGrid container alignItems="center" justify="space-around" >
-        <Grid item container justify="center" alignItems="stretch" >
-          <Grid item style={{ background: "white" }}>
-              <img
-                src={Computer}
-                alt="login"
-                style={{
-                  maxHeight: "auto",
-                  maxWidth: "311.6px",
-                  justify: "center"
-                }}
-              ></img>
-          </Grid>
-          <Grid item style={{ background: "white", padding: 20 }} >
-            <form autoComplete="off" onSubmit={handleSubmit}>
-                <Grid
-                  item
-                  container
-                  direction="column"
-                  alignItems="center"
-                  justify="center"
-                  spacing={2}
-                >
-                  <Grid item xs>
-                    <Title>Faça login para entrar no sistema</Title>
-                  </Grid>
-                  <div style={{ height: "15px" }}></div>
-                  <Grid item xs>
-                    <TextField
-                      style={{ width: 255 }}
-                      label="Email"
-                      variant="outlined"
-                      value={email.value}
-                      onChange={event =>
-                        setEmail({
-                          value: event.target.value,
-                          error: email.error
-                        })
-                      }
-                      error={Boolean(email.error)}
-                      helperText={email.error}
-                    />
-                  </Grid>
-                  <Grid item xs>
-                    <TextField
-                      style={{ width: 255 }}
-                      label="Senha"
-                      variant="outlined"
-                      onChange={event =>
-                        setPassword({
-                          value: event.target.value,
-                          error: password.error
-                        })
-                      }
-                      error={Boolean(password.error)}
-                      helperText={password.error}
-                    />
-                  </Grid>
-                  <div style={{ height: "10px" }}></div>
-                  <Grid item>
-                    <ButtonLogin type="submit">Entrar</ButtonLogin>
-                  </Grid>
-                </Grid>
-            </form>
-          </Grid>
+    <StyledGrid container alignItems="center" justify="space-around">
+      <Grid item container justify="center" alignItems="stretch">
+        <Grid item style={{ background: "white" }}>
+          <img
+            src={Computer}
+            alt="login"
+            style={{
+              maxHeight: "auto",
+              maxWidth: "311.6px",
+              justify: "center"
+            }}
+          ></img>
         </Grid>
-      </StyledGrid>
+        <Grid item style={{ background: "white", padding: 20 }}>
+          <form autoComplete="off" onSubmit={handleSubmit}>
+            <Grid
+              item
+              container
+              direction="column"
+              alignItems="center"
+              justify="center"
+              spacing={2}
+            >
+              <Grid item xs>
+                <Title>Faça login para entrar no sistema</Title>
+              </Grid>
+              <div style={{ height: 15, width: 500 }}></div>
+              <Grid item xs>
+                <TextField
+                  style={{ width: 350 }}
+                  InputLabelProps={{ shrink: true }}
+                  label="Email"
+                  size="small"
+                  variant="outlined"
+                  value={email.value}
+                  onChange={event =>
+                    setEmail({
+                      value: event.target.value,
+                      error: email.error
+                    })
+                  }
+                  error={Boolean(email.error)}
+                  helperText={email.error}
+                />
+              </Grid>
+              <Grid item xs>
+                <TextField
+                  style={{ width: 350 }}
+                  InputLabelProps={{ shrink: true }}
+                  size="small"
+                  label="Senha"
+                  variant="outlined"
+                  onChange={event =>
+                    setPassword({
+                      value: event.target.value,
+                      error: password.error
+                    })
+                  }
+                  error={Boolean(password.error)}
+                  helperText={password.error}
+                />
+              </Grid>
+              <div style={{ height: "10px" }}></div>
+              <Grid item>
+                <ButtonLogin type="submit">Entrar</ButtonLogin>
+              </Grid>
+            </Grid>
+          </form>
+        </Grid>
+      </Grid>
+    </StyledGrid>
   );
 }

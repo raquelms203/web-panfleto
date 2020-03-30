@@ -15,9 +15,9 @@ export default function ConfirmInfo(props) {
           <div style={{ height: 10 }}></div>
         </Grid>
         {info.map((item, index) => (
-          <Grid item container alignItems="center" xs sm md>
-            <FontField key={index}>{item.field} </FontField>
-            <FontValue key={index}>{item.value}</FontValue>
+          <Grid  key={index} item container alignItems="center" xs sm md>
+            <FontField>{item.field} </FontField>
+            <FontValue>{item.value}</FontValue>
           </Grid>
         ))}
         <Grid item>
@@ -29,7 +29,7 @@ export default function ConfirmInfo(props) {
             variant="contained"
             size="large"
             color="secondary"
-            onClick={onClick}
+            onClick={() => onClick()}
             style={{ color: "white" }}
           >
             OK

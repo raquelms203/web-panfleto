@@ -8,6 +8,7 @@ import { Container, StyledButton, FontButton } from "../FormHired/styles";
 import DropdownCities from "../DropdownCities";
 import { validationSchema } from "./validation_schema";
 import ConfirmInfo from "../ConfirmInfo"
+import { apiADM } from "../../services/api"
 
 export default function FormPolitic(props) {
   const initialValues = {
@@ -32,8 +33,31 @@ export default function FormPolitic(props) {
       { field: "Categoria:", value: values.type },
       { field: "Partido/coligação:", value: values.group }
     ];
-    setOpenDialogConfirmInfo({ open: true, info: inputs });
+    setOpenDialogConfirmInfo({ open: true, info: inputs, values: values });
   };
+
+  const sendPolitic = async (values) => {  
+    let cpfRaw = values.cpf.replace(/[.-]/, "");
+    let typeNumber;
+    if(values.type === "Prefeitos") 
+      typeNumber = 1;
+    if(values.type === "Vereadores") 
+      typeNumber = 2;
+
+    await apiADM.post("/politic", {  
+      name: values.name,
+      type: typeNumber,
+      group: values.group,
+      city: values.city,
+      document: values.cpf
+    }, {  
+      headers: {  
+        TOKEN: localStorage.getItem("tokenADM")
+      }
+    }).then((response) => {  
+      console.log(response);
+    }).catch((error) => {console.log(error)})
+  }
 
   return !openDialogConfirmInfo.open ? (
     <Formik
@@ -170,6 +194,6 @@ export default function FormPolitic(props) {
       }}
     </Formik>
   ) : (
-    <ConfirmInfo info={openDialogConfirmInfo.info} />
+    <ConfirmInfo info={openDialogConfirmInfo.info} onClick={() => sendPolitic(openDialogConfirmInfo.values)} />
   );
 }
