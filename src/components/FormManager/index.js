@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Grid } from "@material-ui/core";
 import InputMask from "react-input-mask";
 import { Formik, Form, Field } from "formik";
 
 import { validationSchema } from "./validation_schema";
+import ConfirmInfo from "../ConfirmInfo";
 import {
   Container,
   StyledTextField,
@@ -18,12 +19,20 @@ export default function FormManager(props) {
     cpf: "",
     email: ""
   };
-
+  const [openDialogConfirmInfo, setOpenDialogConfirmInfo] = useState({
+    open: false,
+    info: {}
+  });
   const handleSubmit = values => {
-    console.log(values);
+    let inputs = [
+      { field: "Nome completo:", value: values.name },
+      { field: "CPF:", value: values.cpf },
+      { field: "Email:", value: values.email }
+    ];
+    setOpenDialogConfirmInfo({ open: true, info: inputs });
   };
 
-  return (
+  return !openDialogConfirmInfo.open ? (
     <Formik
       validationSchema={validationSchema}
       initialValues={initialValues}
@@ -33,7 +42,7 @@ export default function FormManager(props) {
     >
       {({ errors, setFieldValue }) => {
         return (
-          <Form>
+          <Form autoComplete="off">
             <Container
               container
               direction="column"
@@ -121,5 +130,7 @@ export default function FormManager(props) {
         );
       }}
     </Formik>
+  ) : (
+    <ConfirmInfo info={openDialogConfirmInfo.info} />
   );
 }

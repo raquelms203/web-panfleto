@@ -1,30 +1,40 @@
 import React from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, Button } from "@material-ui/core";
+
 import { FontField, FontValue } from "./styles";
+import { StyledButton } from "../FormHired/styles";
 
 export default function ConfirmInfo(props) {
-  const { info } = props;
+  const { info, onClick } = props;
 
-  // if (info !== undefined)
-  //   return (
-  //     <Grid container direction="column">
-  //       <Grid item xs sm md>
-  //         <FontValue>Confirme as informações:</FontValue>
-  //         <div style={{ height: 10 }}></div>
-  //       </Grid>
-  //       <Grid item container alignItems="center" xs sm md>
-  //         <FontField>{info[0].field}: </FontField>
-  //         <FontValue>{info[0].value}</FontValue>
-  //       </Grid>
-  //       <Grid item container alignItems="center" xs sm md>
-  //         <FontField>CPF: </FontField>
-  //         <FontValue>026.788.052-98</FontValue>
-  //       </Grid>
-  //       <Grid item>
-  //         <div style={{ height: 20 }}></div>
-  //       </Grid>
-  //     </Grid>
-  //   );
-  // else return <></>;
-  return (<></>);
+  if (info !== undefined)
+    return (
+      <Grid container direction="column" spacing={1} alignItems="flex-end">
+        <Grid item xs sm md container justify="center">
+          <FontValue>Confirme as informações:</FontValue>
+          <div style={{ height: 10 }}></div>
+        </Grid>
+        {info.map((item, index) => (
+          <Grid item container alignItems="center" xs sm md>
+            <FontField key={index}>{item.field} </FontField>
+            <FontValue key={index}>{item.value}</FontValue>
+          </Grid>
+        ))}
+        <Grid item>
+          <div style={{ height: 20 }}></div>
+        </Grid>
+        <Grid item xs sm md>
+          <StyledButton
+            type="submit"
+            variant="contained"
+            size="large"
+            color="secondary"
+            onClick={onClick}
+            style={{ color: "white" }}
+          >
+            OK
+          </StyledButton>
+        </Grid>
+      </Grid>
+    );
 }

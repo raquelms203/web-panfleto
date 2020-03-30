@@ -35,6 +35,7 @@ export default function FormHired(props) {
   });
 
   const fetchCEP = async cep => {
+    if (cep[8] === "_") return;
     let api = axios.create({
       baseURL: `https://viacep.com.br/ws/${cep}/json/`
     });
@@ -43,18 +44,13 @@ export default function FormHired(props) {
       return;
     }
     setFilledColor("#dfdfdf");
-    setStreet(response.data.logradouro);
-    setCity(response.data.localidade + " - " + response.data.uf);
+    setStreet({ value: response.data.logradouro, error: street.error });
+    setCity({
+      value: response.data.localidade + " - " + response.data.uf,
+      error: city.error
+    });
     setVisibleButtonCity(true);
-    setDistrict(response.data.bairro);
-  };
-
-  const handleChangeCEP = event => {
-    let value = event.target.value;
-    setCEP(value);
-    if (!String(value).includes("_")) {
-      fetchCEP(value);
-    }
+    setDistrict({ value: response.data.bairro, error: district.error });
   };
 
   const handleChangeName = event => {
@@ -63,14 +59,16 @@ export default function FormHired(props) {
   };
 
   const handleChangeNumber = event => {
-    let value = event.target.value;
-    value = value.replace(/[^0-9]/gi, "");
+    let input = event.target.value;
+    input = input.replace(/[^0-9]/gi, "");
 
-    setNumber(value);
+    setNumber({ value: input, error: number.error });
   };
 
   const validateFields = () => {
     let allValid = true;
+    let values = [];
+    let complementPosition = 7;
     if (validate.validateName(name.value) !== "") {
       setName({ value: name.value, error: validate.validateName(name.value) });
       allValid = false;
@@ -86,13 +84,14 @@ export default function FormHired(props) {
       setCPF({ value: CPF.value, error: validate.validateMask(CPF.value) });
       allValid = false;
     }
-    if (validate.validateMask(phone.value) !== "") {
+    if (validate.validatePhoneIncomplete(phone.value) !== "") {
       setPhone({
         value: phone.value,
-        error: validate.validateMask(phone.value)
+        error: validate.validatePhoneIncomplete(phone.value)
       });
       allValid = false;
     }
+
     if (validate.validateMask(CEP.value) !== "") {
       setCEP({ value: CEP.value, error: validate.validateMask(CEP.value) });
       allValid = false;
@@ -126,7 +125,7 @@ export default function FormHired(props) {
       allValid = false;
     }
     if (validate.validateNotEmpty(office.value) !== "") {
-      setCPF({
+      setOffice({
         value: office.value,
         error: validate.validateNotEmpty(office.value)
       });
@@ -139,19 +138,46 @@ export default function FormHired(props) {
       });
       allValid = false;
     }
-    console.log(allValid);
+    if (allValid) {
+      values = [
+        { field: "Nome completo:", value: name.value },
+        { field: "Email:", value: email.value },
+        { field: "CPF:", value: CPF.value },
+        { field: "CEP:", value: CEP.value },
+        { field: "Cidade:", value: city.value },
+        { field: "Rua", value: street.value },
+        { field: "Número:", value: number.value },
+        { field: "Bairro:", value: district.value },
+        { field: "Pagamento:", value: payment.value },
+        { field: "Cargo", value: office.value }
+      ];
+
+      if (phone.value.match(/[0-9]/)) {
+        values.splice(3, 0, { field: "Celular:", value: phone.value });
+        complementPosition = 8;
+      }
+      if (complement.value.length !== 0)
+        values.splice(complementPosition, 0, {
+          field: "Complemento:",
+          value: complement.value
+        });
+
+      setOpenDialogConfirmInfo({
+        open: true,
+        info: values
+      });
+    }
   };
 
   const handleSubmit = event => {
     event.preventDefault();
-    console.log(event);
     validateFields();
   };
 
-  const { onClick, cities } = props;
+  const { cities } = props;
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form autoComplete="on" onSubmit={handleSubmit}>
       <Container
         container
         direction="column"
@@ -204,8 +230,8 @@ export default function FormHired(props) {
                 >
                   {() => (
                     <StyledTextField
-                      error={Boolean(cpf.error)}
-                      helperText={cpf.error}
+                      error={Boolean(CPF.error)}
+                      helperText={CPF.error}
                       fullWidth
                       InputLabelProps={{ shrink: true }}
                       size="small"
@@ -217,13 +243,15 @@ export default function FormHired(props) {
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
                 <InputMask
+                  value={phone.value}
                   mask="(99)99999-9999"
-                  onChange={event => setPhone({value: event.target.value, error: phone.error})}
-                  value={phone}
+                  onChange={event =>
+                    setPhone({ value: event.target.value, error: phone.error })
+                  }
                 >
                   {() => (
                     <StyledTextField
-                     error={Boolean(phone.error)}
+                      error={Boolean(phone.error)}
                       helperText={phone.error}
                       fullWidth
                       InputLabelProps={{ shrink: true }}
@@ -239,13 +267,16 @@ export default function FormHired(props) {
               <Grid item xs={12} sm={4} md={4}>
                 <InputMask
                   mask="99999-999"
-                  value={CEP}
-                  onChange={set}
+                  value={CEP.value}
+                  onChange={event => {
+                    setCEP({ value: event.target.value, error: CEP.error });
+                    fetchCEP(event.target.value);
+                  }}
                 >
                   {() => (
                     <StyledTextField
-                     error={Boolean(cep.error)}
-                      helperText={cep.error}
+                      error={Boolean(CEP.error)}
+                      helperText={CEP.error}
                       fullWidth
                       InputLabelProps={{ shrink: true }}
                       size="small"
@@ -260,13 +291,13 @@ export default function FormHired(props) {
                   <div
                     onClick={() => {
                       setVisibleButtonCity(false);
-                      setCity("");
+                      setCity({ value: "", error: city.error });
                     }}
                   >
                     <TextField
                       fullWidth
                       style={{ background: filledColor }}
-                      value={city}
+                      value={city.value}
                       InputLabelProps={{ shrink: true, readOnly: true }}
                       size="small"
                       variant="outlined"
@@ -275,9 +306,11 @@ export default function FormHired(props) {
                   </div>
                 ) : (
                   <DropdownCities
+                    error={Boolean(city.error)}
+                    helperText={city.error}
                     list={cities}
-                    onChange={event => {
-                      setCity(event.currentTarget.innerText);
+                    onChange={(event, input) => {
+                      setCity({ value: input, error: city.error });
                     }}
                   />
                 )}
@@ -291,19 +324,28 @@ export default function FormHired(props) {
                   size="small"
                   label="Rua"
                   variant="outlined"
+                  error={Boolean(street.error)}
+                  helperText={street.error}
                   style={{ background: filledColor }}
-                  value={street}
-                  onChange={event => setStreet(event.target.value)}
+                  value={street.value}
+                  onChange={event =>
+                    setStreet({
+                      value: event.target.value,
+                      error: street.error
+                    })
+                  }
                 />
               </Grid>
               <Grid item xs={12} sm={4} md={4}>
                 <StyledTextField
                   fullWidth
+                  error={Boolean(number.error)}
+                  helperText={number.error}
                   InputLabelProps={{ shrink: true }}
                   size="small"
                   label="Número"
                   variant="outlined"
-                  value={number}
+                  value={number.value}
                   onChange={event => handleChangeNumber(event)}
                 />
               </Grid>
@@ -313,23 +355,37 @@ export default function FormHired(props) {
                 <StyledTextField
                   fullWidth
                   InputLabelProps={{ shrink: true }}
+                  error={Boolean(complement.error)}
+                  helperText={complement.error}
                   size="small"
                   label="Complemento (Opcional)"
                   variant="outlined"
-                  value={complement}
-                  onChange={event => setComplement(event.target.value)}
+                  value={complement.value}
+                  onChange={event =>
+                    setComplement({
+                      value: event.target.value,
+                      error: complement.error
+                    })
+                  }
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
                 <StyledTextField
                   fullWidth
+                  error={Boolean(district.error)}
+                  helperText={district.error}
                   style={{ background: filledColor }}
                   InputLabelProps={{ shrink: true }}
                   size="small"
                   label="Bairro"
                   variant="outlined"
-                  value={district}
-                  onChange={event => setDistrict(event.target.value)}
+                  value={district.value}
+                  onChange={event =>
+                    setDistrict({
+                      value: event.target.value,
+                      error: district.error
+                    })
+                  }
                 />
               </Grid>
             </Grid>
@@ -337,6 +393,8 @@ export default function FormHired(props) {
               <Grid item xs={12} sm={4} md={4}>
                 <CurrencyTextField
                   fullWidth
+                  error={Boolean(payment.error)}
+                  helperText={payment.error}
                   size="small"
                   style={{ background: "white" }}
                   label="Pagamento"
@@ -356,21 +414,23 @@ export default function FormHired(props) {
 
               <Grid item xs={12} sm={8} md={8}>
                 <StyledTextField
+                  error={Boolean(office.error)}
+                  helperText={office.error}
                   fullWidth
                   InputLabelProps={{ shrink: true }}
                   size="small"
                   label="Cargo"
                   variant="outlined"
-                  value={office}
-                  onChange={event => setOffice(event.target.value)}
+                  value={office.value}
+                  onChange={event =>
+                    setOffice({
+                      value: event.target.value,
+                      error: office.error
+                    })
+                  }
                 />
               </Grid>
             </Grid>
-          </>
-        ) : (
-          <ConfirmInfo info={openDialogConfirmInfo.info} />
-        )}
-
         <Grid item container direction="row-reverse">
           <StyledButton
             type="submit"
@@ -381,6 +441,11 @@ export default function FormHired(props) {
             <FontButton>OK</FontButton>
           </StyledButton>
         </Grid>
+          </>
+        ) : (
+          <ConfirmInfo info={openDialogConfirmInfo.info} />
+        )}
+
       </Container>
     </form>
   );

@@ -25,7 +25,6 @@ import { useState } from "react";
 import { apiADM, apiCities } from "../../services/api";
 import LogoImg from "../../assets/logo.svg";
 
-
 export default function Dashboard() {
   const history = useHistory();
   const [isLessThan500, setIsLessThan500] = useState(false);
@@ -104,19 +103,20 @@ export default function Dashboard() {
       setIsLessThan500(true);
     }
     window.addEventListener("orientationchange", function() {
+      setIsLessThan500(false);
       if (window.matchMedia("(orientation: landscape)").matches) {
-        if (
-          !openDialogAddHired &&
-          !openDialogAddManager &&
-          !openDialogAddPolitic &&
-          !openDialogDelete &&
-          !openDialogFilter
-        ) {
-          if (window.screen.availWidth < 500) {
-            setIsLessThan500(true);
-          } else setIsLessThan500(false);
+        if (window.screen.availWidth < 500) {
+          setIsLessThan500(true);
+          if (
+            openDialogAddHired ||
+            openDialogAddManager ||
+            openDialogAddPolitic ||
+            openDialogDelete.open ||
+            openDialogFilter
+          )
+            setIsLessThan500(false);
         }
-      } else setIsLessThan500(false);
+      }
     });
   }, [
     setIsLessThan500,
@@ -321,8 +321,13 @@ export default function Dashboard() {
     <SmallScreenAlert />
   ) : (
     <>
-      <AppBar position="static" >
-        <Grid container justify="space-between" alignItems="center" style={{ height: 42 }}>
+      <AppBar position="static">
+        <Grid
+          container
+          justify="space-between"
+          alignItems="center"
+          style={{ height: 42 }}
+        >
           <Grid item>
             <Logo src={LogoImg} />
           </Grid>

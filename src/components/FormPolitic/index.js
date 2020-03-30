@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import InputMask from "react-input-mask";
 import { Grid, TextField } from "@material-ui/core";
@@ -7,6 +7,7 @@ import DropdownPolitics from "../DropdownPolitics";
 import { Container, StyledButton, FontButton } from "../FormHired/styles";
 import DropdownCities from "../DropdownCities";
 import { validationSchema } from "./validation_schema";
+import ConfirmInfo from "../ConfirmInfo"
 
 export default function FormPolitic(props) {
   const initialValues = {
@@ -18,12 +19,23 @@ export default function FormPolitic(props) {
   };
 
   const { cities } = props;
+  const [openDialogConfirmInfo, setOpenDialogConfirmInfo] = useState({
+    open: false,
+    info: {}
+  });
 
   const handleSubmit = values => {
-    console.log(values);
+    let inputs = [
+      { field: "Nome completo:", value: values.name },
+      { field: "CPF:", value: values.cpf },
+      { field: "Cidade:", value: values.city },
+      { field: "Categoria:", value: values.type },
+      { field: "Partido/coligação:", value: values.group }
+    ];
+    setOpenDialogConfirmInfo({ open: true, info: inputs });
   };
 
-  return (
+  return !openDialogConfirmInfo.open ? (
     <Formik
       validationSchema={validationSchema}
       initialValues={initialValues}
@@ -33,7 +45,7 @@ export default function FormPolitic(props) {
     >
       {({ errors, setFieldValue }) => {
         return (
-          <Form>
+          <Form autoComplete="off">
             <Container
               container
               direction="column"
@@ -157,5 +169,7 @@ export default function FormPolitic(props) {
         );
       }}
     </Formik>
+  ) : (
+    <ConfirmInfo info={openDialogConfirmInfo.info} />
   );
 }
