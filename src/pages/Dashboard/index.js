@@ -30,7 +30,6 @@ export default function Dashboard() {
   const [isLessThan500, setIsLessThan500] = useState(false);
   const [cities, setCities] = useState([]);
   const [citySelected, setCitySelected] = useState("");
-  const [user, setUser] = useState({});
   const [politics, setPolitics] = useState([]);
   const [filterPoliticSelected, setFilterPoliticSelected] = useState(0);
   const [checkPolitic, setCheckPolitic] = useState([]);
@@ -63,17 +62,16 @@ export default function Dashboard() {
   }, [cities]);
 
   const fetchPolitics = async () => {
-    let response = await apiADM.get();
+    let response = await apiADM.get(`/politic?adminId=${localStorage.getItem("userId")}`);
     let politicsAll = [];
 
-    response.data.politicos.forEach(item => {
+    response.data.forEach(item => {
       let p = {
-        nome: item.nome,
-        categoria: item.categoria,
-        cpf: item.cpf,
-        cidade: item.cidade,
-        gestores: item.gestores,
-        token: item.token
+        name: item.name,
+        type: item.type,
+        cpf: item.document,
+        city: item.city,
+        urlSign: item.urlSign
       };
       politicsAll.push(p);
     });
@@ -82,21 +80,13 @@ export default function Dashboard() {
   };
 
   const fetchUser = useCallback(async () => {
-    if (Object.entries(user).length === 0) {
-      let response = await apiADM.get();
-      let user = {
-        nome: response.data.nome,
-        partido: response.data.partido,
-        corPrimaria: response.data.corPrimaria
-      };
+    if (Object.entries(politics).length === 0) {
+    
       let politicsAll = await fetchPolitics();
 
-      setUser(user);
       setPolitics(politicsAll);
-      setManagers(politicsAll[0].gestores);
-      setHireds(politicsAll[0].gestores[0].contratados);
     }
-  }, [user]);
+  }, );
 
   const onOrientationChange = useCallback(() => {
     if (window.screen.availWidth < 500) {
@@ -129,9 +119,9 @@ export default function Dashboard() {
 
   const handlePoliticListClick = (event, index) => {
     setIndexPolitic(index);
-    setIndexManager(0);
-    setManagers(politics[index].gestores);
-    setHireds(politics[index].gestores[0].contratados);
+    // setIndexManager(0);
+    // setManagers(politics[index].gestores);
+    // setHireds(politics[index].gestores[0].contratados);
   };
 
   const isTwoPoliticsSelected = () => {
@@ -142,16 +132,17 @@ export default function Dashboard() {
     let list = checkPolitic;
     if (list === undefined) list = [];
     if (value) {
-      list.push(politics[indexList].token);
+      list.push(politics[indexList].id);
     } else {
       let indexRemove = list.findIndex(item => item === politics[indexList].id);
       list.splice(indexRemove, 1);
     }
     setCheckPolitic(list);
-    if (isTwoPoliticsSelected()) {
-      setManagers([]);
-      setHireds([]);
-    }
+    // if (isTwoPoliticsSelected()) {
+    //   setManagers([]);
+    //   setHireds([]);
+    // }
+    console.log(list);
   };
 
   const handleManagerListClick = (event, index) => {
@@ -215,10 +206,10 @@ export default function Dashboard() {
     let list = [];
     if (citySelected !== "" && filterPoliticSelected !== 0) {
       fetch.forEach(item => {
-        if (item.cidade === citySelected) {
+        if (item.city === citySelected) {
           if (list.indexOf(item) === -1) {
             let n = filterPoliticSelected + 1;
-            if (item.categoria === n) {
+            if (item.type === n) {
               if (list.indexOf(item) === -1) list.push(item);
             }
           }
@@ -227,13 +218,13 @@ export default function Dashboard() {
     } else if (filterPoliticSelected !== 0 && citySelected === "") {
       let n = filterPoliticSelected + 1;
       fetch.forEach(item => {
-        if (item.categoria === n) {
+        if (item.type === n) {
           if (list.indexOf(item) === -1) list.push(item);
         }
       });
     } else if (filterPoliticSelected === 0 && citySelected !== "") {
       fetch.forEach(item => {
-        if (item.cidade === citySelected) {
+        if (item.city === citySelected) {
           if (list.indexOf(item) === -1) {
             list.push(item);
           }
@@ -241,15 +232,15 @@ export default function Dashboard() {
       });
     }
 
-    list.sort(function(a, b) {
-      if (a.nome < b.nome) {
-        return -1;
-      }
-      if (a.nome > b.nome) {
-        return 1;
-      }
-      return 0;
-    });
+    // list.sort(function(a, b) {
+    //   if (a.nome < b.nome) {
+    //     return -1;
+    //   }
+    //   if (a.nome > b.nome) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // });
     setPolitics(list);
     if (list.length === 0) {
       setManagers([]);
@@ -268,7 +259,7 @@ export default function Dashboard() {
       let list = [];
       let n = filterPoliticSelected + 1;
       fetch.forEach(item => {
-        if (item.categoria === n) {
+        if (item.type === n) {
           if (list.indexOf(item) === -1) {
             list.push(item);
           }
@@ -293,7 +284,7 @@ export default function Dashboard() {
     if (citySelected !== "") {
       let list = [];
       fetch.forEach(item => {
-        if (item.cidade === citySelected) {
+        if (item.city === citySelected) {
           if (list.indexOf(item) === -1) {
             list.push(item);
           }
@@ -334,11 +325,7 @@ export default function Dashboard() {
           <Grid item>
             <div style={{ marginRight: "20px" }}>
               <Button color="inherit" onClick={() => {}}>
-                {String(user.nome) === "undefined" ? (
-                  <p></p>
-                ) : (
-                  <p>{String(user.nome).split(" ")[0]}</p>
-                )}
+                  <p>{localStorage.getItem("username").split(" ")[0]}</p>
               </Button>
             </div>
           </Grid>

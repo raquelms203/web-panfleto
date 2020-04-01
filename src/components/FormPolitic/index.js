@@ -34,26 +34,23 @@ export default function FormPolitic(props) {
       { field: "Partido/coligação:", value: values.group }
     ];
     setOpenDialogConfirmInfo({ open: true, info: inputs, values: values });
+
   };
 
   const sendPolitic = async (values) => {  
-    let cpfRaw = values.cpf.replace(/[.-]/, "");
+    let rawCPF = values.cpf.split("-").join("").split(".").join("");
     let typeNumber;
     if(values.type === "Prefeitos") 
       typeNumber = 1;
     if(values.type === "Vereadores") 
       typeNumber = 2;
 
-    await apiADM.post("/politic", {  
+    await apiADM.post(`/politic?adminId=${localStorage.getItem("userId")}`, {  
       name: values.name,
       type: typeNumber,
       group: values.group,
       city: values.city,
-      document: values.cpf
-    }, {  
-      headers: {  
-        TOKEN: localStorage.getItem("tokenADM")
-      }
+      document: rawCPF
     }).then((response) => {  
       console.log(response);
     }).catch((error) => {console.log(error)})

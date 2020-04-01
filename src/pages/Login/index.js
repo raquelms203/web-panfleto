@@ -19,7 +19,10 @@ export default function Login() {
         password: password.value
       })
       .then(function(response) {
-        localStorage.setItem("tokenADM", response.data.token);
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", response.data.userId);
+        localStorage.setItem("email", response.data.email);
+        localStorage.setItem("username", response.data.username);
         console.log(response);
         history.push("/dashboard");
       })
@@ -105,6 +108,7 @@ export default function Login() {
                   style={{ width: 350 }}
                   InputLabelProps={{ shrink: true }}
                   size="small"
+                  type="password"
                   label="Senha"
                   variant="outlined"
                   onChange={event =>

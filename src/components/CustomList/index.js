@@ -62,7 +62,7 @@ export default function CustomList(props) {
                 />
                 <Grid container alignItems="center" justify="space-between">
                   <Grid item xs={8}>
-                    <TextOverflow>{itemList.nome}</TextOverflow>
+                    <TextOverflow>{itemList.name}</TextOverflow>
                   </Grid>
                   <Grid item container xs={4} justify="flex-end">
                     <div
