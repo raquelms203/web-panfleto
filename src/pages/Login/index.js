@@ -71,15 +71,15 @@ export default function Login() {
             }}
           ></img>
         </Grid>
-        <Grid item style={{ background: "white", padding: 20 }}>
           <form autoComplete="off" onSubmit={handleSubmit}>
             <Grid
-              item
               container
+              item
               direction="column"
               alignItems="center"
               justify="center"
               spacing={2}
+              style={{ background: "white" }}
             >
               <Grid item xs>
                 <Title>Faça login para entrar no sistema</Title>
@@ -122,13 +122,12 @@ export default function Login() {
                 />
               </Grid>
               <div style={{ height: "10px" }}></div>
-              <Grid item>
+              <Grid item xs sm md>
                 <ButtonLogin type="submit">Entrar</ButtonLogin>
               </Grid>
             </Grid>
           </form>
         </Grid>
-      </Grid>
     </StyledGrid>
   );
 }
