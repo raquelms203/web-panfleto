@@ -8,7 +8,7 @@ export default function ErrorPage(props) {
   const { title, message, file } = props;
 
   return (
-    <Grid container direction="column">
+    <Grid container direction="column" style={{ overflowX: "hidden" }}>
       <Container
         container
         justify="center"

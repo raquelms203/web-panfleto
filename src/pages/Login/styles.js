@@ -3,7 +3,7 @@ import { Grid } from "@material-ui/core";
 
 
 export const StyledGrid = styled(Grid)`
-  padding: 20px;
+  margin: 20px;
   min-height: 100vh;
 `;
 
