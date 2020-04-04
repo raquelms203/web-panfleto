@@ -1,44 +1,87 @@
-import React, { useState } from "react";
-import { Grid, TextField, Button } from "@material-ui/core";
+import React, { useState, useCallback, useEffect } from "react";
+import { Grid, TextField, Button, CircularProgress } from "@material-ui/core";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
+import { useHistory } from "react-router-dom";
 
 import { apiADM } from "../../services/api";
+import axios from "axios";
 import { validatePassword } from "./validationSchema";
 import { StyledButton, Container } from "../../components/FormHired/styles";
 import Logo from "../../assets/logo.svg";
+import Wait from "../../assets/wait.svg";
 import { RoundedDiv } from "./styles";
+import ErrorPage from "../ErrorPage";
 
 export default function CreatePassword(props) {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState({ value: "", error: "" });
+  const [tokenValid, setTokenValid] = useState();
+  const history = useHistory();
+  const path = window.location.pathname;
+  const href = window.location.href;
+  const token = path.split("/")[2];
+  const [type, setType] = useState(href.split("=")[1]);
 
-  const handleSubmit = event => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     let errorValidate = validatePassword(password, password2.value);
-    console.log(errorValidate);
     if (errorValidate !== "") {
       setPassword("");
       setPassword2({ value: "", error: errorValidate });
       return;
     }
-    let path = window.location.pathname;
-    let href = window.location.href;
-    let token = path.split("/")[2];
-    let type = href.split("=")[1];
-    if (type === "admin") type = "administrator";
-    console.log(`${type}/create-password/${token}`);
+    setPassword2({ value: password2.value, error: "" });
+
+    if (type === "admin") setType("administrator");
+
     apiADM
       .put(`${type}/create-password/${token}`, {
-        password: password
+        password: password,
       })
-      .then(function(response) {
-        console.log(response);
+      .then(function (response) {
+        toast.success(
+          "Senha criada com sucesso!\nVocê será redirecionado para a tela de login.",
+          {
+            onClose: function () {
+              history.push("/");
+            },
+          }
+        );
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   };
 
-  return (
+  const verifyToken = useCallback(async () => {
+    await axios
+      .get(`https://econtracts.herokuapp.com/token/is-valid-token/${token}`)
+      .then(function (response) {
+        setTokenValid(response.data.isValidToken);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, [setTokenValid]);
+
+  useEffect(() => {
+    verifyToken();
+  }, [verifyToken]);
+
+  if (tokenValid === undefined)
+    return (
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        style={{ minHeight: "99vh" }}
+      >
+        <CircularProgress />
+      </Grid>
+    );
+
+  return tokenValid ? (
     <Container>
       <form onSubmit={handleSubmit}>
         <Grid
@@ -54,11 +97,15 @@ export default function CreatePassword(props) {
               <img src={Logo} />
             </RoundedDiv>
           </Grid>
-
           <Grid item xs sm md>
             <h2>Cadastre a sua senha</h2>
           </Grid>
-
+          <Grid item xs sm md>
+            <p>
+              A senha deve conter pelo menos 6 caracteres com letras e números.
+            </p>
+          </Grid>
+          <div style={{ height: 10 }}></div>
           <Grid item xs sm md>
             <TextField
               style={{ width: 350, background: "white" }}
@@ -68,7 +115,7 @@ export default function CreatePassword(props) {
               type="password"
               variant="outlined"
               value={password}
-              onChange={event => setPassword(event.target.value)}
+              onChange={(event) => setPassword(event.target.value)}
             ></TextField>
           </Grid>
           <Grid item xs sm md>
@@ -80,10 +127,10 @@ export default function CreatePassword(props) {
               label="Confirmar senha"
               variant="outlined"
               value={password2.value}
-              onChange={event =>
+              onChange={(event) =>
                 setPassword2({
                   value: event.target.value,
-                  error: password2.error
+                  error: password2.error,
                 })
               }
               error={Boolean(password2.error)}
@@ -102,5 +149,11 @@ export default function CreatePassword(props) {
         </Grid>
       </form>
     </Container>
+  ) : (
+    <ErrorPage
+      title="Token expirado"
+      message="Entre em contato com o administrador para solicitar um novo email."
+      file={Wait}
+    />
   );
 }

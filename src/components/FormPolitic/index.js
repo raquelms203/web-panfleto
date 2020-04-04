@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import InputMask from "react-input-mask";
 import { Grid, TextField } from "@material-ui/core";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
+
 
 import DropdownPolitics from "../DropdownPolitics";
 import { Container, StyledButton, FontButton } from "../FormHired/styles";
@@ -52,8 +55,8 @@ export default function FormPolitic(props) {
       city: values.city,
       document: rawCPF
     }).then((response) => {  
-      console.log(response);
-    }).catch((error) => {console.log(error)})
+      toast.success("Campanha criada com sucesso.");
+    }).catch((error) => toast.error("Ocorreu um erro ao criar campanha."))
   }
 
   return !openDialogConfirmInfo.open ? (
