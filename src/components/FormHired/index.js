@@ -1,16 +1,18 @@
 import React, { useState } from "react";
-import { Grid, TextField } from "@material-ui/core";
+import { Grid, TextField, Button } from "@material-ui/core";
 import InputMask from "react-input-mask";
+import axios from "axios";
+import CurrencyTextField from "@unicef/material-ui-currency-textfield";
+import { useHistory } from "react-router-dom";
+
 import {
   Container,
   StyledTextField,
   StyledButton,
   Title,
-  FontButton
+  FontButton,
 } from "./styles";
 import DropdownCities from "../DropdownCities";
-import axios from "axios";
-import CurrencyTextField from "@unicef/material-ui-currency-textfield";
 import ConfirmInfo from "../ConfirmInfo";
 import * as validate from "./validationSchema";
 
@@ -31,13 +33,13 @@ export default function FormHired(props) {
   const [filledColor, setFilledColor] = useState("white");
   const [openDialogConfirmInfo, setOpenDialogConfirmInfo] = useState({
     open: false,
-    info: []
+    info: [],
   });
 
-  const fetchCEP = async cep => {
+  const fetchCEP = async (cep) => {
     if (cep[8] === "_") return;
     let api = axios.create({
-      baseURL: `https://viacep.com.br/ws/${cep}/json/`
+      baseURL: `https://viacep.com.br/ws/${cep}/json/`,
     });
     let response = await api.get();
     if (response.hasOwnProperty("erro")) {
@@ -47,18 +49,18 @@ export default function FormHired(props) {
     setStreet({ value: response.data.logradouro, error: street.error });
     setCity({
       value: response.data.localidade + " - " + response.data.uf,
-      error: city.error
+      error: city.error,
     });
     setVisibleButtonCity(true);
     setDistrict({ value: response.data.bairro, error: district.error });
   };
 
-  const handleChangeName = event => {
+  const handleChangeName = (event) => {
     let name = event.target.value;
     setName({ value: name, error: name.error });
   };
 
-  const handleChangeNumber = event => {
+  const handleChangeNumber = (event) => {
     let input = event.target.value;
     input = input.replace(/[^0-9]/gi, "");
 
@@ -76,7 +78,7 @@ export default function FormHired(props) {
     if (validate.validateEmail(email.value) !== "") {
       setEmail({
         value: email.value,
-        error: validate.validateEmail(email.value)
+        error: validate.validateEmail(email.value),
       });
       allValid = false;
     }
@@ -87,7 +89,7 @@ export default function FormHired(props) {
     if (validate.validatePhoneIncomplete(phone.value) !== "") {
       setPhone({
         value: phone.value,
-        error: validate.validatePhoneIncomplete(phone.value)
+        error: validate.validatePhoneIncomplete(phone.value),
       });
       allValid = false;
     }
@@ -99,42 +101,42 @@ export default function FormHired(props) {
     if (validate.validateSelect(city.value) !== "") {
       setCity({
         value: city.value,
-        error: validate.validateSelect(city.value)
+        error: validate.validateSelect(city.value),
       });
       allValid = false;
     }
     if (validate.validateNotEmpty(street.value) !== "") {
       setStreet({
         value: street.value,
-        error: validate.validateNotEmpty(street.value)
+        error: validate.validateNotEmpty(street.value),
       });
       allValid = false;
     }
     if (validate.validateNotEmpty(number.value) !== "") {
       setNumber({
         value: number.value,
-        error: validate.validateNotEmpty(number.value)
+        error: validate.validateNotEmpty(number.value),
       });
       allValid = false;
     }
     if (validate.validateNotEmpty(district.value) !== "") {
       setDistrict({
         value: district.value,
-        error: validate.validateNotEmpty(district.value)
+        error: validate.validateNotEmpty(district.value),
       });
       allValid = false;
     }
     if (validate.validateNotEmpty(office.value) !== "") {
       setOffice({
         value: office.value,
-        error: validate.validateNotEmpty(office.value)
+        error: validate.validateNotEmpty(office.value),
       });
       allValid = false;
     }
     if (validate.validateNotEmpty(payment.value) !== "") {
       setPayment({
         value: payment.value,
-        error: validate.validateNotEmpty(payment.value)
+        error: validate.validateNotEmpty(payment.value),
       });
       allValid = false;
     }
@@ -149,7 +151,7 @@ export default function FormHired(props) {
         { field: "Número:", value: number.value },
         { field: "Bairro:", value: district.value },
         { field: "Pagamento:", value: payment.value },
-        { field: "Cargo", value: office.value }
+        { field: "Cargo", value: office.value },
       ];
 
       if (phone.value.match(/[0-9]/)) {
@@ -159,17 +161,17 @@ export default function FormHired(props) {
       if (complement.value.length !== 0)
         values.splice(complementPosition, 0, {
           field: "Complemento:",
-          value: complement.value
+          value: complement.value,
         });
 
       setOpenDialogConfirmInfo({
         open: true,
-        info: values
+        info: values,
       });
     }
   };
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     validateFields();
   };
@@ -200,7 +202,7 @@ export default function FormHired(props) {
                 value={name.name}
                 error={Boolean(name.error)}
                 helperText={name.error}
-                onChange={event => handleChangeName(event)}
+                onChange={(event) => handleChangeName(event)}
               />
             </Grid>
 
@@ -214,7 +216,7 @@ export default function FormHired(props) {
                 value={email.value}
                 error={Boolean(email.error)}
                 helperText={email.error}
-                onChange={event =>
+                onChange={(event) =>
                   setEmail({ value: event.target.value, error: email.error })
                 }
               />
@@ -224,7 +226,7 @@ export default function FormHired(props) {
                 <InputMask
                   mask="999.999.999-99"
                   value={CPF.value}
-                  onChange={event =>
+                  onChange={(event) =>
                     setCPF({ value: event.target.value, error: CPF.error })
                   }
                 >
@@ -245,7 +247,7 @@ export default function FormHired(props) {
                 <InputMask
                   value={phone.value}
                   mask="(99)99999-9999"
-                  onChange={event =>
+                  onChange={(event) =>
                     setPhone({ value: event.target.value, error: phone.error })
                   }
                 >
@@ -268,7 +270,7 @@ export default function FormHired(props) {
                 <InputMask
                   mask="99999-999"
                   value={CEP.value}
-                  onChange={event => {
+                  onChange={(event) => {
                     setCEP({ value: event.target.value, error: CEP.error });
                     fetchCEP(event.target.value);
                   }}
@@ -328,10 +330,10 @@ export default function FormHired(props) {
                   helperText={street.error}
                   style={{ background: filledColor }}
                   value={street.value}
-                  onChange={event =>
+                  onChange={(event) =>
                     setStreet({
                       value: event.target.value,
-                      error: street.error
+                      error: street.error,
                     })
                   }
                 />
@@ -346,7 +348,7 @@ export default function FormHired(props) {
                   label="Número"
                   variant="outlined"
                   value={number.value}
-                  onChange={event => handleChangeNumber(event)}
+                  onChange={(event) => handleChangeNumber(event)}
                 />
               </Grid>
             </Grid>
@@ -361,10 +363,10 @@ export default function FormHired(props) {
                   label="Complemento (Opcional)"
                   variant="outlined"
                   value={complement.value}
-                  onChange={event =>
+                  onChange={(event) =>
                     setComplement({
                       value: event.target.value,
-                      error: complement.error
+                      error: complement.error,
                     })
                   }
                 />
@@ -380,10 +382,10 @@ export default function FormHired(props) {
                   label="Bairro"
                   variant="outlined"
                   value={district.value}
-                  onChange={event =>
+                  onChange={(event) =>
                     setDistrict({
                       value: event.target.value,
-                      error: district.error
+                      error: district.error,
                     })
                   }
                 />
@@ -422,30 +424,33 @@ export default function FormHired(props) {
                   label="Cargo"
                   variant="outlined"
                   value={office.value}
-                  onChange={event =>
+                  onChange={(event) =>
                     setOffice({
                       value: event.target.value,
-                      error: office.error
+                      error: office.error,
                     })
                   }
                 />
               </Grid>
             </Grid>
-        <Grid item container direction="row-reverse">
-          <StyledButton
-            type="submit"
-            variant="contained"
-            size="large"
-            color="secondary"
-          >
-            <FontButton>OK</FontButton>
-          </StyledButton>
-        </Grid>
+            <Grid item container justify="flex-end">
+              <Button variant="outlined" color="secondary" size="large" onClick={() => {})}>
+                Voltar
+              </Button>
+              <div style={{ width: 10 }}></div>
+              <StyledButton
+                type="submit"
+                variant="contained"
+                size="large"
+                color="secondary"
+              >
+                <FontButton>OK</FontButton>
+              </StyledButton>
+            </Grid>
           </>
         ) : (
           <ConfirmInfo info={openDialogConfirmInfo.info} />
         )}
-
       </Container>
     </form>
   );

@@ -25,16 +25,16 @@ export const ButtonLogin = styled.button`
   border: none;
   width: 150px;
   color: white;
-  padding: 15px 32px;
-  text-align: center;
   text-decoration: none;
-  display: inline-block;
+  display: block;
+  padding: 10px;
   font-size: 16px;
+  text-align: center;
+  margin: 0 auto;
 `;
 
 export const Title = styled.p`
-  font: bold 20px Roboto, serif;
+  font: bold 17px Roboto, serif;
   text-align: center;
-  padding-left: 20px;
 `;
 

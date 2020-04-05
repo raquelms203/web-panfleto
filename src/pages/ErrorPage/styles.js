@@ -11,7 +11,7 @@ export const Title = styled.pre`
 export const Message = styled.p`
   text-align: center;
   overflow-wrap: break-word;
-  word-wrap: break-word; /* Firefox support */
+  word-wrap: break-word;
   font: 22px Calibri;
   margin-left: 20px;
   margin-top: 6px;
