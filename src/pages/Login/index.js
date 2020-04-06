@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { TextField, Grid } from "@material-ui/core";
+import { TextField, Grid, CircularProgress } from "@material-ui/core";
 
 import Computer from "../../assets/computer.png";
 import { ButtonLogin, Title, StyledGrid } from "./styles";
@@ -10,9 +10,18 @@ import { apiADM } from "../../services/api";
 export default function Login() {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
+  const [loading, setLoading] = useState(false);
   const history = useHistory();
 
+  const imageWidth = () => {
+    if (!Boolean(email.error) && !Boolean(password.error)) return 295.5;
+    else if (!Boolean(email.error) && Boolean(password.error)) return 325;
+    else if (Boolean(email.error) && !Boolean(password.error)) return 325;
+    else if (Boolean(email.error) && Boolean(password.error)) return 350;
+  };
+
   const sendLogin = async () => {
+    setLoading(true);
     await apiADM
       .post("/login", {
         email: email.value,
@@ -57,6 +66,18 @@ export default function Login() {
     validateField();
   };
 
+  if (loading)
+    return (
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        style={{ minHeight: "99vh" }}
+      >
+        <CircularProgress />
+      </Grid>
+    );
+
   return (
     <StyledGrid container alignItems="center" justify="space-around">
       <Grid item container justify="center" alignItems="center">
@@ -70,7 +91,7 @@ export default function Login() {
           sm={5}
           md={4}
         >
-          <img src={Computer} alt="login" style={{ width: 300 }}></img>
+          <img src={Computer} alt="login" style={{ width: imageWidth() }}></img>
         </Grid>
         <Grid
           item
@@ -86,7 +107,7 @@ export default function Login() {
           <Grid item xs sm md>
             <form autoComplete="off" onSubmit={handleSubmit}>
               <Title>Faça login para entrar no sistema</Title>
-              <div style={{ height: 20 }}></div>
+              <div style={{ height: 20, width: 350 }}></div>
               <TextField
                 fullWidth
                 InputLabelProps={{ shrink: true }}
@@ -103,7 +124,7 @@ export default function Login() {
                 error={Boolean(email.error)}
                 helperText={email.error}
               />
-              <div style={{ height: 16}}></div>
+              <div style={{ height: 16 }}></div>
               <TextField
                 fullWidth
                 InputLabelProps={{ shrink: true }}

@@ -8,7 +8,7 @@ import {
   Footer,
   Logo,
   FontButton,
-  StyledButton
+  StyledButton,
 } from "./styles";
 import SmallScreenAlert from "../SmallScreenAlert";
 import ActionButton from "../../components/ActionButton";
@@ -47,14 +47,14 @@ export default function Dashboard() {
   const [openDialogDelete, setOpenDialogDelete] = useState({
     open: false,
     list: [],
-    type: ""
+    type: "",
   });
 
   const fetchCities = useCallback(async () => {
     if (cities.length === 0) {
       let response = await apiCities.get();
       let names = response.data.map(
-        item =>
+        (item) =>
           item.nome + " - " + item.municipio.microrregiao.mesorregiao.UF.sigla
       );
       setCities(names);
@@ -62,16 +62,18 @@ export default function Dashboard() {
   }, [cities]);
 
   const fetchPolitics = async () => {
-    let response = await apiADM.get(`/politic?adminId=${localStorage.getItem("userId")}`);
+    let response = await apiADM.get(
+      `/politic?adminId=${localStorage.getItem("userId")}`
+    );
     let politicsAll = [];
 
-    response.data.forEach(item => {
+    response.data.forEach((item) => {
       let p = {
         name: item.name,
         type: item.type,
         cpf: item.document,
         city: item.city,
-        urlSign: item.urlSign
+        urlSign: item.urlSign,
       };
       politicsAll.push(p);
     });
@@ -81,18 +83,16 @@ export default function Dashboard() {
 
   const fetchUser = useCallback(async () => {
     if (Object.entries(politics).length === 0) {
-    
       let politicsAll = await fetchPolitics();
-
       setPolitics(politicsAll);
     }
-  }, );
+  }, [setPolitics, politics]);
 
   const onOrientationChange = useCallback(() => {
     if (window.screen.availWidth < 500) {
       setIsLessThan500(true);
     }
-    window.addEventListener("orientationchange", function() {
+    window.addEventListener("orientationchange", function () {
       setIsLessThan500(false);
       if (window.matchMedia("(orientation: landscape)").matches) {
         if (window.screen.availWidth < 500) {
@@ -114,7 +114,7 @@ export default function Dashboard() {
     openDialogAddPolitic,
     openDialogAddHired,
     openDialogFilter,
-    openDialogAddManager
+    openDialogAddManager,
   ]);
 
   const handlePoliticListClick = (event, index) => {
@@ -124,9 +124,9 @@ export default function Dashboard() {
     // setHireds(politics[index].gestores[0].contratados);
   };
 
-  const isTwoPoliticsSelected = () => {
-    return checkPolitic.length > 1;
-  };
+  // const isTwoPoliticsSelected = () => {
+  //   return checkPolitic.length > 1;
+  // };
 
   const handleCheckChangePolitic = (event, value, indexList) => {
     let list = checkPolitic;
@@ -134,7 +134,9 @@ export default function Dashboard() {
     if (value) {
       list.push(politics[indexList].id);
     } else {
-      let indexRemove = list.findIndex(item => item === politics[indexList].id);
+      let indexRemove = list.findIndex(
+        (item) => item === politics[indexList].id
+      );
       list.splice(indexRemove, 1);
     }
     setCheckPolitic(list);
@@ -160,7 +162,9 @@ export default function Dashboard() {
     if (value) {
       list.push(managers[indexList].id);
     } else {
-      let indexRemove = list.findIndex(item => item === managers[indexList].id);
+      let indexRemove = list.findIndex(
+        (item) => item === managers[indexList].id
+      );
       list.splice(indexRemove, 1);
     }
     setCheckManager(list);
@@ -179,13 +183,13 @@ export default function Dashboard() {
     if (value) {
       list.push(hireds[indexList].id);
     } else {
-      let indexRemove = list.findIndex(item => item === hireds[indexList].id);
+      let indexRemove = list.findIndex((item) => item === hireds[indexList].id);
       list.splice(indexRemove, 1);
     }
     setCheckHired(list);
   };
 
-  const handleFilterClick = event => {
+  const handleFilterClick = (event) => {
     setOpenDialogFilter(true);
   };
 
@@ -193,11 +197,11 @@ export default function Dashboard() {
     setCitySelected(value);
   };
 
-  const handleFilterPolitic = event => {
+  const handleFilterPolitic = (event) => {
     setFilterPoliticSelected(event.target.value);
   };
 
-  const handleFilters = async event => {
+  const handleFilters = async (event) => {
     if (citySelected === "" && filterPoliticSelected === 0) {
       setOpenDialogFilter(false);
       return;
@@ -205,7 +209,7 @@ export default function Dashboard() {
     let fetch = await fetchPolitics();
     let list = [];
     if (citySelected !== "" && filterPoliticSelected !== 0) {
-      fetch.forEach(item => {
+      fetch.forEach((item) => {
         if (item.city === citySelected) {
           if (list.indexOf(item) === -1) {
             let n = filterPoliticSelected + 1;
@@ -217,13 +221,13 @@ export default function Dashboard() {
       });
     } else if (filterPoliticSelected !== 0 && citySelected === "") {
       let n = filterPoliticSelected + 1;
-      fetch.forEach(item => {
+      fetch.forEach((item) => {
         if (item.type === n) {
           if (list.indexOf(item) === -1) list.push(item);
         }
       });
     } else if (filterPoliticSelected === 0 && citySelected !== "") {
-      fetch.forEach(item => {
+      fetch.forEach((item) => {
         if (item.city === citySelected) {
           if (list.indexOf(item) === -1) {
             list.push(item);
@@ -258,7 +262,7 @@ export default function Dashboard() {
     if (filterPoliticSelected !== 0) {
       let list = [];
       let n = filterPoliticSelected + 1;
-      fetch.forEach(item => {
+      fetch.forEach((item) => {
         if (item.type === n) {
           if (list.indexOf(item) === -1) {
             list.push(item);
@@ -283,7 +287,7 @@ export default function Dashboard() {
     let fetch = await fetchPolitics();
     if (citySelected !== "") {
       let list = [];
-      fetch.forEach(item => {
+      fetch.forEach((item) => {
         if (item.city === citySelected) {
           if (list.indexOf(item) === -1) {
             list.push(item);
@@ -325,7 +329,7 @@ export default function Dashboard() {
           <Grid item>
             <div style={{ marginRight: "20px" }}>
               <Button color="inherit" onClick={() => {}}>
-                  <p>{localStorage.getItem("username").split(" ")[0]}</p>
+                <p>{localStorage.getItem("username").split(" ")[0]}</p>
               </Button>
             </div>
           </Grid>
@@ -340,7 +344,9 @@ export default function Dashboard() {
                 <strong>Filtrar</strong>
               </Button>
               <Dialog
-                onClose={() => setOpenDialogFilter(false)}
+                onClose={() => {
+                  setOpenDialogFilter(false);
+                }}
                 open={openDialogFilter}
               >
                 <DialogTitle style={{ background: "#f5f3f3" }}>
@@ -363,7 +369,7 @@ export default function Dashboard() {
                         variant="contained"
                         size="large"
                         color="secondary"
-                        onClick={event => handleFilters(event)}
+                        onClick={(event) => handleFilters(event)}
                       >
                         <FontButton>OK</FontButton>
                       </StyledButton>
@@ -381,9 +387,7 @@ export default function Dashboard() {
                     <LabelFilter>{citySelected} X</LabelFilter>
                   )}
                 </Button>
-              ) : (
-                undefined
-              )}
+              ) : undefined}
               {filterPoliticSelected !== 0 ? (
                 <Button onClick={() => removeFilterPolitic()}>
                   {filterPoliticSelected === 1 ? (
@@ -392,9 +396,7 @@ export default function Dashboard() {
                     <LabelFilter>Vereadores X</LabelFilter>
                   )}
                 </Button>
-              ) : (
-                undefined
-              )}
+              ) : undefined}
             </Grid>
             <Grid item>
               <ActionButton
@@ -406,9 +408,9 @@ export default function Dashboard() {
                     setOpenDialogDelete({
                       open: true,
                       list: checkPolitic,
-                      type: "politic"
+                      type: "politic",
                     });
-                  }
+                  },
                 ]}
               />
             </Grid>
@@ -421,12 +423,12 @@ export default function Dashboard() {
             onCheckChange={handleCheckChangePolitic}
             dropdownNames={["Adicionar assinatura", "Editar"]}
             dropdownOnChange={[
-              index => {
+              (index) => {
                 history.push(`/assinatura/${politics[index].token}`, {
-                  token: politics[index].token
+                  token: politics[index].token,
                 });
               },
-              () => {}
+              () => {},
             ]}
           />
           <Dialog
@@ -436,9 +438,11 @@ export default function Dashboard() {
             <DialogTitle style={{ background: "#f5f3f3" }}>
               <FormPolitic
                 cities={cities}
-                onClick={() => {
-                  setOpenDialogAddPolitic(false);
-                }}
+                onCancel={() => setOpenDialogAddPolitic(false)}
+                onClose={async () => 
+                {setOpenDialogAddPolitic(false);
+                let newPolitics = await fetchPolitics();
+                setPolitics(newPolitics);}}
               />
             </DialogTitle>
           </Dialog>
@@ -447,7 +451,7 @@ export default function Dashboard() {
               setOpenDialogDelete({
                 open: false,
                 list: undefined,
-                type: ""
+                type: "",
               })
             }
             open={openDialogDelete.open && openDialogDelete.type === "politic"}
@@ -460,7 +464,7 @@ export default function Dashboard() {
                   setOpenDialogDelete({
                     open: false,
                     list: undefined,
-                    type: ""
+                    type: "",
                   })
                 }
                 onClickYes={() => {}}
@@ -481,9 +485,9 @@ export default function Dashboard() {
                 setOpenDialogDelete({
                   open: true,
                   list: checkManager,
-                  type: "manager"
+                  type: "manager",
                 });
-              }
+              },
             ]}
           />
           <div style={{ height: "4.4px" }}></div>
@@ -513,7 +517,7 @@ export default function Dashboard() {
               setOpenDialogDelete({
                 open: false,
                 list: undefined,
-                type: ""
+                type: "",
               })
             }
             open={openDialogDelete.open && openDialogDelete.type === "manager"}
@@ -526,7 +530,7 @@ export default function Dashboard() {
                   setOpenDialogDelete({
                     open: false,
                     list: undefined,
-                    type: ""
+                    type: "",
                   })
                 }
                 onClickYes={() => {}}
@@ -547,9 +551,9 @@ export default function Dashboard() {
                 setOpenDialogDelete({
                   open: true,
                   list: checkHired,
-                  type: "hired"
+                  type: "hired",
                 });
-              }
+              },
             ]}
           />
           <div style={{ height: "4.4px" }}></div>
@@ -563,19 +567,19 @@ export default function Dashboard() {
               "Adicionar assinatura",
               "Adicionar comprovante",
               "Ver PDF",
-              "Editar"
+              "Editar",
             ]}
             dropdownOnChange={[
-              index => {
+              (index) => {
                 history.push(`/assinatura/${hireds[index].token}`, {
-                  token: hireds[index].token
+                  token: hireds[index].token,
                 });
               },
-              index => {},
-              index => {
+              (index) => {},
+              (index) => {
                 window.open(hireds[index].contrato);
               },
-              index => {}
+              (index) => {},
             ]}
           />
           <Dialog
@@ -596,7 +600,7 @@ export default function Dashboard() {
               setOpenDialogDelete({
                 open: false,
                 list: undefined,
-                type: ""
+                type: "",
               })
             }
             open={openDialogDelete.open && openDialogDelete.type === "hired"}
@@ -609,7 +613,7 @@ export default function Dashboard() {
                   setOpenDialogDelete({
                     open: false,
                     list: undefined,
-                    type: ""
+                    type: "",
                   })
                 }
                 onClickYes={() => {}}

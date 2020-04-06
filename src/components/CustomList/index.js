@@ -7,7 +7,7 @@ import {
   Grid,
   Menu,
   MenuItem,
-  ListItemSecondaryAction
+  ListItemSecondaryAction,
 } from "@material-ui/core";
 
 import { TextOverflow } from "./styles";
@@ -21,12 +21,12 @@ export default function CustomList(props) {
     indexSelected,
     onCheckChange,
     dropdownNames,
-    dropdownOnChange
+    dropdownOnChange,
   } = props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleClickMenu = event => {
+  const handleClickMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -35,14 +35,18 @@ export default function CustomList(props) {
   };
 
   return (
-    <div style={{ background: "white", height: "100vh" }}>
+    <div style={{ background: "white", height: "82vh" }}>
       {list.length === 0 ? (
         <Grid container direction="column" alignItems="center">
           <div style={{ height: "50px" }}></div>
           <strong style={{ padding: "8px" }}> Não há registros</strong>
         </Grid>
       ) : (
-        <List component="nav" dense>
+        <List
+          component="nav"
+          dense
+          style={{ maxHeight: "82vh", overflow: "auto" }}
+        >
           {list.map((itemList, indexList) => (
             <ListItem
               key={indexList}
@@ -50,31 +54,28 @@ export default function CustomList(props) {
               button
               style={{ paddingRight: 0 }}
               selected={indexSelected === indexList}
-              onClick={event => onClick(event, indexList)}
+              onClick={(event) => onClick(event, indexList)}
             >
-                <Checkbox
-                  edge="start"
-                  tabIndex={-1}
-                  disableRipple
-                  onChange={(event, value) =>
-                    onCheckChange(event, value, indexList)
-                  }
-                />
-                <Grid container alignItems="center" justify="space-between">
-                  <Grid item xs={8}>
-                    <TextOverflow>{itemList.name}</TextOverflow>
-                  </Grid>
-                  <Grid item container xs={4} justify="flex-end">
-                    <div
-                     style={{ marginRight: 20 }}
-                      onClick={handleClickMenu}
-                    >
-                      <MoreVert
-                        style={{ color: "#525252", transform: "scale(0.8)" }}
-                      />
-                    </div>
-                  </Grid>
+              <Checkbox
+                edge="start"
+                tabIndex={-1}
+                disableRipple
+                onChange={(event, value) =>
+                  onCheckChange(event, value, indexList)
+                }
+              />
+              <Grid container alignItems="center" justify="space-between">
+                <Grid item xs={8}>
+                  <TextOverflow>{itemList.name}</TextOverflow>
                 </Grid>
+                <Grid item container xs={4} justify="flex-end">
+                  <div style={{ marginRight: 20 }} onClick={handleClickMenu}>
+                    <MoreVert
+                      style={{ color: "#525252", transform: "scale(0.8)" }}
+                    />
+                  </div>
+                </Grid>
+              </Grid>
               <ListItemSecondaryAction>
                 <Menu
                   id="simple-menu"
@@ -83,7 +84,7 @@ export default function CustomList(props) {
                   open={Boolean(anchorEl)}
                   onClose={handleCloseMenu}
                 >
-                  {dropdownNames.map(function(item, index) {
+                  {dropdownNames.map(function (item, index) {
                     return (
                       <MenuItem
                         key={index}
@@ -106,5 +107,5 @@ export default function CustomList(props) {
 CustomList.propTypes = {
   list: PropTypes.array.isRequired,
   onClick: PropTypes.func.isRequired,
-  indexSelected: PropTypes.number
+  indexSelected: PropTypes.number,
 };

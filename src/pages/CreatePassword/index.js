@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Grid, TextField, Button, CircularProgress } from "@material-ui/core";
+import { Grid, TextField } from "@material-ui/core";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { useHistory } from "react-router-dom";
@@ -63,97 +63,87 @@ export default function CreatePassword(props) {
       .catch(function (error) {
         console.log(error);
       });
-  }, [setTokenValid]);
+  }, [setTokenValid, token]);
 
   useEffect(() => {
     verifyToken();
   }, [verifyToken]);
 
   if (tokenValid === undefined)
-    return (
-      <Grid
-        container
-        justify="center"
-        alignItems="center"
-        style={{ minHeight: "99vh" }}
-      >
-        <CircularProgress />
-      </Grid>
-    );
-
-  return tokenValid ? (
-    <Container>
-      <form onSubmit={handleSubmit}>
-        <Grid
-          container
-          direction="column"
-          justify="center"
-          alignItems="center"
-          spacing={2}
-        >
-          <div style={{ height: 20 }}></div>
-          <Grid item xs sm md>
-            <RoundedDiv>
-              <img src={Logo} />
-            </RoundedDiv>
-          </Grid>
-          <Grid item xs sm md>
-            <h2>Cadastre a sua senha</h2>
-          </Grid>
-          <Grid item xs sm md>
-            <p>
-              A senha deve conter pelo menos 6 caracteres com letras e números.
-            </p>
-          </Grid>
-          <div style={{ height: 10 }}></div>
-          <Grid item xs sm md>
-            <TextField
-              style={{ width: 350, background: "white" }}
-              InputLabelProps={{ shrink: true }}
-              size="small"
-              label="Senha"
-              type="password"
-              variant="outlined"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            ></TextField>
-          </Grid>
-          <Grid item xs sm md>
-            <TextField
-              style={{ width: 350, background: "white" }}
-              InputLabelProps={{ shrink: true }}
-              size="small"
-              type="password"
-              label="Confirmar senha"
-              variant="outlined"
-              value={password2.value}
-              onChange={(event) =>
-                setPassword2({
-                  value: event.target.value,
-                  error: password2.error,
-                })
-              }
-              error={Boolean(password2.error)}
-              helperText={password2.error}
-            ></TextField>
-          </Grid>
-          <div style={{ height: 20 }}></div>
-          <StyledButton
-            type="submit"
-            variant="contained"
-            color="secondary"
-            style={{ color: "white" }}
+    return tokenValid ? (
+      <Container>
+        <form onSubmit={handleSubmit}>
+          <Grid
+            container
+            direction="column"
+            justify="center"
+            alignItems="center"
+            spacing={2}
           >
-            OK
-          </StyledButton>
-        </Grid>
-      </form>
-    </Container>
-  ) : (
-    <ErrorPage
-      title="Token expirado"
-      message="Entre em contato com o administrador para solicitar um novo email."
-      file={Wait}
-    />
-  );
+            <div style={{ height: 20 }}></div>
+            <Grid item xs sm md>
+              <RoundedDiv>
+                <img alt="" src={Logo} />
+              </RoundedDiv>
+            </Grid>
+            <Grid item xs sm md>
+              <h2>Cadastre a sua senha</h2>
+            </Grid>
+            <Grid item xs sm md>
+              <p>
+                A senha deve conter pelo menos 6 caracteres com letras e
+                números.
+              </p>
+            </Grid>
+            <div style={{ height: 10 }}></div>
+            <Grid item xs sm md>
+              <TextField
+                style={{ width: 350, background: "white" }}
+                InputLabelProps={{ shrink: true }}
+                size="small"
+                label="Senha"
+                type="password"
+                variant="outlined"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              ></TextField>
+            </Grid>
+            <Grid item xs sm md>
+              <TextField
+                style={{ width: 350, background: "white" }}
+                InputLabelProps={{ shrink: true }}
+                size="small"
+                type="password"
+                label="Confirmar senha"
+                variant="outlined"
+                value={password2.value}
+                onChange={(event) =>
+                  setPassword2({
+                    value: event.target.value,
+                    error: password2.error,
+                  })
+                }
+                error={Boolean(password2.error)}
+                helperText={password2.error}
+              ></TextField>
+            </Grid>
+            <div style={{ height: 20 }}></div>
+            <StyledButton
+              type="submit"
+              variant="contained"
+              color="secondary"
+              style={{ color: "white" }}
+            >
+              OK
+            </StyledButton>
+          </Grid>
+        </form>
+      </Container>
+    ) : (
+      <ErrorPage
+        title="Token expirado"
+        message="Entre em contato com o administrador para solicitar um novo email."
+        file={Wait}
+      />
+    );
 }

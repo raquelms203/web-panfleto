@@ -21,7 +21,7 @@ export default function ErrorPage(props) {
           <Message>{message}</Message>
         </Grid>
         <Grid item container justify="flex-end" xs={12} sm={12} md={7} lg={6}>
-          <img src={file}></img>
+          <img src={file} alt=""></img>
         </Grid>
       </Container>
     </Grid>

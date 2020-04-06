@@ -5,7 +5,7 @@ import { FontField, FontValue } from "./styles";
 import { StyledButton } from "../FormHired/styles";
 
 export default function ConfirmInfo(props) {
-  const { info, onClick } = props;
+  const { info, onClick, onBack } = props;
 
   if (info !== undefined)
     return (
@@ -15,7 +15,7 @@ export default function ConfirmInfo(props) {
           <div style={{ height: 10 }}></div>
         </Grid>
         {info.map((item, index) => (
-          <Grid  key={index} item container alignItems="center" xs sm md>
+          <Grid key={index} item container alignItems="center" xs sm md>
             <FontField>{item.field} </FontField>
             <FontValue>{item.value}</FontValue>
           </Grid>
@@ -23,7 +23,15 @@ export default function ConfirmInfo(props) {
         <Grid item>
           <div style={{ height: 20 }}></div>
         </Grid>
-        <Grid item xs sm md>
+        <Grid item container justify="flex-end" xs sm md>
+          <Button
+            size="large"
+            style={{ background: "#958a94", color: "white" }}
+            onClick={onBack}
+          >
+            Voltar
+          </Button>
+          <div style={{ width: 15 }}></div>
           <StyledButton
             type="submit"
             variant="contained"

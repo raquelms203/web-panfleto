@@ -4,7 +4,9 @@ import { Grid } from "@material-ui/core";
 
 export const StyledGrid = styled(Grid)`
   margin: 20px;
-  min-height: 100vh;
+  min-height: 85vh;
+  overflow-x: hidden;
+  width: 100%;
 `;
 
 export const CardLogin = styled.div`

@@ -3,7 +3,6 @@ import { Grid, TextField, Button } from "@material-ui/core";
 import InputMask from "react-input-mask";
 import axios from "axios";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
-import { useHistory } from "react-router-dom";
 
 import {
   Container,
@@ -434,10 +433,14 @@ export default function FormHired(props) {
               </Grid>
             </Grid>
             <Grid item container justify="flex-end">
-              <Button variant="outlined" color="secondary" size="large" onClick={() => {})}>
+              <Button
+                size="large"
+                style={{ background: "#958a94", color: "white" }}
+                onClick={() => {}}
+              >
                 Voltar
               </Button>
-              <div style={{ width: 10 }}></div>
+              <div style={{ width: 16 }}></div>
               <StyledButton
                 type="submit"
                 variant="contained"
