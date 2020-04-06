@@ -9,16 +9,20 @@ import { ButtonDialog, EmptyDialog } from "./styles";
 export default function ConfirmDelete(props) {
   const { list, onBack, type } = props;
 
-  const onClickYes = () => {
+  const onClickYes = async () => {
     if (type === "politic") {
-     list.forEach((item) => {  
-      apiADM.delete(`/politic/${item}?`, {  
-        adminId: localStorage.getItem("userId")
-      }).then((response) => {  
-        onBack();
-        toast.success("Campanha(s) apagada com sucesso!")
-      }).catch((error) => toast.error("Ocorreu um erro ao apagar campanha(s)!"))
-     })
+      let error = false;
+      for (let i = 0; i < list.length; i++) {
+        await apiADM
+          .delete(
+            `/politic/${list[i]}?adminId=${localStorage.getItem("userId")}`
+          )
+          .catch((e) => (error = true));
+      }
+
+      if (error) toast.error("Ocorreu um erro ao apagar campanha(s)!");
+      else toast.success("Campanha(s) apagada com sucesso!");
+      onBack();
     }
   };
 
@@ -42,8 +46,8 @@ export default function ConfirmDelete(props) {
             <div style={{ width: 20 }}></div>
 
             <ButtonDialog
-              style={{ color: "red", padding: 10}}
-              onClick={onClickYes}
+              style={{ color: "red", padding: 10 }}
+              onClick={() => onClickYes()}
             >
               <p>SIM</p>
             </ButtonDialog>
