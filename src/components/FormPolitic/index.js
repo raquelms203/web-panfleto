@@ -13,13 +13,13 @@ import ConfirmInfo from "../ConfirmInfo";
 import { apiADM } from "../../services/api";
 
 export default function FormPolitic(props) {
-  const initialValues = {
+  const [initialValues, setInitialValues] = useState({
     name: "",
     city: "",
     cpf: "",
     group: "",
     type: "",
-  };
+  });
 
   const { cities, onClose, onCancel } = props;
   const [openDialogConfirmInfo, setOpenDialogConfirmInfo] = useState({
@@ -101,6 +101,7 @@ export default function FormPolitic(props) {
                 <Field name="cpf">
                   {({ field }) => (
                     <InputMask
+                     {...field}
                       mask="999.999.999-99"
                       onChange={(event) => {
                         setFieldValue(
@@ -206,7 +207,15 @@ export default function FormPolitic(props) {
     <ConfirmInfo
       info={openDialogConfirmInfo.info}
       onClick={() => sendPolitic(openDialogConfirmInfo.values)}
-  //   onBack={() => console.log("oi")}
+      onBack={() => {
+        console.log(openDialogConfirmInfo.values.cpf);
+        setOpenDialogConfirmInfo({ open: false });
+        setInitialValues({
+          name: openDialogConfirmInfo.values.name,
+          cpf: openDialogConfirmInfo.values.cpf,
+          group: openDialogConfirmInfo.values.group,
+        });
+      }}
     />
   );
 }

@@ -1,16 +1,31 @@
 import React from "react";
 import { Grid } from "@material-ui/core";
+import { apiADM } from "../../services/api";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
+
 import { ButtonDialog, EmptyDialog } from "./styles";
 
 export default function ConfirmDelete(props) {
-  const { list, onClickNo, onClickYes } = props;
-  //type: prop
+  const { list, onBack, type } = props;
+
+  const onClickYes = () => {
+    if (type === "politic") {
+     list.forEach((item) => {  
+      apiADM.delete(`/politic/${item}?`, {  
+        adminId: localStorage.getItem("userId")
+      }).then((response) => {  
+        onBack();
+        toast.success("Campanha(s) apagada com sucesso!")
+      }).catch((error) => toast.error("Ocorreu um erro ao apagar campanha(s)!"))
+     })
+    }
+  };
 
   if (list === undefined) return <EmptyDialog />;
   else if (list.length > 0)
     return (
       <div style={{ width: 300 }}>
-
         <Grid container direction="column">
           <Grid item>
             <p>Essa ação é permanente.</p>
@@ -20,14 +35,14 @@ export default function ConfirmDelete(props) {
           <div style={{ height: 30 }}></div>
 
           <Grid item container justify="flex-end" spacing={3}>
-            <ButtonDialog style={{ color: "black" }} onClick={onClickNo}>
+            <ButtonDialog style={{ color: "black" }} onClick={onBack}>
               <p>NÃO</p>
             </ButtonDialog>
 
             <div style={{ width: 20 }}></div>
 
             <ButtonDialog
-              style={{ color: "red", marginRight: 10 }}
+              style={{ color: "red", padding: 10}}
               onClick={onClickYes}
             >
               <p>SIM</p>
@@ -41,14 +56,17 @@ export default function ConfirmDelete(props) {
   else if (list.length === 0)
     return (
       <>
-      <div style={{ height: 10, width: 300 }}></div>
+        <div style={{ height: 10, width: 300 }}></div>
 
         <p>Selecione pelo menos um item</p>
 
         <div style={{ height: 30 }}></div>
 
         <Grid container justify="flex-end">
-          <ButtonDialog style={{ color: "black", marginRight: 25 }} onClick={onClickNo}>
+          <ButtonDialog
+            style={{ color: "black", marginRight: 25 }}
+            onClick={onBack}
+          >
             <p>VOLTAR</p>
           </ButtonDialog>
         </Grid>

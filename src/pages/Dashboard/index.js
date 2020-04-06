@@ -1,5 +1,7 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { Button, Grid, Dialog, DialogTitle, AppBar } from "@material-ui/core";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
 import {
   StyledGrid,
   Separator,
@@ -20,13 +22,13 @@ import FormManager from "../../components/FormManager";
 import FormPolitic from "../../components/FormPolitic";
 import ConfirmDelete from "../../components/ConfirmDelete";
 import { useHistory } from "react-router-dom";
-import { useState } from "react";
 
 import { apiADM, apiCities } from "../../services/api";
 import LogoImg from "../../assets/logo.svg";
 
 export default function Dashboard() {
   const history = useHistory();
+  const [expiredToken, setExpiredToken] = useState(false);
   const [isLessThan500, setIsLessThan500] = useState(false);
   const [cities, setCities] = useState([]);
   const [citySelected, setCitySelected] = useState("");
@@ -62,21 +64,21 @@ export default function Dashboard() {
   }, [cities]);
 
   const fetchPolitics = async () => {
-    let response = await apiADM.get(
-      `/politic?adminId=${localStorage.getItem("userId")}`
-    );
+    console.log("fetch");
     let politicsAll = [];
-
-    response.data.forEach((item) => {
-      let p = {
-        name: item.name,
-        type: item.type,
-        cpf: item.document,
-        city: item.city,
-        urlSign: item.urlSign,
-      };
-      politicsAll.push(p);
-    });
+    await apiADM
+      .get(`/politic?adminId=${localStorage.getItem("userId")}`)
+      .then((response) => {
+        console.log("status", response.data.status);
+        response.data.forEach((item) => {
+          politicsAll.push(item);
+        });
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+         setExpiredToken(true)
+        }
+      });
 
     return politicsAll;
   };
@@ -312,6 +314,7 @@ export default function Dashboard() {
     onOrientationChange();
   }, [fetchCities, fetchUser, onOrientationChange]);
 
+  
   return isLessThan500 ? (
     <SmallScreenAlert />
   ) : (
@@ -439,10 +442,11 @@ export default function Dashboard() {
               <FormPolitic
                 cities={cities}
                 onCancel={() => setOpenDialogAddPolitic(false)}
-                onClose={async () => 
-                {setOpenDialogAddPolitic(false);
-                let newPolitics = await fetchPolitics();
-                setPolitics(newPolitics);}}
+                onClose={async () => {
+                  setOpenDialogAddPolitic(false);
+                  let newPolitics = await fetchPolitics();
+                  setPolitics(newPolitics);
+                }}
               />
             </DialogTitle>
           </Dialog>
@@ -460,14 +464,13 @@ export default function Dashboard() {
               <ConfirmDelete
                 type={openDialogDelete.type}
                 list={openDialogDelete.list}
-                onClickNo={() =>
+                onBack={() =>
                   setOpenDialogDelete({
                     open: false,
                     list: undefined,
                     type: "",
                   })
                 }
-                onClickYes={() => {}}
               />
             </DialogTitle>
           </Dialog>
