@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
   List,
@@ -8,6 +8,8 @@ import {
   Menu,
   MenuItem,
   ListItemSecondaryAction,
+  Button,
+  Paper,
 } from "@material-ui/core";
 
 import { TextOverflow } from "./styles";
@@ -35,7 +37,7 @@ export default function CustomList(props) {
   };
 
   return (
-    <div style={{ background: "white", height: "82vh" }}>
+    <div style={{ background: "white", height: "82vh", overflowX: "hidden" }}>
       {list.length === 0 ? (
         <Grid container direction="column" alignItems="center">
           <div style={{ height: "50px" }}></div>
@@ -45,7 +47,7 @@ export default function CustomList(props) {
         <List
           component="nav"
           dense
-          style={{ maxHeight: "82vh", overflow: "auto" }}
+          style={{ maxHeight: "82vh", overflowY: "auto", overflowX: "hidden" }}
         >
           {list.map((itemList, indexList) => (
             <ListItem
@@ -58,22 +60,31 @@ export default function CustomList(props) {
             >
               <Checkbox
                 edge="start"
-                tabIndex={-1}
                 disableRipple
-                onChange={(event, value) =>
-                  onCheckChange(event, value, indexList)
-                }
+                onChange={(event, value) => {
+                  onCheckChange(event, value, indexList);
+                }}
               />
-              <Grid container alignItems="center" justify="space-between">
-                <Grid item xs={8}>
-                  <TextOverflow>{itemList.name}</TextOverflow>
+              <Grid
+                container
+                alignItems="center"
+                style={{ overflow: "hidden" }}
+              >
+                <Grid item xs={10}>
+                  {!itemList.hasOwnProperty("group") ? (
+                    <TextOverflow>{itemList.name}</TextOverflow>
+                  ) : (
+                    <TextOverflow>
+                      [{itemList.group.toUpperCase()}] {itemList.name}
+                    </TextOverflow>
+                  )}
                 </Grid>
-                <Grid item container xs={4} justify="flex-end">
-                  <div style={{ marginRight: 20 }} onClick={handleClickMenu}>
+                <Grid item container xs={2} justify="flex-end">
+                  <Button onClick={handleClickMenu}>
                     <MoreVert
                       style={{ color: "#525252", transform: "scale(0.8)" }}
                     />
-                  </div>
+                  </Button>
                 </Grid>
               </Grid>
               <ListItemSecondaryAction>

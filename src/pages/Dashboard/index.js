@@ -473,9 +473,7 @@ export default function Dashboard() {
                     list: undefined,
                     type: "",
                   });
-                  let newPolitics = await fetchPolitics();
-                  setPolitics(newPolitics);
-                  setCheckPolitic([]);
+                  window.location.reload();
                 }}
               />
             </DialogTitle>
