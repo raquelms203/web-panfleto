@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MenuItem } from "@material-ui/core";
+import { MenuItem, FormControl } from "@material-ui/core";
 
 import { ErrorText, StyledSelect, StyledFormHelperText } from "./styles";
 
@@ -19,6 +19,7 @@ export default function DropdownPolitics(props) {
           Categoria
         </StyledFormHelperText>
         <StyledSelect
+          defaultValue=""
           fullWidth
           variant="outlined"
           size="small"

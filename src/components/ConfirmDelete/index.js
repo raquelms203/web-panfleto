@@ -21,7 +21,6 @@ export default function ConfirmDelete(props) {
       }
 
       if (error) toast.error("Ocorreu um erro ao apagar campanha(s)!");
-      else toast.success("Campanha(s) apagada com sucesso!");
       onBack();
     }
   };

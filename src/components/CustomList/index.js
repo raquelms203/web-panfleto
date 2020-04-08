@@ -70,7 +70,7 @@ export default function CustomList(props) {
                 alignItems="center"
                 style={{ overflow: "hidden" }}
               >
-                <Grid item xs={10}>
+                <Grid item xs={8} sm={9} md={10}>
                   {!itemList.hasOwnProperty("group") ? (
                     <TextOverflow>{itemList.name}</TextOverflow>
                   ) : (
@@ -79,7 +79,7 @@ export default function CustomList(props) {
                     </TextOverflow>
                   )}
                 </Grid>
-                <Grid item container xs={2} justify="flex-end">
+                <Grid item container xs={4} sm={3} md={2} justify="flex-end">
                   <Button onClick={handleClickMenu}>
                     <MoreVert
                       style={{ color: "#525252", transform: "scale(0.8)" }}
