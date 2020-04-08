@@ -15,31 +15,6 @@ export default function DropdownCities(props) {
   const loading = open && options.length === 0;
   const { list, onChange, error, helperText } = props;
 
-  React.useEffect(() => {
-    let active = true;
-
-    if (!loading) {
-      return undefined;
-    }
-
-    (async () => {
-      await sleep(1000); 
-
-      if (active) {
-        setOptions(list);
-      }
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [loading, list]);
-
-  React.useEffect(() => {
-    if (!open) {
-      setOptions([]);
-    }
-  }, [open]);
 
   return (
     <Autocomplete
@@ -55,8 +30,7 @@ export default function DropdownCities(props) {
       onChange={(event, value) => onChange(event, value) }
       getOptionSelected={(option, value) => option === value}
       getOptionLabel={option => option}
-      options={options}
-      loading={loading}
+      options={list}
       renderInput={params => (
         <TextField
           {...params}
@@ -67,17 +41,7 @@ export default function DropdownCities(props) {
           variant="outlined"
           style={{ background: "white" }}
           InputLabelProps={{ shrink: true }}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <React.Fragment>
-                {loading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
-              </React.Fragment>
-            )
-          }}
+        
         />
       )}
     />
