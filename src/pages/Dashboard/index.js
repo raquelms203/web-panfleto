@@ -38,7 +38,7 @@ export default function Dashboard() {
   const [isLessThan500, setIsLessThan500] = useState(false);
   const [cities, setCities] = useState([]);
   const [citySelected, setCitySelected] = useState("");
-  const [politics, setPolitics] = useState([]);
+  const [politics, setPolitics] = useState(undefined);
   const [filterPoliticSelected, setFilterPoliticSelected] = useState(0);
   const [checkPolitic, setCheckPolitic] = useState([]);
   const [indexPolitic, setIndexPolitic] = useState(0);
@@ -69,17 +69,54 @@ export default function Dashboard() {
     }
   }, [cities]);
 
+  const fetchManagers = useCallback(
+    async (idPolitic) => {
+      let managersAll = [];
+      await apiADM
+        .get(`manager?politicId=${idPolitic}`)
+        .then((response) => {
+          response.data.forEach((item) => {
+            managersAll.push(item);
+          });
+        })
+        .catch((error) => {
+          if (error.response.status === 401) {
+            toast.info(
+              "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+              {
+                onClose: function () {
+                  history.push("/");
+                },
+              }
+            );
+          }
+        })
+        .finally(() => {
+          setManagers(managersAll);
+        });
+    },
+    [setManagers]
+  );
+
   const fetchPolitics = useCallback(async () => {
     let politicsAll = [];
     await apiADM
       .get(`/politic?adminId=${localStorage.getItem("userId")}`)
       .then((response) => {
         response.data.forEach((item) => {
-          politicsAll.push(item);
+          let p = {
+            name: item.name,
+            id: item.id,
+            group: item.group,
+            document: item.document,
+            type: item.type,
+            city: item.city,
+          };
+          politicsAll.push(p);
         });
       })
       .catch((error) => {
-        if (error.response.status === 401) {
+        if (Boolean(error.response) && error.response.status === 401) {
           toast.info(
             "Após 1h a sessão expira. Você será redirecionado para a página de login.",
             {
@@ -88,36 +125,34 @@ export default function Dashboard() {
               },
             }
           );
-        }
+        } else toast.error("Ocorreu um erro ao carregar os dados.");
+        console.log(error);
+      })
+      .finally(() => {
+        console.log("all", politicsAll);
+        setPolitics(politicsAll);
+        fetchManagers(politicsAll[0].id);
       });
-
-    return politicsAll;
-  }, [history]);
-
-  const fetchUser = useCallback(async () => {
-    console.log("user");
-    if (Object.entries(politics).length === 0) {
-      setPolitics(await fetchPolitics());
-    }
-  }, [fetchPolitics, politics]);
+  }, [history, setPolitics, politics, fetchManagers]);
 
   const onOrientationChange = useCallback(() => {
     if (window.screen.availWidth < 500) {
       setIsLessThan500(true);
+      return;
     }
     window.addEventListener("orientationchange", function () {
+      let allow = openDialogFilter;
+      console.log(allow);
+      console.log("change");
       setIsLessThan500(false);
       if (window.matchMedia("(orientation: landscape)").matches) {
+        if (allow) {
+          console.log("oi");
+          setIsLessThan500(false);
+          return;
+        }
         if (window.screen.availWidth < 500) {
           setIsLessThan500(true);
-          if (
-            openDialogAddHired ||
-            openDialogAddManager ||
-            openDialogAddPolitic ||
-            openDialogDelete.open ||
-            openDialogFilter
-          )
-            setIsLessThan500(false);
         }
       }
     });
@@ -162,7 +197,7 @@ export default function Dashboard() {
 
   const handleManagerListClick = (event, index) => {
     setIndexManager(index);
-    setHireds(managers[index].contratados);
+    // setHireds(managers[index].contratados);
   };
 
   const isTwoManagersSelected = () => {
@@ -219,7 +254,8 @@ export default function Dashboard() {
       setOpenDialogFilter(false);
       return;
     }
-    let fetch = await fetchPolitics();
+    await fetchPolitics();
+    let fetch = politics;
     let list = [];
     if (citySelected !== "" && filterPoliticSelected !== 0) {
       fetch.forEach((item) => {
@@ -309,22 +345,22 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    fetchUser();
+    fetchPolitics();
     fetchCities();
     onOrientationChange();
   }, []);
 
-  // if (politics === undefined || managers === undefined || hireds === undefined)
-  //   return (
-  //     <Grid
-  //       container
-  //       justify="center"
-  //       alignItems="center"
-  //       style={{ minHeight: "99vh" }}
-  //     >
-  //       <CircularProgress />
-  //     </Grid>
-  //   );
+  if (!Boolean(politics))
+    return (
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        style={{ minHeight: "99vh" }}
+      >
+        <CircularProgress />
+      </Grid>
+    );
   if (isLessThan500) return <SmallScreenAlert />;
   else if (!isLessThan500)
     return (
@@ -531,7 +567,12 @@ export default function Dashboard() {
             >
               <DialogTitle style={{ background: "#f5f3f3" }}>
                 <FormManager
-                  onClick={() => {
+                  idPolitic={politics[indexPolitic].id}
+                  onClose={async () => {
+                    setOpenDialogAddManager(false);
+                    await fetchManagers(politics[indexPolitic].id);
+                  }}
+                  onCancel={() => {
                     setOpenDialogAddManager(false);
                   }}
                 />

@@ -17,7 +17,7 @@ export default function ConfirmDelete(props) {
           .delete(
             `/politic/${list[i]}?adminId=${localStorage.getItem("userId")}`
           )
-          .catch((e) => (error = true));
+          .catch((e) => {error = true;});
       }
 
       if (error) toast.error("Ocorreu um erro ao apagar campanha(s)!");

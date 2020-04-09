@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, Button, TextField } from "@material-ui/core";
 import InputMask from "react-input-mask";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field,  } from "formik";
+import { toast } from "react-toastify";
 
 import { validationSchema } from "./validation_schema";
 import ConfirmInfo from "../ConfirmInfo";
@@ -10,27 +11,48 @@ import {
   StyledTextField,
   Title,
   FontButton,
-  StyledButton
+  StyledButton,
 } from "../FormHired/styles";
+import { apiADM } from "../../services/api";
 
 export default function FormManager(props) {
-  const initialValues = {
+  const [initialValues, setInitialValues] = useState({
     name: "",
     cpf: "",
-    email: ""
-  };
+    email: "",
+  });
   const [openDialogConfirmInfo, setOpenDialogConfirmInfo] = useState({
     open: false,
-    info: {}
+    info: {},
+    values: {},
   });
-  const handleSubmit = values => {
+  const handleSubmit = (values) => {
     let inputs = [
       { field: "Nome completo:", value: values.name },
       { field: "CPF:", value: values.cpf },
-      { field: "Email:", value: values.email }
+      { field: "Email:", value: values.email },
     ];
-    setOpenDialogConfirmInfo({ open: true, info: inputs });
+
+    setOpenDialogConfirmInfo({ open: true, info: inputs, values: values });
   };
+
+  const sendManager = async (values) => {
+    let rawCPF = values.cpf.split("-").join("").split(".").join("");
+
+    await apiADM
+      .post(`/manager?politicId=${idPolitic}`, {
+        name: values.name,
+        email: values.email,
+        document: rawCPF,
+      })
+      .then((response) => {
+        onClose();
+        toast.success("Gestor criado com sucesso!");
+      })
+      .catch((error) => toast.error("Ocorreu um erro ao criar campanha!"));
+  };
+
+  const { onClose, onCancel, idPolitic } = props;
 
   return !openDialogConfirmInfo.open ? (
     <Formik
@@ -71,23 +93,25 @@ export default function FormManager(props) {
                 </Field>
               </Grid>
               <Grid item xs>
-                <Field name="cpf">
+              <Field name="cpf">
                   {({ field }) => (
                     <InputMask
+                     {...field}
                       mask="999.999.999-99"
-                      onChange={event =>
+                      onChange={(event) => {
                         setFieldValue(
                           "cpf",
                           event.target.value !== null
                             ? event.target.value
                             : initialValues.cpf
-                        )
-                      }
+                        );
+                      }}
                     >
                       {() => (
-                        <StyledTextField
-                          fullWidth
+                        <TextField
+                          style={{ background: "white" }}
                           InputLabelProps={{ shrink: true }}
+                          fullWidth
                           size="small"
                           label="CPF"
                           variant="outlined"
@@ -115,7 +139,16 @@ export default function FormManager(props) {
                   )}
                 </Field>
               </Grid>
-              <Grid item container direction="row-reverse">
+              <div style={{ height: 8 }}></div>
+              <Grid item container justify="flex-end" xs sm md>
+                <Button
+                  size="large"
+                  style={{ background: "#958a94", color: "white" }}
+                  onClick={onCancel}
+                >
+                  Voltar
+                </Button>
+                <div style={{ width: 15 }}></div>
                 <StyledButton
                   type="submit"
                   variant="contained"
@@ -131,6 +164,18 @@ export default function FormManager(props) {
       }}
     </Formik>
   ) : (
-    <ConfirmInfo info={openDialogConfirmInfo.info} />
+    <ConfirmInfo
+      info={openDialogConfirmInfo.info}
+      onClick={() => sendManager(openDialogConfirmInfo.values)}
+      onBack={() => {
+        console.log(openDialogConfirmInfo.values.cpf);
+        setOpenDialogConfirmInfo({ open: false });
+        setInitialValues({
+          name: openDialogConfirmInfo.values.name,
+          cpf: openDialogConfirmInfo.values.cpf,
+          email: openDialogConfirmInfo.values.email,
+        });
+      }}
+    />
   );
 }
