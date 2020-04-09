@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import {
   List,
@@ -9,7 +9,6 @@ import {
   MenuItem,
   ListItemSecondaryAction,
   Button,
-  Paper,
 } from "@material-ui/core";
 
 import { TextOverflow } from "./styles";

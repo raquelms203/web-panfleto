@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MenuItem, FormControl } from "@material-ui/core";
+import { MenuItem } from "@material-ui/core";
 
 import { ErrorText, StyledSelect, StyledFormHelperText } from "./styles";
 

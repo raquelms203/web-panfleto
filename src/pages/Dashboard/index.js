@@ -5,7 +5,6 @@ import {
   Dialog,
   DialogTitle,
   AppBar,
-  CircularProgress,
 } from "@material-ui/core";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
@@ -28,6 +27,7 @@ import FormHired from "../../components/FormHired/index";
 import FormManager from "../../components/FormManager";
 import FormPolitic from "../../components/FormPolitic";
 import ConfirmDelete from "../../components/ConfirmDelete";
+import Loading from "../../components/Loading";
 import { useHistory } from "react-router-dom";
 
 import { apiADM, apiCities } from "../../services/api";
@@ -35,6 +35,7 @@ import LogoImg from "../../assets/logo.svg";
 
 export default function Dashboard() {
   const history = useHistory();
+  const [listener, setListener] = useState(true);
   const [isLessThan500, setIsLessThan500] = useState(false);
   const [cities, setCities] = useState([]);
   const [citySelected, setCitySelected] = useState("");
@@ -95,7 +96,7 @@ export default function Dashboard() {
           setManagers(managersAll);
         });
     },
-    [setManagers]
+    [setManagers, history]
   );
 
   const fetchPolitics = useCallback(async () => {
@@ -128,43 +129,33 @@ export default function Dashboard() {
         } else toast.error("Ocorreu um erro ao carregar os dados.");
         console.log(error);
       })
-      .finally(() => {
+      .then(() => {
         console.log("all", politicsAll);
         setPolitics(politicsAll);
-        fetchManagers(politicsAll[0].id);
+        if (politicsAll.isNotEmpty) fetchManagers(politicsAll[0].id);
       });
-  }, [history, setPolitics, politics, fetchManagers]);
+  }, [history, setPolitics, fetchManagers]);
 
   const onOrientationChange = useCallback(() => {
+    console.log("oi");
     if (window.screen.availWidth < 500) {
       setIsLessThan500(true);
       return;
     }
-    window.addEventListener("orientationchange", function () {
-      let allow = openDialogFilter;
-      console.log(allow);
-      console.log("change");
-      setIsLessThan500(false);
-      if (window.matchMedia("(orientation: landscape)").matches) {
-        if (allow) {
-          console.log("oi");
-          setIsLessThan500(false);
-          return;
-        }
-        if (window.screen.availWidth < 500) {
-          setIsLessThan500(true);
-        }
+    console.log("change");
+    setIsLessThan500(false);
+    if (window.matchMedia("(orientation: landscape)").matches) {
+      // if (allow) {
+        console.log("oi");
+        setIsLessThan500(false);
+        return;
+      //}
+      if (window.screen.availWidth < 500) {
+        setIsLessThan500(true);
       }
-    });
-  }, [
-    setIsLessThan500,
-    openDialogDelete,
-    openDialogAddPolitic,
-    openDialogAddHired,
-    openDialogFilter,
-    openDialogAddManager,
-  ]);
+    }}, [setIsLessThan500]);
 
+  
   const handlePoliticListClick = (event, index) => {
     setIndexPolitic(index);
     // setIndexManager(0);
@@ -350,20 +341,19 @@ export default function Dashboard() {
     onOrientationChange();
   }, []);
 
-  if (!Boolean(politics))
-    return (
-      <Grid
-        container
-        justify="center"
-        alignItems="center"
-        style={{ minHeight: "99vh" }}
-      >
-        <CircularProgress />
-      </Grid>
-    );
-  if (isLessThan500) return <SmallScreenAlert />;
-  else if (!isLessThan500)
-    return (
+  useEffect(() => {  
+    if(listener) window.addEventListener("orientationchange", onOrientationChange, false);
+    else window.removeEventListener("orientationchange", onOrientationChange, false);
+
+  //  return  window.removeEventListener("orientationchange", onOrientationChange, false);
+  }, [listener, onOrientationChange]);
+
+  if (!politics) return <Loading />;
+  else {
+    if (isLessThan500) return <SmallScreenAlert />;
+    else
+     {
+        return (
       <>
         <AppBar position="static">
           <Grid
@@ -446,7 +436,9 @@ export default function Dashboard() {
                           variant="contained"
                           size="large"
                           color="secondary"
-                          onClick={async (event) => await handleFilters(event)}
+                          onClick={async (event) =>
+                            await handleFilters(event)
+                          }
                         >
                           <FontButton>OK</FontButton>
                         </StyledButton>
@@ -460,6 +452,7 @@ export default function Dashboard() {
                   onClicks={[
                     () => {
                       setOpenDialogAddPolitic(true);
+                      setListener(false);
                     },
                     () => {
                       setOpenDialogDelete({
@@ -490,13 +483,13 @@ export default function Dashboard() {
               ]}
             />
             <Dialog
-              onClose={() => setOpenDialogAddPolitic(false)}
+              onClose={() => {setOpenDialogAddPolitic(false); }}
               open={openDialogAddPolitic}
             >
               <DialogTitle style={{ background: "#f5f3f3" }}>
                 <FormPolitic
                   cities={cities}
-                  onCancel={() => setOpenDialogAddPolitic(false)}
+                  onCancel={() => { setListener(true);onOrientationChange(); setOpenDialogAddPolitic(false);}}
                   onClose={async () => {
                     setOpenDialogAddPolitic(false);
                     let newPolitics = await fetchPolitics();
@@ -565,18 +558,20 @@ export default function Dashboard() {
               onClose={() => setOpenDialogAddManager(false)}
               open={openDialogAddManager}
             >
-              <DialogTitle style={{ background: "#f5f3f3" }}>
-                <FormManager
-                  idPolitic={politics[indexPolitic].id}
-                  onClose={async () => {
-                    setOpenDialogAddManager(false);
-                    await fetchManagers(politics[indexPolitic].id);
-                  }}
-                  onCancel={() => {
-                    setOpenDialogAddManager(false);
-                  }}
-                />
-              </DialogTitle>
+              {!politics ? (
+                <DialogTitle style={{ background: "#f5f3f3" }}>
+                  <FormManager
+                    idPolitic={politics[indexPolitic].id}
+                    onClose={async () => {
+                      setOpenDialogAddManager(false);
+                      await fetchManagers(politics[indexPolitic].id);
+                    }}
+                    onCancel={() => {
+                      setOpenDialogAddManager(false);
+                    }}
+                  />
+                </DialogTitle>
+              ) : <></>}
             </Dialog>
             <Dialog
               onClose={() =>
@@ -671,7 +666,9 @@ export default function Dashboard() {
                   type: "",
                 })
               }
-              open={openDialogDelete.open && openDialogDelete.type === "hired"}
+              open={
+                openDialogDelete.open && openDialogDelete.type === "hired"
+              }
             >
               <DialogTitle style={{ background: "#f5f3f3" }}>
                 <ConfirmDelete
@@ -694,5 +691,6 @@ export default function Dashboard() {
           Site desenvolvido por<pre> Easycode </pre>- 2020
         </Footer>
       </>
-    );
+    );}
+  }
 }

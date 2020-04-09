@@ -1,18 +1,16 @@
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import CircularProgress from "@material-ui/core/CircularProgress";
+//import CircularProgress from "@material-ui/core/CircularProgress";
 
-function sleep(delay = 0) {
-  return new Promise(resolve => {
-    setTimeout(resolve, delay);
-  });
-}
+// function sleep(delay = 0) {
+//   return new Promise(resolve => {
+//     setTimeout(resolve, delay);
+//   });
+// }
 
 export default function DropdownCities(props) {
   const [open, setOpen] = React.useState(false);
-  const [options, setOptions] = React.useState([]);
-  const loading = open && options.length === 0;
   const { list, onChange, error, helperText } = props;
 
 

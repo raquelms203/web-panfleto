@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { TextField, Grid, CircularProgress } from "@material-ui/core";
+import { TextField, Grid } from "@material-ui/core";
 
 import Computer from "../../assets/computer.png";
 import { ButtonLogin, Title, StyledGrid } from "./styles";
 import * as validate from "./validationSchema";
 import { apiADM } from "../../services/api";
+import Loading from "../../components/Loading";
 
 export default function Login() {
   const [email, setEmail] = useState({ value: "", error: "" });
@@ -66,19 +67,9 @@ export default function Login() {
     validateField();
   };
 
-  if (loading)
-    return (
-      <Grid
-        container
-        justify="center"
-        alignItems="center"
-        style={{ minHeight: "99vh" }}
-      >
-        <CircularProgress />
-      </Grid>
-    );
+  if (loading) return <Loading />;
 
-  return (
+  else return (
     <StyledGrid container alignItems="center" justify="space-around">
       <Grid item container justify="center" alignItems="center">
         <Grid

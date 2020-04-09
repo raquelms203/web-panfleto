@@ -11,13 +11,13 @@ export default function ConfirmDelete(props) {
 
   const onClickYes = async () => {
     if (type === "politic") {
-      let error = false;
+      var error = false;
       for (let i = 0; i < list.length; i++) {
         await apiADM
           .delete(
             `/politic/${list[i]}?adminId=${localStorage.getItem("userId")}`
           )
-          .catch((e) => {error = true;});
+          .catch(function(e) {this.error = true;});
       }
 
       if (error) toast.error("Ocorreu um erro ao apagar campanha(s)!");

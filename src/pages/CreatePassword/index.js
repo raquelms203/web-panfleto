@@ -12,6 +12,7 @@ import Logo from "../../assets/logo.svg";
 import Wait from "../../assets/wait.svg";
 import { RoundedDiv } from "./styles";
 import ErrorPage from "../ErrorPage";
+import Loading from "../../components/Loading";
 
 export default function CreatePassword(props) {
   const [password, setPassword] = useState("");
@@ -39,7 +40,7 @@ export default function CreatePassword(props) {
       .put(`${type}/create-password/${token}`, {
         password: password,
       })
-      .then(function (response) {
+      .then((response) => {
         toast.success(
           "Senha criada com sucesso!\nVocê será redirecionado para a tela de login.",
           {
@@ -49,7 +50,7 @@ export default function CreatePassword(props) {
           }
         );
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error);
       });
   };
@@ -70,6 +71,8 @@ export default function CreatePassword(props) {
   }, [verifyToken]);
 
   if (tokenValid === undefined)
+   return <Loading />
+  else
     return tokenValid ? (
       <Container>
         <form onSubmit={handleSubmit}>
