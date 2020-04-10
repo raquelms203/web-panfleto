@@ -33,14 +33,18 @@ export default function Login() {
         localStorage.setItem("userId", response.data.userId);
         localStorage.setItem("email", response.data.email);
         localStorage.setItem("username", response.data.username);
-        console.log(response);
         history.push("/dashboard");
       })
       .catch(function (error) {
-        console.log(error);
+        if (Boolean(error.response) && error.response.status === 401) {
+          setPassword({
+            value: password.value,
+            error: "Email ou senha incorreto",
+          });
+        }
+        setLoading(false);
       });
   };
-
   const validateField = () => {
     let allValid = true;
     if (validate.validateEmail(email.value) !== "") {
@@ -67,77 +71,82 @@ export default function Login() {
     validateField();
   };
 
+ 
   if (loading) return <Loading />;
-
-  else return (
-    <StyledGrid container alignItems="center" justify="space-around">
-      <Grid item container justify="center" alignItems="center">
-        <Grid
-          item
-          container
-          justify="center"
-          alignItems="center"
-          style={{ background: "white" }}
-          xs={12}
-          sm={5}
-          md={4}
-        >
-          <img src={Computer} alt="login" style={{ width: imageWidth() }}></img>
-        </Grid>
-        <Grid
-          item
-          container
-          direction="column"
-          alignItems="center"
-          justify="center"
-          style={{ background: "white", padding: 20 }}
-          xs={12}
-          sm={6}
-          md={4}
-        >
-          <Grid item xs sm md>
-            <form autoComplete="off" onSubmit={handleSubmit}>
-              <Title>Faça login para entrar no sistema</Title>
-              <div style={{ height: 20, width: 350 }}></div>
-              <TextField
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-                label="Email"
-                size="small"
-                variant="outlined"
-                value={email.value}
-                onChange={(event) =>
-                  setEmail({
-                    value: event.target.value,
-                    error: email.error,
-                  })
-                }
-                error={Boolean(email.error)}
-                helperText={email.error}
-              />
-              <div style={{ height: 16 }}></div>
-              <TextField
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-                size="small"
-                type="password"
-                label="Senha"
-                variant="outlined"
-                onChange={(event) =>
-                  setPassword({
-                    value: event.target.value,
-                    error: password.error,
-                  })
-                }
-                error={Boolean(password.error)}
-                helperText={password.error}
-              />
-              <div style={{ height: "30px" }}></div>
-              <ButtonLogin type="submit">Entrar</ButtonLogin>
-            </form>
+  else
+    return (
+      <StyledGrid container alignItems="center" justify="space-around">
+        <Grid item container justify="center" alignItems="center">
+          <Grid
+            item
+            container
+            justify="center"
+            alignItems="center"
+            style={{ background: "white" }}
+            xs={12}
+            sm={5}
+            md={4}
+          >
+            <img
+              src={Computer}
+              alt="login"
+              style={{ width: imageWidth() }}
+            ></img>
+          </Grid>
+          <Grid
+            item
+            container
+            direction="column"
+            alignItems="center"
+            justify="center"
+            style={{ background: "white", padding: 20 }}
+            xs={12}
+            sm={6}
+            md={4}
+          >
+            <Grid item xs sm md>
+              <form autoComplete="off" onSubmit={handleSubmit}>
+                <Title>Faça login para entrar no sistema</Title>
+                <div style={{ height: 20, width: 350 }}></div>
+                <TextField
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                  label="Email"
+                  size="small"
+                  variant="outlined"
+                  value={email.value}
+                  onChange={(event) =>
+                    setEmail({
+                      value: event.target.value,
+                      error: email.error,
+                    })
+                  }
+                  error={Boolean(email.error)}
+                  helperText={email.error}
+                />
+                <div style={{ height: 16 }}></div>
+                <TextField
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                  size="small"
+                  type="password"
+                  label="Senha"
+                  variant="outlined"
+                  onChange={(event) =>
+                    setPassword({
+                      value: event.target.value,
+                      error: password.error,
+                    })
+                  }
+                  error={Boolean(password.error)}
+                  helperText={password.error}
+                />
+                <div style={{ height: "30px" }}></div>
+                <ButtonLogin type="submit">Entrar</ButtonLogin>
+              </form>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
-    </StyledGrid>
-  );
+      </StyledGrid>
+    );
 }

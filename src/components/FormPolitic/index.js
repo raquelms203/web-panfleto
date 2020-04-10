@@ -12,6 +12,7 @@ import {
   Title,
   FontButton,
 } from "../FormHired/styles";
+import { StyledFormHelperText } from "../DropdownPolitics/styles";
 import DropdownCities from "../DropdownCities";
 import DropdownPolitics from "../DropdownPolitics";
 import ConfirmInfo from "../ConfirmInfo";
@@ -21,7 +22,6 @@ export default function FormHired(props) {
   const { cities, editPolitic } = props;
   const { onClose, onCancel } = props;
   const [name, setName] = useState({ value: "", error: "" });
-  const [email, setEmail] = useState({ value: "", error: "" });
   const [CPF, setCPF] = useState({ value: "", error: "" });
   const [CEP, setCEP] = useState({ value: "", error: "" });
   const [city, setCity] = useState({ value: "", error: "" });
@@ -32,6 +32,7 @@ export default function FormHired(props) {
   const [type, setType] = useState({ value: "", error: "" });
   const [group, setGroup] = useState({ value: "", error: "" });
   const [visibleButtonCity, setVisibleButtonCity] = useState(false);
+  const [visibleButtonPolitic, setVisibleButtonPolitic] = useState(false);
   const [filledColor, setFilledColor] = useState("white");
   const [openDialogConfirmInfo, setOpenDialogConfirmInfo] = useState({
     open: false,
@@ -62,12 +63,11 @@ export default function FormHired(props) {
 
     let typeNumber;
     if (type.value === "Prefeito") typeNumber = 1;
-    if (type.value === "Vereadore") typeNumber = 2;
+    if (type.value === "Vereador") typeNumber = 2;
 
     await apiADM
       .post(`/politic?adminId=${localStorage.getItem("userId")}`, {
         name: name.value,
-        email: email.value,
         document: CPF.value,
         type: typeNumber,
         group: group.value,
@@ -107,13 +107,7 @@ export default function FormHired(props) {
       setName({ value: name.value, error: validate.validateName(name.value) });
       allValid = false;
     }
-    if (validate.validateEmail(email.value) !== "") {
-      setEmail({
-        value: email.value,
-        error: validate.validateEmail(email.value),
-      });
-      allValid = false;
-    }
+
     if (validate.validateMask(CPF.value) !== "") {
       setCPF({ value: CPF.value, error: validate.validateMask(CPF.value) });
       allValid = false;
@@ -163,7 +157,6 @@ export default function FormHired(props) {
     if (allValid) {
       values = [
         { field: "Nome completo:", value: name.value },
-        { field: "Email:", value: email.value },
         { field: "Categoria:", value: type.value },
         { field: "Partido ou coligação", value: group.value },
         { field: "CPF:", value: CPF.value },
@@ -188,26 +181,33 @@ export default function FormHired(props) {
     if (editPolitic !== undefined) {
       let number = "";
       let complement = "";
+      let typeName = "";
+
       if (editPolitic.number.includes(" ")) {
         let local = editPolitic.number.split(" ");
         number = local[0];
-        complement = local.substring(1);
+        local.shift();
+        complement = local.join(" ");
       } else number = editPolitic.number;
+
+      if (editPolitic.type === 1) typeName = "Prefeito";
+      else typeName = "Vereador";
+
       setName({ value: editPolitic.name, error: "" });
-      setEmail({ value: editPolitic.email, error: "" });
       setCPF({ value: editPolitic.document, error: "" });
       setCEP({ value: editPolitic.zipcode, error: "" });
-      setCity({ value: editPolitic.zipcode, error: "" });
+      setCity({ value: editPolitic.city, error: "" });
+      setVisibleButtonCity(true);
       setStreet({ value: editPolitic.street, error: "" });
       setNumber({ value: number, error: "" });
       setComplement({ value: complement, error: "" });
       setDistrict({ value: editPolitic.district, error: "" });
-      setType({ value: editPolitic.type, error: "" });
+      setType({ value: typeName, error: "" });
+      setVisibleButtonPolitic(true);
       setGroup({ value: editPolitic.group, error: "" });
     }
   }, [
     setName,
-    setEmail,
     setCPF,
     setCEP,
     setCity,
@@ -216,6 +216,8 @@ export default function FormHired(props) {
     setComplement,
     setDistrict.setType,
     setGroup,
+    setVisibleButtonPolitic,
+    setVisibleButtonCity,
   ]);
 
   useEffect(() => {
@@ -256,22 +258,7 @@ export default function FormHired(props) {
             </Grid>
 
             <Grid item container spacing={1} justify="space-between">
-              <Grid item xs={12} sm={6} md={7}>
-                <StyledTextField
-                  fullWidth
-                  InputLabelProps={{ shrink: true }}
-                  size="small"
-                  label="Email"
-                  variant="outlined"
-                  value={email.value}
-                  error={Boolean(email.error)}
-                  helperText={email.error}
-                  onChange={(event) =>
-                    setEmail({ value: event.target.value, error: email.error })
-                  }
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={5}>
+              <Grid item xs={12} sm={6} md={6}>
                 <InputMask
                   mask="999.999.999-99"
                   value={CPF.value}
@@ -292,25 +279,43 @@ export default function FormHired(props) {
                   )}
                 </InputMask>
               </Grid>
-            </Grid>
-            <Grid item container spacing={1} style={{ marginTop: 3 }}>
               <Grid item xs={12} sm={6} md={6} style={{ marginTop: -17 }}>
-                <DropdownPolitics
-                  isFilter={false}
-                  error={Boolean(type.error)}
-                  onChange={(event) => {
-                    if (event.target.value === 1)
-                      setType({ value: "Prefeito", error: type.error });
-                    else setType({ value: "Vereador", error: type.error });
-                  }}
-                />
+                {visibleButtonPolitic ? (
+                  <div
+                    onClick={() => {
+                      setVisibleButtonPolitic(false);
+                      setType({ value: "", error: city.error });
+                    }}
+                  >
+                    <StyledFormHelperText>Categoria</StyledFormHelperText>
+                    <TextField
+                      fullWidth
+                      style={{ background: "white" }}
+                      value={type.value}
+                      size="small"
+                      variant="outlined"
+                    ></TextField>
+                  </div>
+                ) : (
+                  <DropdownPolitics
+                    isFilter={false}
+                    error={Boolean(type.error)}
+                    onChange={(event) => {
+                      if (event.target.value === 1)
+                        setType({ value: "Prefeito", error: type.error });
+                      else setType({ value: "Vereador", error: type.error });
+                    }}
+                  />
+                )}
               </Grid>
+            </Grid>
+            <Grid item container spacing={1}>
+              {" "}
               <Grid item xs={12} sm={6} md={6}>
                 <StyledTextField
                   fullWidth
                   error={Boolean(group.error)}
                   helperText={group.error}
-                  style={{ background: filledColor }}
                   InputLabelProps={{ shrink: true }}
                   size="small"
                   label="Partido ou coligação"
@@ -324,9 +329,7 @@ export default function FormHired(props) {
                   }
                 />
               </Grid>
-            </Grid>
-            <Grid item container spacing={1} alignItems="center">
-              <Grid item xs={12} sm={4} md={4}>
+              <Grid item xs={12} sm={6} md={6}>
                 <InputMask
                   mask="99999-999"
                   value={CEP.value}
@@ -348,7 +351,9 @@ export default function FormHired(props) {
                   )}
                 </InputMask>
               </Grid>
-              <Grid item xs={12} sm={8} md={8}>
+            </Grid>
+            <Grid item container spacing={1} alignItems="center">
+              <Grid item xs={12} sm={12} md={12}>
                 {visibleButtonCity ? (
                   <div
                     onClick={() => {
@@ -456,7 +461,7 @@ export default function FormHired(props) {
               <Button
                 size="large"
                 style={{ background: "#958a94", color: "white" }}
-                onClick={() => onCancel()}
+                onClick={() => {onCancel()}}
               >
                 Voltar
               </Button>
@@ -476,6 +481,8 @@ export default function FormHired(props) {
             info={openDialogConfirmInfo.info}
             onClick={() => sendPolitic(openDialogConfirmInfo.values)}
             onBack={() => {
+              setVisibleButtonPolitic(true);
+              setVisibleButtonCity(true);
               setOpenDialogConfirmInfo({ open: false });
             }}
           />
