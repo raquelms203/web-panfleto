@@ -18,6 +18,7 @@ import ConfirmInfo from "../ConfirmInfo";
 import * as validate from "./validation_schema";
 
 export default function FormHired(props) {
+  const { cities, editPolitic } = props;
   const { onClose, onCancel } = props;
   const [name, setName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
@@ -36,7 +37,7 @@ export default function FormHired(props) {
     open: false,
     info: [],
   });
-
+  console.log(editPolitic);
   const fetchCEP = async (cep) => {
     if (cep[8] === "_") return;
     let api = axios.create({
@@ -73,7 +74,7 @@ export default function FormHired(props) {
         zipcode: CEP.value,
         city: city.value,
         street: street.value,
-        number: number.value + complement.value,
+        number: number.value + " " + complement.value,
         district: district.value,
       })
       .then((response) => {
@@ -184,12 +185,31 @@ export default function FormHired(props) {
     }
   };
 
+  if (editPolitic !== undefined) {
+    let number = "";
+    let complement = "";
+    if (editPolitic.number.includes(" ")) {
+      let local = editPolitic.number.split(" ");
+      number = local[0];
+      complement = local.substring(1);
+    } else number = editPolitic.number;
+    setName({value: editPolitic.name, error: ""});
+    setEmail({value: editPolitic.email, error: ""});
+    setCPF({value: editPolitic.document, error: ""});
+    setCEP({value: editPolitic.zipcode, error: ""});
+    setCity({value: editPolitic.zipcode, error: ""});
+    setStreet({value: editPolitic.street, error: ""});
+    setNumber({value: number, error: ""});
+    setComplement({value: complement, error: ""});
+    setDistrict({value: editPolitic.district, error: ""});
+    setType({value: editPolitic.type, error: ""});
+    setGroup({value: editPolitic.group, error: ""});
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     validateFields();
   };
-
-  const { cities } = props;
 
   return (
     <form autoComplete="on" onSubmit={handleSubmit}>

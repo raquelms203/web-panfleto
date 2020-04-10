@@ -52,7 +52,7 @@ export default function Dashboard() {
   const [openDialogFilter, setOpenDialogFilter] = useState(false);
   const [openDialogAddHired, setOpenDialogAddHired] = useState(false);
   const [openDialogAddManager, setOpenDialogAddManager] = useState(false);
-  const [openDialogAddPolitic, setOpenDialogAddPolitic] = useState(false);
+  const [openDialogAddPolitic, setOpenDialogAddPolitic] = useState({open: false, action: ""});
   const [openDialogDelete, setOpenDialogDelete] = useState({
     open: false,
     list: [],
@@ -72,6 +72,7 @@ export default function Dashboard() {
 
   const fetchManagers = useCallback(
     async (idPolitic) => {
+      console.log("fetch manager");
       let managersAll = [];
       await apiADM
         .get(`manager?politicId=${idPolitic}`)
@@ -92,7 +93,7 @@ export default function Dashboard() {
             );
           }
         })
-        .finally(() => {
+        .then(() => {
           setManagers(managersAll);
         });
     },
@@ -103,7 +104,7 @@ export default function Dashboard() {
     let politicsAll = [];
     await apiADM
       .get(`/politic?adminId=${localStorage.getItem("userId")}`)
-      .then((response) => {
+      .then(async (response) => {
         response.data.forEach((item) => {
           let p = {
             name: item.name,
@@ -112,9 +113,15 @@ export default function Dashboard() {
             document: item.document,
             type: item.type,
             city: item.city,
+            street: item.street,
+            district: item.district,
+            number: item.number,
+            zipcode: item.zipcode
           };
           politicsAll.push(p);
         });
+        setPolitics(politicsAll);
+        if (!politicsAll.isEmpty)  fetchManagers(politicsAll[0].id);
       })
       .catch((error) => {
         if (Boolean(error.response) && error.response.status === 401) {
@@ -129,11 +136,7 @@ export default function Dashboard() {
         } else toast.error("Ocorreu um erro ao carregar os dados.");
         console.log(error);
       })
-      .then(() => {
-        console.log("all", politicsAll);
-        setPolitics(politicsAll);
-        if (politicsAll.isNotEmpty) fetchManagers(politicsAll[0].id);
-      });
+     
   }, [history, setPolitics, fetchManagers]);
 
   const onOrientationChange = useCallback(() => {
@@ -156,11 +159,10 @@ export default function Dashboard() {
     }}, [setIsLessThan500]);
 
   
-  const handlePoliticListClick = (event, index) => {
+  const handlePoliticListClick = async (event, index) => {
     setIndexPolitic(index);
-    // setIndexManager(0);
-    // setManagers(politics[index].gestores);
-    // setHireds(politics[index].gestores[0].contratados);
+    await fetchManagers(politics[index].id);
+    
   };
 
   // const isTwoPoliticsSelected = () => {
@@ -451,7 +453,7 @@ export default function Dashboard() {
                 <ActionButton
                   onClicks={[
                     () => {
-                      setOpenDialogAddPolitic(true);
+                      setOpenDialogAddPolitic({open: true, action: "add"});
                       setListener(false);
                     },
                     () => {
@@ -479,21 +481,24 @@ export default function Dashboard() {
                     token: politics[index].token,
                   });
                 },
-                () => {},
+                () => {  
+                  setOpenDialogAddPolitic({open: true, action: "edit"})
+                },
               ]}
             />
             <Dialog
-              onClose={() => {setOpenDialogAddPolitic(false); }}
-              open={openDialogAddPolitic}
+              onClose={() => {setOpenDialogAddPolitic({open: false}); }}
+              open={openDialogAddPolitic.open}
             >
               <DialogTitle style={{ background: "#f5f3f3" }}>
                 <FormPolitic
                   cities={cities}
-                  onCancel={() => { setListener(true);onOrientationChange(); setOpenDialogAddPolitic(false);}}
+                  onCancel={() => { setListener(true);onOrientationChange(); setOpenDialogAddPolitic({open: false});}}
                   onClose={async () => {
-                    setOpenDialogAddPolitic(false);
+                    setOpenDialogAddPolitic({open: false});
                     fetchPolitics();
                   }}
+                  editPolitic={openDialogAddPolitic.action === "edit" ? politics[indexPolitic] : undefined }
                 />
               </DialogTitle>
             </Dialog>
@@ -521,6 +526,7 @@ export default function Dashboard() {
                     });
                     window.location.reload();
                   }}
+                  overId = {localStorage.getItem("userId")}
                 />
               </DialogTitle>
             </Dialog>
@@ -588,14 +594,15 @@ export default function Dashboard() {
                 <ConfirmDelete
                   type={openDialogDelete.type}
                   list={openDialogDelete.list}
-                  onClickNo={() =>
+                  onBack={async () => {
                     setOpenDialogDelete({
                       open: false,
                       list: undefined,
                       type: "",
-                    })
-                  }
-                  onClickYes={() => {}}
+                    });
+                    window.location.reload();
+                  }}
+                  overId={politics[indexPolitic].id}
                 />
               </DialogTitle>
             </Dialog>

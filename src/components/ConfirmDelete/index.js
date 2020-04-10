@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { ButtonDialog, EmptyDialog } from "./styles";
 
 export default function ConfirmDelete(props) {
-  const { list, onBack, type } = props;
+  const { list, onBack, type, overId } = props;
 
   const onClickYes = async () => {
     if (type === "politic") {
@@ -15,14 +15,26 @@ export default function ConfirmDelete(props) {
       for (let i = 0; i < list.length; i++) {
         await apiADM
           .delete(
-            `/politic/${list[i]}?adminId=${localStorage.getItem("userId")}`
+            `/politic/${list[i]}?adminId=${overId}`
           )
-          .catch(function(e) {this.error = true;});
+          .catch(function (e) {
+            this.error = true;
+          });
       }
-
-      if (error) toast.error("Ocorreu um erro ao apagar campanha(s)!");
-      onBack();
+    } else if (type === "manager") {
+      var error = false;
+      for (let i = 0; i < list.length; i++) {
+        await apiADM
+          .delete(
+            `/manager/${list[i]}?politicId=${overId}`
+          )
+          .catch(function (e) {
+            this.error = true;
+          });
+      }
     }
+    if (error) toast.error("Ocorreu um erro ao apagar campanha(s)!");
+    onBack();
   };
 
   if (list === undefined) return <EmptyDialog />;
