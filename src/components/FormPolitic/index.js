@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import InputMask from "react-input-mask";
 import axios from "axios";
@@ -184,27 +184,43 @@ export default function FormHired(props) {
       });
     }
   };
+  const initValues = useCallback(() => {
+    if (editPolitic !== undefined) {
+      let number = "";
+      let complement = "";
+      if (editPolitic.number.includes(" ")) {
+        let local = editPolitic.number.split(" ");
+        number = local[0];
+        complement = local.substring(1);
+      } else number = editPolitic.number;
+      setName({ value: editPolitic.name, error: "" });
+      setEmail({ value: editPolitic.email, error: "" });
+      setCPF({ value: editPolitic.document, error: "" });
+      setCEP({ value: editPolitic.zipcode, error: "" });
+      setCity({ value: editPolitic.zipcode, error: "" });
+      setStreet({ value: editPolitic.street, error: "" });
+      setNumber({ value: number, error: "" });
+      setComplement({ value: complement, error: "" });
+      setDistrict({ value: editPolitic.district, error: "" });
+      setType({ value: editPolitic.type, error: "" });
+      setGroup({ value: editPolitic.group, error: "" });
+    }
+  }, [
+    setName,
+    setEmail,
+    setCPF,
+    setCEP,
+    setCity,
+    setStreet,
+    setNumber,
+    setComplement,
+    setDistrict.setType,
+    setGroup,
+  ]);
 
-  if (editPolitic !== undefined) {
-    let number = "";
-    let complement = "";
-    if (editPolitic.number.includes(" ")) {
-      let local = editPolitic.number.split(" ");
-      number = local[0];
-      complement = local.substring(1);
-    } else number = editPolitic.number;
-    setName({value: editPolitic.name, error: ""});
-    setEmail({value: editPolitic.email, error: ""});
-    setCPF({value: editPolitic.document, error: ""});
-    setCEP({value: editPolitic.zipcode, error: ""});
-    setCity({value: editPolitic.zipcode, error: ""});
-    setStreet({value: editPolitic.street, error: ""});
-    setNumber({value: number, error: ""});
-    setComplement({value: complement, error: ""});
-    setDistrict({value: editPolitic.district, error: ""});
-    setType({value: editPolitic.type, error: ""});
-    setGroup({value: editPolitic.group, error: ""});
-  }
+  useEffect(() => {
+    initValues();
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -232,7 +248,7 @@ export default function FormHired(props) {
                 size="small"
                 label="Nome completo"
                 variant="outlined"
-                value={name.name}
+                value={name.value}
                 error={Boolean(name.error)}
                 helperText={name.error}
                 onChange={(event) => handleChangeName(event)}
