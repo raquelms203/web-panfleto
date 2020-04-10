@@ -150,9 +150,9 @@ export default function Dashboard() {
         setIsLessThan500(false);
         return;
       //}
-      if (window.screen.availWidth < 500) {
-        setIsLessThan500(true);
-      }
+      // if (window.screen.availWidth < 500) {
+      //   setIsLessThan500(true);
+      // }
     }}, [setIsLessThan500]);
 
   
@@ -492,8 +492,7 @@ export default function Dashboard() {
                   onCancel={() => { setListener(true);onOrientationChange(); setOpenDialogAddPolitic(false);}}
                   onClose={async () => {
                     setOpenDialogAddPolitic(false);
-                    let newPolitics = await fetchPolitics();
-                    setPolitics(newPolitics);
+                    fetchPolitics();
                   }}
                 />
               </DialogTitle>
@@ -558,10 +557,10 @@ export default function Dashboard() {
               onClose={() => setOpenDialogAddManager(false)}
               open={openDialogAddManager}
             >
-              {!politics ? (
+              {!politics.isEmpty ? (
                 <DialogTitle style={{ background: "#f5f3f3" }}>
                   <FormManager
-                    idPolitic={politics[indexPolitic].id}
+                    politic={politics[indexPolitic]}
                     onClose={async () => {
                       setOpenDialogAddManager(false);
                       await fetchManagers(politics[indexPolitic].id);

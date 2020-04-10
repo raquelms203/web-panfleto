@@ -7,13 +7,13 @@ import { StyledButton } from "../FormHired/styles";
 export default function ConfirmInfo(props) {
   const { info, onClick, onBack } = props;
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onClick();
+  }; 
   if (info !== undefined)
     return (
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          onClick();
-        }}
+      <
       >
         <Grid container direction="column" spacing={1} alignItems="flex-end">
           <Grid item xs sm md container justify="center">
@@ -44,11 +44,12 @@ export default function ConfirmInfo(props) {
               size="large"
               color="secondary"
               style={{ color: "white" }}
+              onClick={handleSubmit}
             >
               OK
             </StyledButton>
           </Grid>
         </Grid>
-      </form>
+      </>
     );
 }

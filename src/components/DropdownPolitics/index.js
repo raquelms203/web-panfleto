@@ -9,7 +9,7 @@ export default function DropdownPolitics(props) {
 
   useEffect(() => {
     if (isFilter) setOptions(["Todos", "Prefeitos", "Vereadores"]);
-    else setOptions(["Prefeitos", "Vereadores"]);
+    else setOptions(["Prefeito", "Vereador"]);
   }, [setOptions, isFilter]);
 
   if (isFilter)

@@ -36,7 +36,7 @@ export default function CreatePassword(props) {
 
     if (type === "admin") setType("administrator");
 
-    apiADM
+    await apiADM
       .put(`${type}/create-password/${token}`, {
         password: password,
       })

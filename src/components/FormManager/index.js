@@ -16,6 +16,8 @@ import {
 import { apiADM } from "../../services/api";
 
 export default function FormManager(props) {
+  const { onClose, onCancel, politic } = props;
+
   const [initialValues, setInitialValues] = useState({
     name: "",
     cpf: "",
@@ -40,7 +42,7 @@ export default function FormManager(props) {
     let rawCPF = values.cpf.split("-").join("").split(".").join("");
 
     await apiADM
-      .post(`/manager?politicId=${idPolitic}`, {
+      .post(`/manager?politicId=${politic.id}`, {
         name: values.name,
         email: values.email,
         document: rawCPF,
@@ -52,7 +54,6 @@ export default function FormManager(props) {
       .catch((error) => toast.error("Ocorreu um erro ao criar campanha!"));
   };
 
-  const { onClose, onCancel, idPolitic } = props;
 
   return !openDialogConfirmInfo.open ? (
     <Formik
@@ -73,7 +74,7 @@ export default function FormManager(props) {
               spacing={2}
             >
               <Grid item xs>
-                <Title>[PSDB] Prefeito 1</Title>
+                <Title>{`Campanha: (${politic.group.toUpperCase()}) ${politic.name.split(" ")[0]}`}</Title>
               </Grid>
               <div style={{ width: 400 }}></div>
               <Grid item xs>

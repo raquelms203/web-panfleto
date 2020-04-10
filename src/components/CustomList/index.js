@@ -74,7 +74,7 @@ export default function CustomList(props) {
                     <TextOverflow>{itemList.name}</TextOverflow>
                   ) : (
                     <TextOverflow>
-                      [{itemList.group.toUpperCase()}] {itemList.name}
+                      ({itemList.group.toUpperCase()}) {itemList.name}
                     </TextOverflow>
                   )}
                 </Grid>

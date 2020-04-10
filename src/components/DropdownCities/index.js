@@ -16,6 +16,7 @@ export default function DropdownCities(props) {
 
   return (
     <Autocomplete
+      options={list}
     autoHighlight
       size="small"
       open={open}
@@ -28,7 +29,6 @@ export default function DropdownCities(props) {
       onChange={(event, value) => onChange(event, value) }
       getOptionSelected={(option, value) => option === value}
       getOptionLabel={option => option}
-      options={list}
       renderInput={params => (
         <TextField
           {...params}
@@ -39,7 +39,6 @@ export default function DropdownCities(props) {
           variant="outlined"
           style={{ background: "white" }}
           InputLabelProps={{ shrink: true }}
-        
         />
       )}
     />

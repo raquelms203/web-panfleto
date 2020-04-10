@@ -13,7 +13,7 @@ import {
 } from "./styles";
 import DropdownCities from "../DropdownCities";
 import ConfirmInfo from "../ConfirmInfo";
-import * as validate from "./validationSchema";
+import * as validate from "./validation_schema";
 
 export default function FormHired(props) {
   const [name, setName] = useState({ value: "", error: "" });
