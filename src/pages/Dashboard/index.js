@@ -1,11 +1,5 @@
 import React, { useEffect, useCallback, useState } from "react";
-import {
-  Button,
-  Grid,
-  Dialog,
-  DialogTitle,
-  AppBar,
-} from "@material-ui/core";
+import { Button, Grid, Dialog, DialogTitle, AppBar } from "@material-ui/core";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import {
@@ -51,8 +45,14 @@ export default function Dashboard() {
   const [checkHired, setCheckHired] = useState([]);
   const [openDialogFilter, setOpenDialogFilter] = useState(false);
   const [openDialogAddHired, setOpenDialogAddHired] = useState(false);
-  const [openDialogAddManager, setOpenDialogAddManager] = useState(false);
-  const [openDialogAddPolitic, setOpenDialogAddPolitic] = useState({open: false, action: ""});
+  const [openDialogAddManager, setOpenDialogAddManager] = useState({
+    open: false,
+    action: "",
+  });
+  const [openDialogAddPolitic, setOpenDialogAddPolitic] = useState({
+    open: false,
+    action: "",
+  });
   const [openDialogDelete, setOpenDialogDelete] = useState({
     open: false,
     list: [],
@@ -116,12 +116,12 @@ export default function Dashboard() {
             street: item.street,
             district: item.district,
             number: item.number,
-            zipcode: item.zipcode
+            zipcode: item.zipcode,
           };
           politicsAll.push(p);
         });
         setPolitics(politicsAll);
-        if (!politicsAll.isEmpty)  fetchManagers(politicsAll[0].id);
+        if (!politicsAll.isEmpty) fetchManagers(politicsAll[0].id);
       })
       .catch((error) => {
         if (Boolean(error.response) && error.response.status === 401) {
@@ -135,8 +135,7 @@ export default function Dashboard() {
           );
         } else toast.error("Ocorreu um erro ao carregar os dados.");
         console.log(error);
-      })
-     
+      });
   }, [history, setPolitics, fetchManagers]);
 
   const onOrientationChange = useCallback(() => {
@@ -149,20 +148,19 @@ export default function Dashboard() {
     setIsLessThan500(false);
     if (window.matchMedia("(orientation: landscape)").matches) {
       // if (allow) {
-        console.log("oi");
-        setIsLessThan500(false);
-        return;
+      console.log("oi");
+      setIsLessThan500(false);
+      return;
       //}
       // if (window.screen.availWidth < 500) {
       //   setIsLessThan500(true);
       // }
-    }}, [setIsLessThan500]);
+    }
+  }, [setIsLessThan500]);
 
-  
   const handlePoliticListClick = async (event, index) => {
     setIndexPolitic(index);
     await fetchManagers(politics[index].id);
-    
   };
 
   // const isTwoPoliticsSelected = () => {
@@ -343,360 +341,387 @@ export default function Dashboard() {
     onOrientationChange();
   }, []);
 
-  useEffect(() => {  
-    if(listener) window.addEventListener("orientationchange", onOrientationChange, false);
-    else window.removeEventListener("orientationchange", onOrientationChange, false);
+  useEffect(() => {
+    if (listener)
+      window.addEventListener("orientationchange", onOrientationChange, false);
+    else
+      window.removeEventListener(
+        "orientationchange",
+        onOrientationChange,
+        false
+      );
 
-  //  return  window.removeEventListener("orientationchange", onOrientationChange, false);
+    //  return  window.removeEventListener("orientationchange", onOrientationChange, false);
   }, [listener, onOrientationChange]);
 
   if (!politics) return <Loading />;
   else {
     if (isLessThan500) return <SmallScreenAlert />;
-    else
-     {
-        return (
-      <>
-        <AppBar position="static">
-          <Grid
-            container
-            justify="space-between"
-            alignItems="center"
-            style={{ height: 42 }}
+    else {
+      return (
+        <>
+          <AppBar position="static">
+            <Grid
+              container
+              justify="space-between"
+              alignItems="center"
+              style={{ height: 42 }}
+            >
+              <Grid item>
+                <Logo src={LogoImg} />
+              </Grid>
+              <Grid item>
+                <div style={{ marginRight: "20px" }}>
+                  <Button color="inherit" onClick={() => {}}>
+                    <p>{localStorage.getItem("username").split(" ")[0]}</p>
+                  </Button>
+                </div>
+              </Grid>
+            </Grid>
+          </AppBar>
+          <div
+            style={{
+              marginLeft: 45,
+              marginTop: 10,
+              marginBottom: 0,
+              paddingBottom: 0,
+            }}
           >
-            <Grid item>
-              <Logo src={LogoImg} />
-            </Grid>
-            <Grid item>
-              <div style={{ marginRight: "20px" }}>
-                <Button color="inherit" onClick={() => {}}>
-                  <p>{localStorage.getItem("username").split(" ")[0]}</p>
-                </Button>
-              </div>
-            </Grid>
-          </Grid>
-        </AppBar>
-        <div
-          style={{
-            marginLeft: 45,
-            marginTop: 10,
-            marginBottom: 0,
-            paddingBottom: 0,
-          }}
-        >
-          {citySelected !== "" ? (
-            <Button onClick={removeFilterCity}>
-              {citySelected.length > 10 ? (
-                <LabelFilter>
-                  {citySelected.substring(0, 10) + "... X"}
-                </LabelFilter>
-              ) : (
-                <LabelFilter>{citySelected} X</LabelFilter>
-              )}
-            </Button>
-          ) : undefined}
-          {filterPoliticSelected !== 0 ? (
-            <Button onClick={() => removeFilterPolitic()}>
-              {filterPoliticSelected === 1 ? (
-                <LabelFilter>Prefeitos X</LabelFilter>
-              ) : (
-                <LabelFilter>Vereadores X</LabelFilter>
-              )}
-            </Button>
-          ) : undefined}
-        </div>
-        <StyledGrid container item justify="center">
-          <Grid item xs={4} sm={4} md={4}>
-            <Grid container alignItems="center" justify="space-between">
-              <Grid item>
-                <Button onClick={handleFilterClick}>
-                  <strong>Filtrar</strong>
-                </Button>
-                <Dialog
-                  onClose={() => {
-                    setOpenDialogFilter(false);
-                  }}
-                  open={openDialogFilter}
-                >
-                  <DialogTitle style={{ background: "#f5f3f3" }}>
-                    <Grid container direction="column" spacing={3}>
-                      <div style={{ width: 400 }}></div>
-                      <Grid item xs sm={12} md={12}>
-                        <DropdownPolitics
-                          isFilter={1}
-                          onChange={handleFilterPolitic}
-                        />
-                      </Grid>
-                      <Grid item xs>
-                        <DropdownCities
-                          onChange={handleFilterCity}
-                          list={cities}
-                        ></DropdownCities>
-                      </Grid>
-                      <Grid item container direction="row-reverse">
-                        <StyledButton
-                          variant="contained"
-                          size="large"
-                          color="secondary"
-                          onClick={async (event) =>
-                            await handleFilters(event)
-                          }
-                        >
-                          <FontButton>OK</FontButton>
-                        </StyledButton>
-                      </Grid>
-                    </Grid>
-                  </DialogTitle>
-                </Dialog>
-              </Grid>
-              <Grid item>
-                <ActionButton
-                  onClicks={[
-                    () => {
-                      setOpenDialogAddPolitic({open: true, action: "add"});
-                      setListener(false);
-                    },
-                    () => {
-                      setOpenDialogDelete({
-                        open: true,
-                        list: checkPolitic,
-                        type: "politic",
-                      });
-                    },
-                  ]}
-                />
-              </Grid>
-            </Grid>
-
-            <Subtitle>Campanhas</Subtitle>
-            <CustomList
-              onClick={handlePoliticListClick}
-              indexSelected={indexPolitic}
-              list={politics}
-              onCheckChange={handleCheckChangePolitic}
-              dropdownNames={["Adicionar assinatura", "Editar"]}
-              dropdownOnChange={[
-                (index) => {
-                  history.push(`/assinatura/${politics[index].token}`, {
-                    token: politics[index].token,
-                  });
-                },
-                () => {  
-                  setOpenDialogAddPolitic({open: true, action: "edit"})
-                },
-              ]}
-            />
-            <Dialog
-              onClose={() => {setOpenDialogAddPolitic({open: false}); }}
-              open={openDialogAddPolitic.open}
-            >
-              <DialogTitle style={{ background: "#f5f3f3" }}>
-                <FormPolitic
-                  cities={cities}
-                  onCancel={() => { setListener(true);onOrientationChange(); setOpenDialogAddPolitic({open: false});}}
-                  onClose={async () => {
-                    setOpenDialogAddPolitic({open: false});
-                    fetchPolitics();
-                  }}
-                  editPolitic={openDialogAddPolitic.action === "edit" ? politics[indexPolitic] : undefined }
-                />
-              </DialogTitle>
-            </Dialog>
-            <Dialog
-              onClose={() =>
-                setOpenDialogDelete({
-                  open: false,
-                  list: undefined,
-                  type: "",
-                })
-              }
-              open={
-                openDialogDelete.open && openDialogDelete.type === "politic"
-              }
-            >
-              <DialogTitle style={{ background: "#f5f3f3" }}>
-                <ConfirmDelete
-                  type={openDialogDelete.type}
-                  list={openDialogDelete.list}
-                  onBack={async () => {
-                    setOpenDialogDelete({
-                      open: false,
-                      list: undefined,
-                      type: "",
-                    });
-                    window.location.reload();
-                  }}
-                  overId = {localStorage.getItem("userId")}
-                />
-              </DialogTitle>
-            </Dialog>
-          </Grid>
-          <Separator />
-
-          <Grid item xs={3} sm={3} md={4}>
-            <div style={{ height: 4 }}></div>
-            <ActionButton
-              onClicks={[
-                () => {
-                  setOpenDialogAddManager(true);
-                },
-                () => {
-                  setOpenDialogDelete({
-                    open: true,
-                    list: checkManager,
-                    type: "manager",
-                  });
-                },
-              ]}
-            />
-            <div style={{ height: "4.4px" }}></div>
-            <Subtitle>Gestores</Subtitle>
-            <CustomList
-              onClick={handleManagerListClick}
-              indexSelected={indexManager}
-              list={managers}
-              onCheckChange={handleCheckChangeManager}
-              dropdownNames={["Editar"]}
-              dropdownOnChange={[() => {}]}
-            />
-            <Dialog
-              onClose={() => setOpenDialogAddManager(false)}
-              open={openDialogAddManager}
-            >
-              {!politics.isEmpty ? (
-                <DialogTitle style={{ background: "#f5f3f3" }}>
-                  <FormManager
-                    politic={politics[indexPolitic]}
-                    onClose={async () => {
-                      setOpenDialogAddManager(false);
-                      await fetchManagers(politics[indexPolitic].id);
+            {citySelected !== "" ? (
+              <Button onClick={removeFilterCity}>
+                {citySelected.length > 10 ? (
+                  <LabelFilter>
+                    {citySelected.substring(0, 10) + "... X"}
+                  </LabelFilter>
+                ) : (
+                  <LabelFilter>{citySelected} X</LabelFilter>
+                )}
+              </Button>
+            ) : undefined}
+            {filterPoliticSelected !== 0 ? (
+              <Button onClick={() => removeFilterPolitic()}>
+                {filterPoliticSelected === 1 ? (
+                  <LabelFilter>Prefeitos X</LabelFilter>
+                ) : (
+                  <LabelFilter>Vereadores X</LabelFilter>
+                )}
+              </Button>
+            ) : undefined}
+          </div>
+          <StyledGrid container item justify="center">
+            <Grid item xs={4} sm={4} md={4}>
+              <Grid container alignItems="center" justify="space-between">
+                <Grid item>
+                  <Button onClick={handleFilterClick}>
+                    <strong>Filtrar</strong>
+                  </Button>
+                  <Dialog
+                    onClose={() => {
+                      setOpenDialogFilter(false);
                     }}
+                    open={openDialogFilter}
+                  >
+                    <DialogTitle style={{ background: "#f5f3f3" }}>
+                      <Grid container direction="column" spacing={3}>
+                        <div style={{ width: 400 }}></div>
+                        <Grid item xs sm={12} md={12}>
+                          <DropdownPolitics
+                            isFilter={1}
+                            onChange={handleFilterPolitic}
+                          />
+                        </Grid>
+                        <Grid item xs>
+                          <DropdownCities
+                            onChange={handleFilterCity}
+                            list={cities}
+                          ></DropdownCities>
+                        </Grid>
+                        <Grid item container direction="row-reverse">
+                          <StyledButton
+                            variant="contained"
+                            size="large"
+                            color="secondary"
+                            onClick={async (event) =>
+                              await handleFilters(event)
+                            }
+                          >
+                            <FontButton>OK</FontButton>
+                          </StyledButton>
+                        </Grid>
+                      </Grid>
+                    </DialogTitle>
+                  </Dialog>
+                </Grid>
+                <Grid item>
+                  <ActionButton
+                    onClicks={[
+                      () => {
+                        setOpenDialogAddPolitic({ open: true, action: "add" });
+                        setListener(false);
+                      },
+                      () => {
+                        setOpenDialogDelete({
+                          open: true,
+                          list: checkPolitic,
+                          type: "politic",
+                        });
+                      },
+                    ]}
+                  />
+                </Grid>
+              </Grid>
+
+              <Subtitle>Campanhas</Subtitle>
+              <CustomList
+                onClick={handlePoliticListClick}
+                indexSelected={indexPolitic}
+                list={politics}
+                onCheckChange={handleCheckChangePolitic}
+                dropdownNames={["Adicionar assinatura", "Editar"]}
+                dropdownOnChange={[
+                  (index) => {
+                    history.push(`/assinatura/${politics[index].token}`, {
+                      token: politics[index].token,
+                    });
+                  },
+                  () => {
+                    setOpenDialogAddPolitic({ open: true, action: "edit" });
+                  },
+                ]}
+              />
+              <Dialog
+                onClose={() => {
+                  setOpenDialogAddPolitic({ open: false });
+                }}
+                open={openDialogAddPolitic.open}
+              >
+                <DialogTitle style={{ background: "#f5f3f3" }}>
+                  <FormPolitic
+                    cities={cities}
                     onCancel={() => {
-                      setOpenDialogAddManager(false);
+                      setListener(true);
+                      onOrientationChange();
+                      setOpenDialogAddPolitic({ open: false });
+                    }}
+                    onClose={async () => {
+                      setOpenDialogAddPolitic({ open: false });
+                      fetchPolitics();
+                    }}
+                    editPolitic={
+                      openDialogAddPolitic.action === "edit"
+                        ? politics[indexPolitic]
+                        : undefined
+                    }
+                  />
+                </DialogTitle>
+              </Dialog>
+              <Dialog
+                onClose={() =>
+                  setOpenDialogDelete({
+                    open: false,
+                    list: undefined,
+                    type: "",
+                  })
+                }
+                open={
+                  openDialogDelete.open && openDialogDelete.type === "politic"
+                }
+              >
+                <DialogTitle style={{ background: "#f5f3f3" }}>
+                  <ConfirmDelete
+                    type={openDialogDelete.type}
+                    list={openDialogDelete.list}
+                    onBack={async () => {
+                      setOpenDialogDelete({
+                        open: false,
+                        list: undefined,
+                        type: "",
+                      });
+                      window.location.reload();
+                    }}
+                    overId={localStorage.getItem("userId")}
+                  />
+                </DialogTitle>
+              </Dialog>
+            </Grid>
+            <Separator />
+
+            <Grid item xs={3} sm={3} md={4}>
+              <div style={{ height: 4 }}></div>
+              <ActionButton
+                onClicks={[
+                  () => {
+                    setOpenDialogAddManager({ open: true, action: "add" });
+                  },
+                  () => {
+                    setOpenDialogDelete({
+                      open: true,
+                      list: checkManager,
+                      type: "manager",
+                    });
+                  },
+                ]}
+              />
+              <div style={{ height: "4.4px" }}></div>
+              <Subtitle>Gestores</Subtitle>
+              <CustomList
+                onClick={handleManagerListClick}
+                indexSelected={indexManager}
+                list={managers}
+                onCheckChange={handleCheckChangeManager}
+                dropdownNames={["Editar"]}
+                dropdownOnChange={[
+                  () => {
+                    setOpenDialogAddManager({ open: true, action: "edit" });
+                  },
+                ]}
+              />
+              <Dialog
+                onClose={() => setOpenDialogAddManager({ open: false })}
+                open={openDialogAddManager.open}
+              >
+                {!politics.isEmpty ? (
+                  <DialogTitle style={{ background: "#f5f3f3" }}>
+                    <FormManager
+                      politic={politics[indexPolitic]}
+                      onClose={async () => {
+                        setOpenDialogAddManager({ open: false });
+                        await fetchManagers(politics[indexPolitic].id);
+                      }}
+                      onCancel={() => {
+                        setOpenDialogAddManager({ open: false });
+                      }}
+                      editManager={
+                        openDialogAddManager.action === "edit"
+                          ? managers[indexManager]
+                          : undefined
+                      }
+                    />
+                  </DialogTitle>
+                ) : (
+                  <></>
+                )}
+              </Dialog>
+              <Dialog
+                onClose={() =>
+                  setOpenDialogDelete({
+                    open: false,
+                    list: undefined,
+                    type: "",
+                  })
+                }
+                open={
+                  openDialogDelete.open && openDialogDelete.type === "manager"
+                }
+              >
+                <DialogTitle style={{ background: "#f5f3f3" }}>
+                  <ConfirmDelete
+                    type={openDialogDelete.type}
+                    list={openDialogDelete.list}
+                    onBack={async () => {
+                      setOpenDialogDelete({
+                        open: false,
+                        list: undefined,
+                        type: "",
+                      });
+                      window.location.reload();
+                    }}
+                    overId={politics[indexPolitic].id}
+                  />
+                </DialogTitle>
+              </Dialog>
+            </Grid>
+            <Separator />
+
+            <Grid item xs={3} sm={3} md={3}>
+              <div style={{ height: 4 }}></div>
+              <ActionButton
+                onClicks={[
+                  () => {
+                    setOpenDialogAddHired(true);
+                  },
+                  () => {
+                    setOpenDialogDelete({
+                      open: true,
+                      list: checkHired,
+                      type: "hired",
+                    });
+                  },
+                ]}
+              />
+              <div style={{ height: "4.4px" }}></div>
+              <Subtitle>Contratados</Subtitle>
+              <CustomList
+                onClick={handleHiredListClick}
+                indexSelected={indexHired}
+                list={hireds}
+                onCheckChange={handleCheckChangeHired}
+                dropdownNames={[
+                  "Adicionar assinatura",
+                  "Adicionar comprovante",
+                  "Ver PDF",
+                  "Editar",
+                ]}
+                dropdownOnChange={[
+                  (index) => {
+                    history.push(`/assinatura/${hireds[index].token}`, {
+                      token: hireds[index].token,
+                    });
+                  },
+                  (index) => {},
+                  (index) => {
+                    window.open(hireds[index].contrato);
+                  },
+                  (index) => {},
+                ]}
+              />
+              <Dialog
+                onClose={() => setOpenDialogAddHired(false)}
+                open={openDialogAddHired}
+              >
+                <DialogTitle style={{ background: "#f5f3f3" }}>
+                  <FormHired
+                    cities={cities}
+                    onClick={() => {
+                      // setOpenDialogAddHired(false);
                     }}
                   />
                 </DialogTitle>
-              ) : <></>}
-            </Dialog>
-            <Dialog
-              onClose={() =>
-                setOpenDialogDelete({
-                  open: false,
-                  list: undefined,
-                  type: "",
-                })
-              }
-              open={
-                openDialogDelete.open && openDialogDelete.type === "manager"
-              }
-            >
-              <DialogTitle style={{ background: "#f5f3f3" }}>
-                <ConfirmDelete
-                  type={openDialogDelete.type}
-                  list={openDialogDelete.list}
-                  onBack={async () => {
-                    setOpenDialogDelete({
-                      open: false,
-                      list: undefined,
-                      type: "",
-                    });
-                    window.location.reload();
-                  }}
-                  overId={politics[indexPolitic].id}
-                />
-              </DialogTitle>
-            </Dialog>
-          </Grid>
-          <Separator />
-
-          <Grid item xs={3} sm={3} md={3}>
-            <div style={{ height: 4 }}></div>
-            <ActionButton
-              onClicks={[
-                () => {
-                  setOpenDialogAddHired(true);
-                },
-                () => {
+              </Dialog>
+              <Dialog
+                onClose={() =>
                   setOpenDialogDelete({
-                    open: true,
-                    list: checkHired,
-                    type: "hired",
-                  });
-                },
-              ]}
-            />
-            <div style={{ height: "4.4px" }}></div>
-            <Subtitle>Contratados</Subtitle>
-            <CustomList
-              onClick={handleHiredListClick}
-              indexSelected={indexHired}
-              list={hireds}
-              onCheckChange={handleCheckChangeHired}
-              dropdownNames={[
-                "Adicionar assinatura",
-                "Adicionar comprovante",
-                "Ver PDF",
-                "Editar",
-              ]}
-              dropdownOnChange={[
-                (index) => {
-                  history.push(`/assinatura/${hireds[index].token}`, {
-                    token: hireds[index].token,
-                  });
-                },
-                (index) => {},
-                (index) => {
-                  window.open(hireds[index].contrato);
-                },
-                (index) => {},
-              ]}
-            />
-            <Dialog
-              onClose={() => setOpenDialogAddHired(false)}
-              open={openDialogAddHired}
-            >
-              <DialogTitle style={{ background: "#f5f3f3" }}>
-                <FormHired
-                  cities={cities}
-                  onClick={() => {
-                    // setOpenDialogAddHired(false);
-                  }}
-                />
-              </DialogTitle>
-            </Dialog>
-            <Dialog
-              onClose={() =>
-                setOpenDialogDelete({
-                  open: false,
-                  list: undefined,
-                  type: "",
-                })
-              }
-              open={
-                openDialogDelete.open && openDialogDelete.type === "hired"
-              }
-            >
-              <DialogTitle style={{ background: "#f5f3f3" }}>
-                <ConfirmDelete
-                  type={openDialogDelete.type}
-                  list={openDialogDelete.list}
-                  onClickNo={() =>
-                    setOpenDialogDelete({
-                      open: false,
-                      list: undefined,
-                      type: "",
-                    })
-                  }
-                  onClickYes={() => {}}
-                />
-              </DialogTitle>
-            </Dialog>
-          </Grid>
-        </StyledGrid>
-        <Footer>
-          Site desenvolvido por<pre> Easycode </pre>- 2020
-        </Footer>
-      </>
-    );}
+                    open: false,
+                    list: undefined,
+                    type: "",
+                  })
+                }
+                open={
+                  openDialogDelete.open && openDialogDelete.type === "hired"
+                }
+              >
+                <DialogTitle style={{ background: "#f5f3f3" }}>
+                  <ConfirmDelete
+                    type={openDialogDelete.type}
+                    list={openDialogDelete.list}
+                    onClickNo={() =>
+                      setOpenDialogDelete({
+                        open: false,
+                        list: undefined,
+                        type: "",
+                      })
+                    }
+                    onClickYes={() => {}}
+                  />
+                </DialogTitle>
+              </Dialog>
+            </Grid>
+          </StyledGrid>
+          <Footer>
+            Site desenvolvido por<pre> Easycode </pre>- 2020
+          </Footer>
+        </>
+      );
+    }
   }
 }

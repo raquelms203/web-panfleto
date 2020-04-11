@@ -90,7 +90,6 @@ export default function CustomList(props) {
                 <Menu
                   id="simple-menu"
                   anchorEl={anchorEl}
-                  keepMounted
                   open={Boolean(anchorEl)}
                   onClose={handleCloseMenu}
                 >
@@ -98,7 +97,10 @@ export default function CustomList(props) {
                     return (
                       <MenuItem
                         key={index}
-                        onClick={() => dropdownOnChange[index](indexSelected)}
+                        onClick={() => {
+                          dropdownOnChange[index](indexSelected);
+                          setAnchorEl(null);
+                        }}
                       >
                         {item}
                       </MenuItem>

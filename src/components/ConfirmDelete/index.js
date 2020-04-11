@@ -11,29 +11,22 @@ export default function ConfirmDelete(props) {
 
   const onClickYes = async () => {
     if (type === "politic") {
-      var error = false;
       for (let i = 0; i < list.length; i++) {
         await apiADM
-          .delete(
-            `/politic/${list[i]}?adminId=${overId}`
-          )
+          .delete(`/politic/${list[i]}?adminId=${overId}`)
           .catch(function (e) {
-            this.error = true;
+            toast.error("Ocorreu um erro ao apagar campanha(s)!");
           });
       }
     } else if (type === "manager") {
-      var error = false;
       for (let i = 0; i < list.length; i++) {
         await apiADM
-          .delete(
-            `/manager/${list[i]}?politicId=${overId}`
-          )
+          .delete(`/manager/${list[i]}?politicId=${overId}`)
           .catch(function (e) {
-            this.error = true;
+            toast.error("Ocorreu um erro ao apagar gestor(es)!");
           });
       }
     }
-    if (error) toast.error("Ocorreu um erro ao apagar campanha(s)!");
     onBack();
   };
 

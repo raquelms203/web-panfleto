@@ -38,7 +38,7 @@ export default function FormHired(props) {
     open: false,
     info: [],
   });
-  console.log(editPolitic);
+
   const fetchCEP = async (cep) => {
     if (cep[8] === "_") return;
     let api = axios.create({
@@ -59,13 +59,13 @@ export default function FormHired(props) {
   };
 
   const sendPolitic = async (values) => {
-    console.log(city.value);
 
     let typeNumber;
     if (type.value === "Prefeito") typeNumber = 1;
     if (type.value === "Vereador") typeNumber = 2;
 
-    await apiADM
+    if(editPolitic !== undefined) {  
+      await apiADM
       .post(`/politic?adminId=${localStorage.getItem("userId")}`, {
         name: name.value,
         document: CPF.value,
@@ -78,13 +78,35 @@ export default function FormHired(props) {
         district: district.value,
       })
       .then((response) => {
-        onClose();
         toast.success("Campanha criada com sucesso!");
       })
       .catch((error) => {
         toast.error("Ocorreu um erro ao criar campanha!");
         console.log(error);
       });
+      onClose();
+    } else {  
+      await apiADM
+      .put(`/politic?adminId=${localStorage.getItem("userId")}`, {
+        name: name.value,
+        document: CPF.value,
+        type: typeNumber,
+        group: group.value,
+        zipcode: CEP.value,
+        city: city.value,
+        street: street.value,
+        number: number.value + " " + complement.value,
+        district: district.value,
+      })
+      .then((response) => {
+        toast.success("Campanha editada com sucesso!");
+      })
+      .catch((error) => {
+        toast.error("Ocorreu um erro ao editar campanha!");
+        console.log(error);
+      });
+      onClose();
+    }
   };
 
   const handleChangeName = (event) => {

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Grid, Button, TextField } from "@material-ui/core";
 import InputMask from "react-input-mask";
-import { Formik, Form, Field,  } from "formik";
+import { Formik, Form, Field } from "formik";
 import { toast } from "react-toastify";
 
 import { validationSchema } from "./validation_schema";
@@ -16,7 +16,7 @@ import {
 import { apiADM } from "../../services/api";
 
 export default function FormManager(props) {
-  const { onClose, onCancel, politic } = props;
+  const { onClose, onCancel, politic, editManager } = props;
 
   const [initialValues, setInitialValues] = useState({
     name: "",
@@ -39,26 +39,55 @@ export default function FormManager(props) {
   };
 
   const sendManager = async (values) => {
-    let rawCPF = values.cpf.split("-").join("").split(".").join("");
-
-    await apiADM
-      .post(`/manager?politicId=${politic.id}`, {
-        name: values.name,
-        email: values.email,
-        document: rawCPF,
-      })
-      .then((response) => {
+    if (editManager === undefined) {
+      await apiADM
+        .post(`/manager?politicId=${politic.id}`, {
+          name: values.name,
+          email: values.email,
+          document: values.cpf,
+        })
+        .then((response) => {
+          toast.success("Gestor criado com sucesso!");
+        })
+        .catch((error) => toast.error("Ocorreu um erro ao criar campanha!"));
         onClose();
-        toast.success("Gestor criado com sucesso!");
-      })
-      .catch((error) => toast.error("Ocorreu um erro ao criar campanha!"));
+    } else {
+      await apiADM
+        .put(`/manager?politicId=${politic.id}`, {
+          name: values.name,
+          email: values.email,
+          document: values.cpf,
+        })
+        .then((response) => {
+          toast.success("Gestor criado com sucesso!");
+        })
+        .catch((error) => toast.error("Ocorreu um erro ao criar campanha!"));
+        onClose();
+    }
   };
 
+  const initValues = useCallback(() => {  
+    if(editManager !== undefined) {  
+      setInitialValues({  
+        name: editManager.name,
+        cpf: editManager.document,
+        email: editManager.email
+      })
+    }
+  },[setInitialValues]);
+
+  useEffect(() => {
+    console.log(editManager);
+    initValues();
+  }, [])
+
+  console.log("initial", initialValues);
 
   return !openDialogConfirmInfo.open ? (
     <Formik
       validationSchema={validationSchema}
       initialValues={initialValues}
+      enableReinitialize 
       onSubmit={handleSubmit}
       validateOnChange={false}
       validateOnBlur={false}
@@ -74,7 +103,9 @@ export default function FormManager(props) {
               spacing={2}
             >
               <Grid item xs>
-                <Title>{`Campanha: (${politic.group.toUpperCase()}) ${politic.name.split(" ")[0]}`}</Title>
+                <Title>{`Campanha: (${politic.group.toUpperCase()}) ${
+                  politic.name.split(" ")[0]
+                }`}</Title>
               </Grid>
               <div style={{ width: 400 }}></div>
               <Grid item xs>
@@ -94,10 +125,10 @@ export default function FormManager(props) {
                 </Field>
               </Grid>
               <Grid item xs>
-              <Field name="cpf">
+                <Field name="cpf">
                   {({ field }) => (
                     <InputMask
-                     {...field}
+                      {...field}
                       mask="999.999.999-99"
                       onChange={(event) => {
                         setFieldValue(
