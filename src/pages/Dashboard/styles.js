@@ -50,7 +50,7 @@ export const Footer = styled.div`
   font: 15px Microsoft New Tai Lue;
   letter-spacing: 0.4px;
   pre {  
-    color: #3daf8a;
+    color: #2B5279;
     font: 15px Microsoft New Tai Lue;
 
   }

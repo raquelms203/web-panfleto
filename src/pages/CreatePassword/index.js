@@ -15,17 +15,18 @@ import ErrorPage from "../ErrorPage";
 import Loading from "../../components/Loading";
 
 export default function CreatePassword(props) {
+  const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState({ value: "", error: "" });
   const [tokenValid, setTokenValid] = useState();
   const history = useHistory();
   const path = window.location.pathname;
-  const href = window.location.href;
   const token = path.split("/")[2];
-  const [type, setType] = useState(href.split("=")[1]);
-
+  var type = window.location.href.split("=")[1];
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
     let errorValidate = validatePassword(password, password2.value);
     if (errorValidate !== "") {
       setPassword("");
@@ -33,26 +34,25 @@ export default function CreatePassword(props) {
       return;
     }
     setPassword2({ value: password2.value, error: "" });
-
-    if (type === "admin") setType("administrator");
-
+    
+    if (type === "admin") type = "administrator";
     await apiADM
-      .put(`${type}/create-password/${token}`, {
-        password: password,
-      })
-      .then((response) => {
-        toast.success(
+    .put(`${type}/create-password/${token}`, {
+      password: password,
+    })
+    .then((response) => {
+      toast.success(
           "Senha criada com sucesso!\nVocê será redirecionado para a tela de login.",
           {
             onClose: function () {
               history.push("/");
             },
           }
-        );
-      })
+          );
+        })
       .catch((error) => {
-        console.log(error);
-      });
+        toast.error("Ocorreu um erro ao criar a senha!");
+      }).finally(() => setLoading(false));
   };
 
   const verifyToken = useCallback(async () => {
@@ -70,8 +70,7 @@ export default function CreatePassword(props) {
     verifyToken();
   }, [verifyToken]);
 
-  if (tokenValid === undefined)
-   return <Loading />
+  if (tokenValid === undefined || loading) return <Loading />;
   else
     return tokenValid ? (
       <Container>
