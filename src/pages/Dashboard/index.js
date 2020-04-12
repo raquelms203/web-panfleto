@@ -70,6 +70,25 @@ export default function Dashboard() {
     }
   }, [cities]);
 
+  const fetchHireds = useCallback(
+    async (idManager) => {
+      let hiredsAll = [];
+      await apiADM
+        .get(`hired?hiredId=${idManager}`)
+        .then((response) => {
+          response.data.forEach((item) => {
+            hiredsAll.push(item);
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      setHireds(hiredsAll);
+    },
+    [setHireds]
+  );
+
   const fetchManagers = useCallback(
     async (idPolitic) => {
       console.log("fetch manager");
@@ -82,22 +101,12 @@ export default function Dashboard() {
           });
         })
         .catch((error) => {
-          if (error.response.status === 401) {
-            toast.info(
-              "Após 1h a sessão expira. Você será redirecionado para a página de login.",
-              {
-                onClose: function () {
-                  history.push("/");
-                },
-              }
-            );
-          }
-        })
-        .then(() => {
-          setManagers(managersAll);
+          console.log(error);
         });
+
+      setManagers(managersAll);
     },
-    [setManagers, history]
+    [setManagers]
   );
 
   const fetchPolitics = useCallback(async () => {
@@ -105,7 +114,7 @@ export default function Dashboard() {
     await apiADM
       .get(`/politic?adminId=${localStorage.getItem("userId")}`)
       .then(async (response) => {
-        response.data.forEach((item) => {
+        response.data.forEach(async (item) => {
           let p = {
             name: item.name,
             id: item.id,
@@ -121,7 +130,12 @@ export default function Dashboard() {
           politicsAll.push(p);
         });
         setPolitics(politicsAll);
-        if (!politicsAll.isEmpty) fetchManagers(politicsAll[0].id);
+        if (!politicsAll.isEmpty){ 
+          await fetchManagers(politicsAll[0].id);
+          if(!managers.isEmpty) {  
+            fetchHireds(managers[0].id);
+          }
+        };
       })
       .catch((error) => {
         if (Boolean(error.response) && error.response.status === 401) {
@@ -163,10 +177,6 @@ export default function Dashboard() {
     await fetchManagers(politics[index].id);
   };
 
-  // const isTwoPoliticsSelected = () => {
-  //   return checkPolitic.length > 1;
-  // };
-
   const handleCheckChangePolitic = (event, value, indexList) => {
     let list = checkPolitic;
     if (list === undefined) list = [];
@@ -179,20 +189,13 @@ export default function Dashboard() {
       list.splice(indexRemove, 1);
     }
     setCheckPolitic(list);
-    // if (isTwoPoliticsSelected()) {
-    //   setManagers([]);
-    //   setHireds([]);
-    // }
+
     console.log(list);
   };
 
   const handleManagerListClick = (event, index) => {
     setIndexManager(index);
     // setHireds(managers[index].contratados);
-  };
-
-  const isTwoManagersSelected = () => {
-    return checkManager.length > 1;
   };
 
   const handleCheckChangeManager = (event, value, indexList) => {
@@ -207,9 +210,6 @@ export default function Dashboard() {
       list.splice(indexRemove, 1);
     }
     setCheckManager(list);
-    if (isTwoManagersSelected()) {
-      setHireds([]);
-    }
   };
 
   const handleHiredListClick = (event, index) => {
