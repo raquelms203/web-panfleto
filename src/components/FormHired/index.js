@@ -18,7 +18,7 @@ import ConfirmInfo from "../ConfirmInfo";
 import * as validate from "./validation_schema";
 
 export default function FormHired(props) {
-  const { cities, manager } = props;
+  const { cities, manager, onClose } = props;
   const [name, setName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
   const [CPF, setCPF] = useState({ value: "", error: "" });
@@ -160,7 +160,7 @@ export default function FormHired(props) {
       if (complement.value.length !== 0)
         values.splice(complementPosition, 0, {
           field: "Complemento:",
-          value: complement.value,
+          value: " " + complement.value,
         });
 
       setOpenDialogConfirmInfo({
@@ -170,20 +170,20 @@ export default function FormHired(props) {
     }
   };
 
-  const sendHired = async (values) => {
+  const sendHired = async () => {
     await apiADM.post(`/hired?managerId=${manager.id}`, {
       name: name.value,
       email: email.value,
       office: office.value,
       document: CPF.value,
       payment: payment.value,
-      zipcode: CEP.value,
+      zipCode: CEP.value,
       group: "test",
       day: "15",
       month: "Abril",
       city: city.value,
       street: street.value,
-      number: number.value + " " + complement.value,
+      number: number.value + complement.value,
       district: district.value,
       phone: phone.value,
       urlDocument: "test",
@@ -194,7 +194,7 @@ export default function FormHired(props) {
       toast.error("Ocorreu um erro ao criar contratado!");
       console.log(error);
     });
-  //  onClose();
+    onClose();
   };
 
   const handleSubmit = (event) => {
@@ -461,7 +461,7 @@ export default function FormHired(props) {
               <Button
                 size="large"
                 style={{ background: "#958a94", color: "white" }}
-                onClick={() => {}}
+                onClick={onClose}
               >
                 Voltar
               </Button>

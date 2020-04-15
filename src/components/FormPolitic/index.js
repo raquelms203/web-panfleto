@@ -57,7 +57,7 @@ export default function FormHired(props) {
     setDistrict({ value: response.data.bairro, error: district.error });
   };
 
-  const sendPolitic = async (values) => {
+  const sendPolitic = async () => {
 
     let typeNumber;
     if (type.value === "Prefeito") typeNumber = 1;

@@ -72,20 +72,20 @@ export default function Dashboard() {
 
   const fetchHireds = useCallback(
     async (idManager) => {
-      console.log("fetch hired");
+      console.log("fetch hired", idManager);
       let hiredsAll = [];
       await apiADM
         .get(`hired?managerId=${idManager}`)
         .then((response) => {
+          console.log(response.data);
           response.data.forEach((item) => {
             hiredsAll.push(item);
           });
+          setHireds(hiredsAll);
         })
         .catch((error) => {
           console.log(error);
         });
-
-      setHireds(hiredsAll);
     },
     [setHireds]
   );
@@ -108,6 +108,8 @@ export default function Dashboard() {
           setManagers(managersAll);
           if (managersAll.length !== 0) {
             await fetchHireds(managersAll[0].id);
+          } else {  
+            setHireds([]);
           }
         })
         .catch((error) => {
@@ -140,6 +142,8 @@ export default function Dashboard() {
         setPolitics(politicsAll);
         if (politicsAll.length !== 0) {
           await fetchManagers(politicsAll[0].id);
+        } else {  
+          setManagers([]);
         }
       })
       .catch((error) => {
@@ -176,6 +180,8 @@ export default function Dashboard() {
 
   const handlePoliticListClick = async (event, index) => {
     setIndexPolitic(index);
+    setIndexManager(0);
+    setIndexHired(0);
     await fetchManagers(politics[index].id);
   };
 
@@ -193,9 +199,10 @@ export default function Dashboard() {
     setCheckPolitic(list);
   };
 
-  const handleManagerListClick = (event, index) => {
+  const handleManagerListClick = async (event, index) => {
     setIndexManager(index);
-    // setHireds(managers[index].contratados);
+    setIndexHired(0);
+    await fetchHireds(managers[index].id);
   };
 
   const handleCheckChangeManager = (event, value, indexList) => {
@@ -679,15 +686,18 @@ export default function Dashboard() {
                 ]}
               />
               <Dialog
-                onClose={() => setOpenDialogAddHired(false)}
+                onClose={async () => {
+                  setOpenDialogAddHired(false);
+                  await fetchHireds(managers[indexManager]);
+                }}
                 open={openDialogAddHired}
               >
                 <DialogTitle style={{ background: "#f5f3f3" }}>
                   <FormHired
                     manager={managers[indexManager]}
                     cities={cities}
-                    onClick={() => {
-                      // setOpenDialogAddHired(false);
+                    onClose={() => {
+                      setOpenDialogAddHired(false);
                     }}
                   />
                 </DialogTitle>
