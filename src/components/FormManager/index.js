@@ -16,7 +16,7 @@ import {
 import { apiADM } from "../../services/api";
 
 export default function FormManager(props) {
-  const { onClose, onCancel, politic, editManager } = props;
+  const { onClose, onCancel, politic, viewManager } = props;
 
   const [initialValues, setInitialValues] = useState({
     name: "",
@@ -39,47 +39,32 @@ export default function FormManager(props) {
   };
 
   const sendManager = async (values) => {
-    if (editManager === undefined) {
-      await apiADM
-        .post(`/manager?politicId=${politic.id}`, {
-          name: values.name,
-          email: values.email,
-          document: values.cpf,
-        })
-        .then((response) => {
-          toast.success("Gestor criado com sucesso!");
-        })
-        .catch((error) => toast.error("Ocorreu um erro ao criar campanha!"));
-        onClose();
-    } else {
-      await apiADM
-        .put(`/manager?politicId=${politic.id}`, {
-          name: values.name,
-          email: values.email,
-          document: values.cpf,
-        })
-        .then((response) => {
-          toast.success("Gestor criado com sucesso!");
-        })
-        .catch((error) => toast.error("Ocorreu um erro ao criar campanha!"));
-        onClose();
-    }
+    await apiADM
+      .post(`/manager?politicId=${politic.id}`, {
+        name: values.name,
+        email: values.email,
+        document: values.cpf,
+      })
+      .then((response) => {
+        toast.success("Gestor criado com sucesso!");
+      })
+      .catch((error) => toast.error("Ocorreu um erro ao criar campanha!"));
+    onClose();
   };
 
-  const initValues = useCallback(() => {  
-    if(editManager !== undefined) {  
-      setInitialValues({  
-        name: editManager.name,
-        cpf: editManager.document,
-        email: editManager.email
-      })
+  const initValues = useCallback(() => {
+    if (viewManager !== undefined) {
+      setInitialValues({
+        name: viewManager.name,
+        cpf: viewManager.document,
+        email: viewManager.email,
+      });
     }
-  },[setInitialValues]);
+  }, [setInitialValues]);
 
   useEffect(() => {
-    console.log(editManager);
     initValues();
-  }, [])
+  }, []);
 
   console.log("initial", initialValues);
 
@@ -87,7 +72,7 @@ export default function FormManager(props) {
     <Formik
       validationSchema={validationSchema}
       initialValues={initialValues}
-      enableReinitialize 
+      enableReinitialize
       onSubmit={handleSubmit}
       validateOnChange={false}
       validateOnBlur={false}
@@ -115,6 +100,9 @@ export default function FormManager(props) {
                       {...field}
                       fullWidth
                       InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        readOnly: viewManager !== undefined,
+                      }}
                       size="small"
                       label="Nome completo"
                       variant="outlined"
@@ -143,6 +131,9 @@ export default function FormManager(props) {
                         <TextField
                           style={{ background: "white" }}
                           InputLabelProps={{ shrink: true }}
+                          InputProps={{
+                            readOnly: viewManager !== undefined,
+                          }}
                           fullWidth
                           size="small"
                           label="CPF"
@@ -162,6 +153,9 @@ export default function FormManager(props) {
                       {...field}
                       fullWidth
                       InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        readOnly: viewManager !== undefined,
+                      }}
                       size="small"
                       label="Email"
                       variant="outlined"
@@ -181,14 +175,16 @@ export default function FormManager(props) {
                   Voltar
                 </Button>
                 <div style={{ width: 15 }}></div>
-                <StyledButton
-                  type="submit"
-                  variant="contained"
-                  size="large"
-                  color="secondary"
-                >
-                  <FontButton>OK</FontButton>
-                </StyledButton>
+                {viewManager === undefined ? (
+                  <StyledButton
+                    type="submit"
+                    variant="contained"
+                    size="large"
+                    color="secondary"
+                  >
+                    <FontButton>OK</FontButton>
+                  </StyledButton>
+                ) : undefined}
               </Grid>
             </Container>
           </Form>

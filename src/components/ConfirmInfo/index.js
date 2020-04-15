@@ -10,11 +10,10 @@ export default function ConfirmInfo(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     onClick();
-  }; 
+  };
   if (info !== undefined)
     return (
-      <
-      >
+      <>
         <Grid container direction="column" spacing={1} alignItems="flex-end">
           <Grid item xs sm md container justify="center">
             <FontValue>Confirme as informações:</FontValue>

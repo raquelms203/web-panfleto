@@ -72,9 +72,10 @@ export default function Dashboard() {
 
   const fetchHireds = useCallback(
     async (idManager) => {
+      console.log("fetch hired");
       let hiredsAll = [];
       await apiADM
-        .get(`hired?hiredId=${idManager}`)
+        .get(`hired?managerId=${idManager}`)
         .then((response) => {
           response.data.forEach((item) => {
             hiredsAll.push(item);
@@ -91,20 +92,27 @@ export default function Dashboard() {
 
   const fetchManagers = useCallback(
     async (idPolitic) => {
-      console.log("fetch manager");
       let managersAll = [];
       await apiADM
         .get(`manager?politicId=${idPolitic}`)
-        .then((response) => {
+        .then(async (response) => {
           response.data.forEach((item) => {
-            managersAll.push(item);
+            let m = {
+              id: item.id,
+              name: item.name,
+              document: item.document,
+              email: item.email,
+            };
+            managersAll.push(m);
           });
+          setManagers(managersAll);
+          if (managersAll.length !== 0) {
+            await fetchHireds(managersAll[0].id);
+          }
         })
         .catch((error) => {
           console.log(error);
         });
-
-      setManagers(managersAll);
     },
     [setManagers]
   );
@@ -114,7 +122,7 @@ export default function Dashboard() {
     await apiADM
       .get(`/politic?adminId=${localStorage.getItem("userId")}`)
       .then(async (response) => {
-        response.data.forEach(async (item) => {
+        response.data.forEach((item) => {
           let p = {
             name: item.name,
             id: item.id,
@@ -130,12 +138,9 @@ export default function Dashboard() {
           politicsAll.push(p);
         });
         setPolitics(politicsAll);
-        if (!politicsAll.isEmpty){ 
+        if (politicsAll.length !== 0) {
           await fetchManagers(politicsAll[0].id);
-          if(!managers.isEmpty) {  
-            fetchHireds(managers[0].id);
-          }
-        };
+        }
       })
       .catch((error) => {
         if (Boolean(error.response) && error.response.status === 401) {
@@ -150,19 +155,16 @@ export default function Dashboard() {
         } else toast.error("Ocorreu um erro ao carregar os dados.");
         console.log(error);
       });
-  }, [history, setPolitics, fetchManagers]);
+  }, [history, setPolitics, fetchManagers, fetchHireds, managers]);
 
   const onOrientationChange = useCallback(() => {
-    console.log("oi");
     if (window.screen.availWidth < 500) {
       setIsLessThan500(true);
       return;
     }
-    console.log("change");
     setIsLessThan500(false);
     if (window.matchMedia("(orientation: landscape)").matches) {
       // if (allow) {
-      console.log("oi");
       setIsLessThan500(false);
       return;
       //}
@@ -189,8 +191,6 @@ export default function Dashboard() {
       list.splice(indexRemove, 1);
     }
     setCheckPolitic(list);
-
-    console.log(list);
   };
 
   const handleManagerListClick = (event, index) => {
@@ -354,8 +354,8 @@ export default function Dashboard() {
     //  return  window.removeEventListener("orientationchange", onOrientationChange, false);
   }, [listener, onOrientationChange]);
 
-  if (!politics) return <Loading />;
-  else {
+  if (!Boolean(politics)) return <Loading />;
+  else if (Boolean(politics)) {
     if (isLessThan500) return <SmallScreenAlert />;
     else {
       return (
@@ -491,7 +491,7 @@ export default function Dashboard() {
               />
               <Dialog
                 onClose={() => {
-                  setOpenDialogAddPolitic({ open: false });
+                  setOpenDialogAddPolitic({ open: false, action: "" });
                 }}
                 open={openDialogAddPolitic.open}
               >
@@ -501,10 +501,10 @@ export default function Dashboard() {
                     onCancel={() => {
                       setListener(true);
                       onOrientationChange();
-                      setOpenDialogAddPolitic({ open: false });
+                      setOpenDialogAddPolitic({ open: false, action: "" });
                     }}
                     onClose={async () => {
-                      setOpenDialogAddPolitic({ open: false });
+                      setOpenDialogAddPolitic({ open: false, action: "" });
                       fetchPolitics();
                     }}
                     editPolitic={
@@ -569,67 +569,70 @@ export default function Dashboard() {
                 indexSelected={indexManager}
                 list={managers}
                 onCheckChange={handleCheckChangeManager}
-                dropdownNames={["Editar"]}
+                dropdownNames={["Detalhes"]}
                 dropdownOnChange={[
                   () => {
                     setOpenDialogAddManager({ open: true, action: "edit" });
                   },
                 ]}
               />
-              <Dialog
-                onClose={() => setOpenDialogAddManager({ open: false })}
-                open={openDialogAddManager.open}
-              >
-                {!politics.isEmpty ? (
-                  <DialogTitle style={{ background: "#f5f3f3" }}>
-                    <FormManager
-                      politic={politics[indexPolitic]}
-                      onClose={async () => {
-                        setOpenDialogAddManager({ open: false });
-                        await fetchManagers(politics[indexPolitic].id);
-                      }}
-                      onCancel={() => {
-                        setOpenDialogAddManager({ open: false });
-                      }}
-                      editManager={
-                        openDialogAddManager.action === "edit"
-                          ? managers[indexManager]
-                          : undefined
-                      }
-                    />
-                  </DialogTitle>
-                ) : (
-                  <></>
-                )}
-              </Dialog>
-              <Dialog
-                onClose={() =>
-                  setOpenDialogDelete({
-                    open: false,
-                    list: undefined,
-                    type: "",
-                  })
-                }
-                open={
-                  openDialogDelete.open && openDialogDelete.type === "manager"
-                }
-              >
-                <DialogTitle style={{ background: "#f5f3f3" }}>
-                  <ConfirmDelete
-                    type={openDialogDelete.type}
-                    list={openDialogDelete.list}
-                    onBack={async () => {
+              {politics.length === 0 ? (
+                <></>
+              ) : (
+                <>
+                  <Dialog
+                    onClose={() => setOpenDialogAddManager({ open: false })}
+                    open={openDialogAddManager.open}
+                  >
+                    <DialogTitle style={{ background: "#f5f3f3" }}>
+                      <FormManager
+                        politic={politics[indexPolitic]}
+                        onClose={async () => {
+                          setOpenDialogAddManager({ open: false });
+                          await fetchManagers(politics[indexPolitic].id);
+                        }}
+                        onCancel={() => {
+                          setOpenDialogAddManager({ open: false });
+                        }}
+                        viewManager={
+                          openDialogAddManager.action === "edit"
+                            ? managers[indexManager]
+                            : undefined
+                        }
+                      />
+                    </DialogTitle>
+                  </Dialog>
+                  <Dialog
+                    onClose={() =>
                       setOpenDialogDelete({
                         open: false,
                         list: undefined,
                         type: "",
-                      });
-                      window.location.reload();
-                    }}
-                    overId={politics[indexPolitic].id}
-                  />
-                </DialogTitle>
-              </Dialog>
+                      })
+                    }
+                    open={
+                      openDialogDelete.open &&
+                      openDialogDelete.type === "manager"
+                    }
+                  >
+                    <DialogTitle style={{ background: "#f5f3f3" }}>
+                      <ConfirmDelete
+                        overId={politics[indexPolitic].id}
+                        type={openDialogDelete.type}
+                        list={openDialogDelete.list}
+                        onBack={async () => {
+                          setOpenDialogDelete({
+                            open: false,
+                            list: undefined,
+                            type: "",
+                          });
+                          window.location.reload();
+                        }}
+                      />
+                    </DialogTitle>
+                  </Dialog>
+                </>
+              )}
             </Grid>
             <Separator />
 
@@ -681,6 +684,7 @@ export default function Dashboard() {
               >
                 <DialogTitle style={{ background: "#f5f3f3" }}>
                   <FormHired
+                    manager={managers[indexManager]}
                     cities={cities}
                     onClick={() => {
                       // setOpenDialogAddHired(false);

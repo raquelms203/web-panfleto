@@ -70,7 +70,7 @@ export default function CustomList(props) {
                 style={{ overflow: "hidden" }}
               >
                 <Grid item xs={8} sm={9} md={10}>
-                  {!itemList.hasOwnProperty("group") ? (
+                  {!itemList.hasOwnProperty("adminId") ? (
                     <TextOverflow>{itemList.name}</TextOverflow>
                   ) : (
                     <TextOverflow>

@@ -19,8 +19,7 @@ import ConfirmInfo from "../ConfirmInfo";
 import * as validate from "./validation_schema";
 
 export default function FormHired(props) {
-  const { cities, editPolitic } = props;
-  const { onClose, onCancel } = props;
+  const { cities, editPolitic, onClose, onCancel  } = props;
   const [name, setName] = useState({ value: "", error: "" });
   const [CPF, setCPF] = useState({ value: "", error: "" });
   const [CEP, setCEP] = useState({ value: "", error: "" });
@@ -64,7 +63,7 @@ export default function FormHired(props) {
     if (type.value === "Prefeito") typeNumber = 1;
     if (type.value === "Vereador") typeNumber = 2;
 
-    if(editPolitic !== undefined) {  
+    if(editPolitic === undefined) {  
       await apiADM
       .post(`/politic?adminId=${localStorage.getItem("userId")}`, {
         name: name.value,

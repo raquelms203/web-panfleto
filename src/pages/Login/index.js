@@ -39,7 +39,7 @@ export default function Login() {
         if (Boolean(error.response) && error.response.status === 401) {
           setPassword({
             value: password.value,
-            error: "Email ou senha incorreto",
+            error: "Email ou senha incorretos",
           });
         }
         setLoading(false);

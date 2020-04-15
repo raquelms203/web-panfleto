@@ -3,6 +3,7 @@ import { Grid, TextField, Button } from "@material-ui/core";
 import InputMask from "react-input-mask";
 import axios from "axios";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
+import { toast } from "react-toastify";
 
 import {
   Container,
@@ -12,10 +13,12 @@ import {
   FontButton,
 } from "./styles";
 import DropdownCities from "../DropdownCities";
+import { apiADM } from "../../services/api";
 import ConfirmInfo from "../ConfirmInfo";
 import * as validate from "./validation_schema";
 
 export default function FormHired(props) {
+  const { cities, manager } = props;
   const [name, setName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
   const [CPF, setCPF] = useState({ value: "", error: "" });
@@ -144,6 +147,7 @@ export default function FormHired(props) {
         { field: "Nome completo:", value: name.value },
         { field: "Email:", value: email.value },
         { field: "CPF:", value: CPF.value },
+        { field: "Celular", value: phone.value },
         { field: "CEP:", value: CEP.value },
         { field: "Cidade:", value: city.value },
         { field: "Rua", value: street.value },
@@ -153,10 +157,6 @@ export default function FormHired(props) {
         { field: "Cargo", value: office.value },
       ];
 
-      if (phone.value.match(/[0-9]/)) {
-        values.splice(3, 0, { field: "Celular:", value: phone.value });
-        complementPosition = 8;
-      }
       if (complement.value.length !== 0)
         values.splice(complementPosition, 0, {
           field: "Complemento:",
@@ -170,12 +170,37 @@ export default function FormHired(props) {
     }
   };
 
+  const sendHired = async (values) => {
+    await apiADM.post(`/hired?managerId=${manager.id}`, {
+      name: name.value,
+      email: email.value,
+      office: office.value,
+      document: CPF.value,
+      payment: payment.value,
+      zipcode: CEP.value,
+      group: "test",
+      day: "15",
+      month: "Abril",
+      city: city.value,
+      street: street.value,
+      number: number.value + " " + complement.value,
+      district: district.value,
+      phone: phone.value,
+      urlDocument: "test",
+    }).then((response) => {
+      toast.success("Contratado criada com sucesso!");
+    })
+    .catch((error) => {
+      toast.error("Ocorreu um erro ao criar contratado!");
+      console.log(error);
+    });
+  //  onClose();
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     validateFields();
   };
-
-  const { cities } = props;
 
   return (
     <form autoComplete="on" onSubmit={handleSubmit}>
@@ -257,7 +282,7 @@ export default function FormHired(props) {
                       fullWidth
                       InputLabelProps={{ shrink: true }}
                       size="small"
-                      label="Celular (Opcional)"
+                      label="Celular"
                       variant="outlined"
                     />
                   )}
@@ -452,7 +477,14 @@ export default function FormHired(props) {
             </Grid>
           </>
         ) : (
-          <ConfirmInfo info={openDialogConfirmInfo.info} />
+          <ConfirmInfo
+            info={openDialogConfirmInfo.info}
+            onClick={sendHired}
+            onBack={() => {  
+              setVisibleButtonCity(true);
+              setOpenDialogConfirmInfo({ open: false });
+            }}
+          />
         )}
       </Container>
     </form>
