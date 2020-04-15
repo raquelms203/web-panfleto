@@ -41,6 +41,11 @@ export default function Login() {
             value: password.value,
             error: "Email ou senha incorretos",
           });
+        } else if (Boolean(error.response) && error.response.status === 404) {
+          setPassword({
+            value: password.value,
+            error: "Usuário não cadastrado",
+          });
         }
         setLoading(false);
       });

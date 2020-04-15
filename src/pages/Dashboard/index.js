@@ -598,9 +598,9 @@ export default function Dashboard() {
                           setOpenDialogAddManager({ open: false });
                           await fetchManagers(politics[indexPolitic].id);
                         }}
-                        onCancel={() => {
-                          setOpenDialogAddManager({ open: false });
-                        }}
+                        onCancel={
+                          () => setOpenDialogAddManager({ open: false })
+                        }
                         viewManager={
                           openDialogAddManager.action === "edit"
                             ? managers[indexManager]

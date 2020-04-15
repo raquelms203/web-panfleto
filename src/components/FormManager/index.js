@@ -17,6 +17,7 @@ import { apiADM } from "../../services/api";
 
 export default function FormManager(props) {
   const { onClose, onCancel, politic, viewManager } = props;
+  const [isEdit, setIsEdit] = useState(false);
 
   const [initialValues, setInitialValues] = useState({
     name: "",
@@ -59,8 +60,9 @@ export default function FormManager(props) {
         cpf: viewManager.document,
         email: viewManager.email,
       });
+      setIsEdit(true);
     }
-  }, [setInitialValues]);
+  }, [setInitialValues, setIsEdit]);
 
   useEffect(() => {
     initValues();
@@ -101,7 +103,7 @@ export default function FormManager(props) {
                       fullWidth
                       InputLabelProps={{ shrink: true }}
                       InputProps={{
-                        readOnly: viewManager !== undefined,
+                        readOnly: isEdit,
                       }}
                       size="small"
                       label="Nome completo"
@@ -132,7 +134,7 @@ export default function FormManager(props) {
                           style={{ background: "white" }}
                           InputLabelProps={{ shrink: true }}
                           InputProps={{
-                            readOnly: viewManager !== undefined,
+                            readOnly: isEdit,
                           }}
                           fullWidth
                           size="small"
@@ -154,7 +156,7 @@ export default function FormManager(props) {
                       fullWidth
                       InputLabelProps={{ shrink: true }}
                       InputProps={{
-                        readOnly: viewManager !== undefined,
+                        readOnly: isEdit,
                       }}
                       size="small"
                       label="Email"
@@ -170,12 +172,14 @@ export default function FormManager(props) {
                 <Button
                   size="large"
                   style={{ background: "#958a94", color: "white" }}
-                  onClick={onCancel}
+                  onClick={() => {
+                    onCancel();
+                  }}
                 >
                   Voltar
                 </Button>
                 <div style={{ width: 15 }}></div>
-                {viewManager === undefined ? (
+                {!isEdit ? (
                   <StyledButton
                     type="submit"
                     variant="contained"
@@ -184,7 +188,9 @@ export default function FormManager(props) {
                   >
                     <FontButton>OK</FontButton>
                   </StyledButton>
-                ) : undefined}
+                ) : (
+                  <></>
+                )}
               </Grid>
             </Container>
           </Form>
