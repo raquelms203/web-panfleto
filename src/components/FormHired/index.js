@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import InputMask from "react-input-mask";
 import axios from "axios";
@@ -18,7 +18,8 @@ import ConfirmInfo from "../ConfirmInfo";
 import * as validate from "./validation_schema";
 
 export default function FormHired(props) {
-  const { cities, manager, onClose } = props;
+  const { cities, manager, onClose, viewHired, onCancel } = props;
+  const [isEdit, setIsEdit] = useState(false);
   const [name, setName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
   const [CPF, setCPF] = useState({ value: "", error: "" });
@@ -55,6 +56,35 @@ export default function FormHired(props) {
     });
     setVisibleButtonCity(true);
     setDistrict({ value: response.data.bairro, error: district.error });
+  };
+
+  const initValues = () => {
+    let number = "";
+    let complement = "";
+
+    if (viewHired != undefined) {
+      if (viewHired.number.includes(" ")) {
+        let local = viewHired.number.split(" ");
+        number = local[0];
+        local.shift();
+        complement = local.join(" ");
+      } else number = viewHired.number;
+
+      setIsEdit(true);
+      setName({ value: viewHired.name, error: "" });
+      setEmail({ value: viewHired.email, error: "" });
+      setCPF({ value: viewHired.document, error: "" });
+      setPhone({ value: viewHired.phone, error: "" });
+      setCEP({ value: viewHired.zipCode, error: "" });
+      setCity({ value: viewHired.city, error: "" });
+      setStreet({ value: viewHired.street, error: "" });
+      setNumber({ value: number, error: "" });
+      setComplement({ value: complement, error: "" });
+      setDistrict({ value: viewHired.district, error: "" });
+      setOffice({ value: viewHired.office, error: "" });
+      setPayment({ value: viewHired.payment, error: "" });
+      setVisibleButtonCity(true);
+    }
   };
 
   const handleChangeName = (event) => {
@@ -171,29 +201,31 @@ export default function FormHired(props) {
   };
 
   const sendHired = async () => {
-    await apiADM.post(`/hired?managerId=${manager.id}`, {
-      name: name.value,
-      email: email.value,
-      office: office.value,
-      document: CPF.value,
-      payment: payment.value,
-      zipCode: CEP.value,
-      group: "test",
-      day: "15",
-      month: "Abril",
-      city: city.value,
-      street: street.value,
-      number: number.value + complement.value,
-      district: district.value,
-      phone: phone.value,
-      urlDocument: "test",
-    }).then((response) => {
-      toast.success("Contratado criada com sucesso!");
-    })
-    .catch((error) => {
-      toast.error("Ocorreu um erro ao criar contratado!");
-      console.log(error);
-    });
+    await apiADM
+      .post(`/hired?managerId=${manager.id}`, {
+        name: name.value,
+        email: email.value,
+        office: office.value,
+        document: CPF.value,
+        payment: payment.value,
+        zipCode: CEP.value,
+        group: "test",
+        day: "15",
+        month: "Abril",
+        city: city.value,
+        street: street.value,
+        number: number.value + complement.value,
+        district: district.value,
+        phone: phone.value,
+        urlDocument: "test",
+      })
+      .then((response) => {
+        toast.success("Contratado criada com sucesso!");
+      })
+      .catch((error) => {
+        toast.error("Ocorreu um erro ao criar contratado!");
+        console.log(error);
+      });
     onClose();
   };
 
@@ -201,6 +233,10 @@ export default function FormHired(props) {
     event.preventDefault();
     validateFields();
   };
+
+  useEffect(() => {
+    initValues();
+  }, [initValues]);
 
   return (
     <form autoComplete="on" onSubmit={handleSubmit}>
@@ -220,6 +256,9 @@ export default function FormHired(props) {
               <StyledTextField
                 fullWidth
                 InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  readOnly: isEdit,
+                }}
                 size="small"
                 label="Nome completo"
                 variant="outlined"
@@ -234,6 +273,9 @@ export default function FormHired(props) {
               <StyledTextField
                 fullWidth
                 InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  readOnly: isEdit,
+                }}
                 size="small"
                 label="Email"
                 variant="outlined"
@@ -260,6 +302,9 @@ export default function FormHired(props) {
                       helperText={CPF.error}
                       fullWidth
                       InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        readOnly: isEdit,
+                      }}
                       size="small"
                       label="CPF"
                       variant="outlined"
@@ -269,8 +314,8 @@ export default function FormHired(props) {
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
                 <InputMask
-                  value={phone.value}
                   mask="(99)99999-9999"
+                  value={phone.value}
                   onChange={(event) =>
                     setPhone({ value: event.target.value, error: phone.error })
                   }
@@ -281,6 +326,9 @@ export default function FormHired(props) {
                       helperText={phone.error}
                       fullWidth
                       InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        readOnly: isEdit,
+                      }}
                       size="small"
                       label="Celular"
                       variant="outlined"
@@ -305,6 +353,9 @@ export default function FormHired(props) {
                       helperText={CEP.error}
                       fullWidth
                       InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        readOnly: isEdit,
+                      }}
                       size="small"
                       label="CEP"
                       variant="outlined"
@@ -325,6 +376,9 @@ export default function FormHired(props) {
                       style={{ background: filledColor }}
                       value={city.value}
                       InputLabelProps={{ shrink: true, readOnly: true }}
+                      InputProps={{
+                        readOnly: isEdit,
+                      }}
                       size="small"
                       variant="outlined"
                       label="Cidade"
@@ -347,6 +401,9 @@ export default function FormHired(props) {
                 <StyledTextField
                   fullWidth
                   InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    readOnly: isEdit,
+                  }}
                   size="small"
                   label="Rua"
                   variant="outlined"
@@ -368,6 +425,9 @@ export default function FormHired(props) {
                   error={Boolean(number.error)}
                   helperText={number.error}
                   InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    readOnly: isEdit,
+                  }}
                   size="small"
                   label="Número"
                   variant="outlined"
@@ -381,6 +441,9 @@ export default function FormHired(props) {
                 <StyledTextField
                   fullWidth
                   InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    readOnly: isEdit,
+                  }}
                   error={Boolean(complement.error)}
                   helperText={complement.error}
                   size="small"
@@ -402,6 +465,9 @@ export default function FormHired(props) {
                   helperText={district.error}
                   style={{ background: filledColor }}
                   InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    readOnly: isEdit,
+                  }}
                   size="small"
                   label="Bairro"
                   variant="outlined"
@@ -426,6 +492,9 @@ export default function FormHired(props) {
                   label="Pagamento"
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    readOnly: isEdit,
+                  }}
                   value={payment.value}
                   currencySymbol="R$ "
                   //minimumValue="0"
@@ -444,6 +513,9 @@ export default function FormHired(props) {
                   helperText={office.error}
                   fullWidth
                   InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    readOnly: isEdit,
+                  }}
                   size="small"
                   label="Cargo"
                   variant="outlined"
@@ -461,26 +533,30 @@ export default function FormHired(props) {
               <Button
                 size="large"
                 style={{ background: "#958a94", color: "white" }}
-                onClick={onClose}
+                onClick={() => onCancel()}
               >
                 Voltar
               </Button>
               <div style={{ width: 16 }}></div>
-              <StyledButton
-                type="submit"
-                variant="contained"
-                size="large"
-                color="secondary"
-              >
-                <FontButton>OK</FontButton>
-              </StyledButton>
+              {isEdit ? (
+                <></>
+              ) : (
+                <StyledButton
+                  type="submit"
+                  variant="contained"
+                  size="large"
+                  color="secondary"
+                >
+                  <FontButton>OK</FontButton>
+                </StyledButton>
+              )}
             </Grid>
           </>
         ) : (
           <ConfirmInfo
             info={openDialogConfirmInfo.info}
             onClick={() => sendHired()}
-            onBack={() => {  
+            onBack={() => {
               setVisibleButtonCity(true);
               setOpenDialogConfirmInfo({ open: false });
             }}

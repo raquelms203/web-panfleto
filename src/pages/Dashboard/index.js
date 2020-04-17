@@ -44,7 +44,10 @@ export default function Dashboard() {
   const [indexHired, setIndexHired] = useState(0);
   const [checkHired, setCheckHired] = useState([]);
   const [openDialogFilter, setOpenDialogFilter] = useState(false);
-  const [openDialogAddHired, setOpenDialogAddHired] = useState(false);
+  const [openDialogAddHired, setOpenDialogAddHired] = useState({
+    open: false,
+    action: "",
+  });
   const [openDialogAddManager, setOpenDialogAddManager] = useState({
     open: false,
     action: "",
@@ -219,6 +222,7 @@ export default function Dashboard() {
 
   const handleHiredListClick = (event, index) => {
     setIndexHired(index);
+    console.log(hireds[index]);
   };
 
   const handleCheckChangeHired = (event, value, indexList) => {
@@ -251,10 +255,9 @@ export default function Dashboard() {
       return;
     }
     await fetchPolitics();
-    let fetch = politics;
     let list = [];
     if (citySelected !== "" && filterPoliticSelected !== 0) {
-      fetch.forEach((item) => {
+      politics.forEach((item) => {
         if (item.city === citySelected) {
           if (!list.includes(item)) {
             if (item.type === filterPoliticSelected) {
@@ -267,13 +270,13 @@ export default function Dashboard() {
       });
     } else if (filterPoliticSelected !== 0 && citySelected === "") {
       let n = filterPoliticSelected;
-      fetch.forEach((item) => {
+      politics.forEach((item) => {
         if (item.type === n) {
           if (list.indexOf(item) === -1) list.push(item);
         }
       });
     } else if (filterPoliticSelected === 0 && citySelected !== "") {
-      fetch.forEach((item) => {
+      politics.forEach((item) => {
         if (item.city === citySelected) {
           if (list.indexOf(item) === -1) {
             list.push(item);
@@ -286,49 +289,88 @@ export default function Dashboard() {
       await fetchManagers(list[0].id);
     }
     setOpenDialogFilter(false);
+    setIndexPolitic(0);
   };
 
   const removeFilterCity = async () => {
     setCitySelected("");
-    console.log("remove filter");
-    await fetchPolitics();
+    let list = [];
+
     if (filterPoliticSelected !== 0) {
-      let list = [];
-      let n = filterPoliticSelected;
-      politics.forEach((item) => {
-        console.log("all city", item);
-        if (item.type === n) {
-          if (list.indexOf(item) === -1) {
-            list.push(item);
+      await apiADM
+        .get(`/politic?adminId=${localStorage.getItem("userId")}`)
+        .then(async (response) => {
+          let resp = response.data;
+          for (let i = 0; i < resp.length; i++) {
+            if (resp[i].type === filterPoliticSelected) {
+              if (list.indexOf(resp[i]) === -1) {
+                let p = {
+                  name: resp[i].name,
+                  id: resp[i].id,
+                  group: resp[i].group,
+                  document: resp[i].document,
+                  type: resp[i].type,
+                  city: resp[i].city,
+                  street: resp[i].street,
+                  district: resp[i].district,
+                  number: resp[i].number,
+                  zipcode: resp[i].zipcode,
+                };
+                list.push(p);
+              }
+            }
           }
-        }
-      });
+        })
+        .catch((error) => {
+          toast.error("Ocorreu um erro ao carregar os dados!");
+          console.log(error);
+        });
+
       setPolitics(list);
+      setIndexPolitic(0);
       if (list.length !== 0) {
         await fetchManagers(list[0].id);
       }
-    } 
+    } else {
+      await fetchPolitics();
+    }
   };
 
   const removeFilterPolitic = async () => {
     setFilterPoliticSelected(0);
-    await fetchPolitics();
     if (citySelected !== "") {
       let list = [];
-      politics.forEach((item) => {
-        console.log("all", item);
-        if (item.city === citySelected) {
-          console.log(item);
-          if (list.indexOf(item) === -1) {
-            list.push(item);
+      await apiADM
+        .get(`/politic?adminId=${localStorage.getItem("userId")}`)
+        .then(async (response) => {
+          let resp = response.data;
+          for (let i = 0; i < resp.length; i++) {
+            if (resp[i].city === citySelected) {
+              if (list.indexOf(resp[i]) === -1) {
+                let p = {
+                  name: resp[i].name,
+                  id: resp[i].id,
+                  group: resp[i].group,
+                  document: resp[i].document,
+                  type: resp[i].type,
+                  city: resp[i].city,
+                  street: resp[i].street,
+                  district: resp[i].district,
+                  number: resp[i].number,
+                  zipcode: resp[i].zipcode,
+                };
+                list.push(p);
+              }
+            }
           }
-        }
-      });
+        });
       setPolitics(list);
+      setIndexPolitic(0);
+
       if (list.length !== 0) {
-        await fetchManagers(list[0].id)
+        await fetchManagers(list[0].id);
       }
-    }
+    } else await fetchPolitics();
   };
 
   useEffect(() => {
@@ -645,7 +687,7 @@ export default function Dashboard() {
               <ActionButton
                 onClicks={[
                   () => {
-                    setOpenDialogAddHired(true);
+                    setOpenDialogAddHired({ open: true, action: "add" });
                   },
                   () => {
                     setOpenDialogDelete({
@@ -675,7 +717,9 @@ export default function Dashboard() {
                     });
                   },
                   (index) => {},
-                  (index) => {},
+                  (index) => {
+                    setOpenDialogAddHired({ open: true, action: "edit" });
+                  },
                 ]}
               />
               {managers.length === 0 ? (
@@ -684,18 +728,24 @@ export default function Dashboard() {
                 <>
                   <Dialog
                     onClose={async () => {
-                      setOpenDialogAddHired(false);
+                      setOpenDialogAddHired({ open: false });
                     }}
-                    open={openDialogAddHired}
+                    open={openDialogAddHired.open}
                   >
                     <DialogTitle style={{ background: "#f5f3f3" }}>
                       <FormHired
                         manager={managers[indexManager]}
                         cities={cities}
                         onClose={async () => {
-                          setOpenDialogAddHired(false);
+                          setOpenDialogAddHired({ open: false });
                           await fetchHireds(managers[indexManager].id);
                         }}
+                        onCancel={() => setOpenDialogAddHired({ open: false })}
+                        viewHired={
+                          openDialogAddHired.action === "edit"
+                            ? hireds[indexHired]
+                            : undefined
+                        }
                       />
                     </DialogTitle>
                   </Dialog>
