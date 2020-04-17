@@ -479,7 +479,7 @@ export default function FormHired(props) {
         ) : (
           <ConfirmInfo
             info={openDialogConfirmInfo.info}
-            onClick={sendHired}
+            onClick={() => sendHired()}
             onBack={() => {  
               setVisibleButtonCity(true);
               setOpenDialogConfirmInfo({ open: false });

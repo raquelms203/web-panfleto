@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { ButtonDialog, EmptyDialog } from "./styles";
 
 export default function ConfirmDelete(props) {
-  const { list, onBack, type, overId } = props;
+  const { list, onBack, type, overId, onClickNo } = props;
 
   const onClickYes = async () => {
     if (type === "politic") {
@@ -22,6 +22,14 @@ export default function ConfirmDelete(props) {
       for (let i = 0; i < list.length; i++) {
         await apiADM
           .delete(`/manager/${list[i]}?politicId=${overId}`)
+          .catch(function (e) {
+            toast.error("Ocorreu um erro ao apagar gestor(es)!");
+          });
+      }
+    } else if (type === "hired") {  
+      for (let i = 0; i < list.length; i++) {
+        await apiADM
+          .delete(`/hired/${list[i]}?managerId=${overId}`)
           .catch(function (e) {
             toast.error("Ocorreu um erro ao apagar gestor(es)!");
           });
@@ -73,7 +81,7 @@ export default function ConfirmDelete(props) {
         <Grid container justify="flex-end">
           <ButtonDialog
             style={{ color: "black", marginRight: 25 }}
-            onClick={onBack}
+            onClick={onClickNo}
           >
             <p>VOLTAR</p>
           </ButtonDialog>
