@@ -2,6 +2,8 @@ import React, { useEffect, useCallback, useState } from "react";
 import { Button, Grid, Dialog, DialogTitle, AppBar } from "@material-ui/core";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
+import { useHistory } from "react-router-dom";
+
 import {
   StyledGrid,
   Separator,
@@ -18,12 +20,11 @@ import CustomList from "../../components/CustomList";
 import DropdownPolitics from "../../components/DropdownPolitics";
 import DropdownCities from "../../components/DropdownCities";
 import FormHired from "../../components/FormHired/index";
+import Receipt from "../../components/Receipt/index";
 import FormManager from "../../components/FormManager";
 import FormPolitic from "../../components/FormPolitic";
 import ConfirmDelete from "../../components/ConfirmDelete";
 import Loading from "../../components/Loading";
-import { useHistory } from "react-router-dom";
-
 import { apiADM, apiCities } from "../../services/api";
 import LogoImg from "../../assets/logo.svg";
 
@@ -44,6 +45,7 @@ export default function Dashboard() {
   const [indexHired, setIndexHired] = useState(0);
   const [checkHired, setCheckHired] = useState([]);
   const [openDialogFilter, setOpenDialogFilter] = useState(false);
+  const [openDialogReceipt, setOpenDialogReceipt] = useState(false);
   const [openDialogAddHired, setOpenDialogAddHired] = useState({
     open: false,
     action: "",
@@ -716,7 +718,9 @@ export default function Dashboard() {
                       token: hireds[index].token,
                     });
                   },
-                  (index) => {},
+                  (index) => {  
+                    setOpenDialogReceipt(true);
+                  },
                   (index) => {
                     setOpenDialogAddHired({ open: true, action: "edit" });
                   },
@@ -734,6 +738,10 @@ export default function Dashboard() {
                   >
                     <DialogTitle style={{ background: "#f5f3f3" }}>
                       <FormHired
+                        groupPolitic={politics[indexPolitic].group.toUpperCase()}
+                        title={`Campanha: (${politics[indexPolitic].group.toUpperCase()}) ${
+                          politics[indexPolitic].name.split(" ")[0]
+                        } | ${managers[indexManager].name.split(" ")[0]}`}
                         manager={managers[indexManager]}
                         cities={cities}
                         onClose={async () => {
@@ -779,13 +787,27 @@ export default function Dashboard() {
                       />
                     </DialogTitle>
                   </Dialog>
+                  <Dialog
+                    onClose={() =>
+                      setOpenDialogReceipt(false)
+                    }
+                    open={
+                      openDialogReceipt
+                    }
+                  >
+                    <DialogTitle style={{ background: "#f5f3f3" }}>
+                      <Receipt
+                        onBack={() => {
+                          setOpenDialogReceipt(false);
+                        }}
+                      />
+                    </DialogTitle>
+                  </Dialog>
                 </>
               )}
             </Grid>
           </StyledGrid>
-          <Footer>
-            Site desenvolvido por<pre> Easycode </pre>- 2020
-          </Footer>
+          <Footer>Site desenvolvido por Easycode - 2020</Footer>
         </>
       );
     }

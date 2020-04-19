@@ -10350,6 +10350,13 @@ react-fast-compare@^2.0.1:
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
   integrity sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==
 
+react-file-drop@^3.0.6:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/react-file-drop/-/react-file-drop-3.0.6.tgz#7fb75bdc0e9a10be4f6c653d2a906cacdd460d3e"
+  integrity sha512-OXfSpA8YY/OsKNITXPAOr+Rar8izqNZkx/N7B5vkp00AhQOFvj8ctC4bWInq1Mzpm4De5+XfpXAYbj4D4ze1QA==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-input-mask@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/react-input-mask/-/react-input-mask-2.0.4.tgz#9ade5cf8196f4a856dbf010820fe75a795f3eb14"

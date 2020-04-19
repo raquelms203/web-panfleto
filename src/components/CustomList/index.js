@@ -35,6 +35,7 @@ export default function CustomList(props) {
     setAnchorEl(null);
   };
 
+
   return (
     <div style={{ background: "white", height: "82vh", overflowX: "hidden" }}>
       {list.length === 0 ? (
@@ -70,7 +71,7 @@ export default function CustomList(props) {
                 style={{ overflow: "hidden" }}
               >
                 <Grid item xs={8} sm={9} md={10}>
-                  {!itemList.hasOwnProperty("adminId") ? (
+                  {!itemList.hasOwnProperty("type") ? (
                     <TextOverflow>{itemList.name}</TextOverflow>
                   ) : (
                     <TextOverflow>

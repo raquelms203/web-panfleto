@@ -18,7 +18,7 @@ import ConfirmInfo from "../ConfirmInfo";
 import * as validate from "./validation_schema";
 
 export default function FormHired(props) {
-  const { cities, manager, onClose, viewHired, onCancel } = props;
+  const { cities, manager, onClose, viewHired, onCancel, title, groupPolitic } = props;
   const [isEdit, setIsEdit] = useState(false);
   const [name, setName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
@@ -62,14 +62,14 @@ export default function FormHired(props) {
     let number = "";
     let complement = "";
 
-    if (viewHired != undefined) {
+    if (viewHired !== undefined) {
       if (viewHired.number.includes(" ")) {
         let local = viewHired.number.split(" ");
         number = local[0];
         local.shift();
         complement = local.join(" ");
       } else number = viewHired.number;
-
+      console.log(viewHired);
       setIsEdit(true);
       setName({ value: viewHired.name, error: "" });
       setEmail({ value: viewHired.email, error: "" });
@@ -103,6 +103,7 @@ export default function FormHired(props) {
     let allValid = true;
     let values = [];
     let complementPosition = 7;
+    
     if (validate.validateName(name.value) !== "") {
       setName({ value: name.value, error: validate.validateName(name.value) });
       allValid = false;
@@ -173,6 +174,18 @@ export default function FormHired(props) {
       allValid = false;
     }
     if (allValid) {
+      const formatter = new Intl.NumberFormat("pt-br", {
+        style: "currency",
+        currency: "BRL",
+        minimumFractionDigits: 2,
+      });
+      
+      console.log(
+        payment.value,
+        "format",
+        formatter.format(parseFloat(payment.value))
+      );
+      let p = formatter.format(parseFloat(payment.value));
       values = [
         { field: "Nome completo:", value: name.value },
         { field: "Email:", value: email.value },
@@ -183,7 +196,7 @@ export default function FormHired(props) {
         { field: "Rua", value: street.value },
         { field: "Número:", value: number.value },
         { field: "Bairro:", value: district.value },
-        { field: "Pagamento:", value: payment.value },
+        { field: "Pagamento:", value: p },
         { field: "Cargo", value: office.value },
       ];
 
@@ -201,6 +214,11 @@ export default function FormHired(props) {
   };
 
   const sendHired = async () => {
+    let date = new Date();
+    let dayFormatted = date.getDate().toString();
+    if(dayFormatted.length === 1) dayFormatted = "0" + dayFormatted;
+    let month = date.toLocaleString("pt-br", { month: "long" });
+    let monthFormatted = month[0].toUpperCase() + month.substring(1, month.length);
     await apiADM
       .post(`/hired?managerId=${manager.id}`, {
         name: name.value,
@@ -209,15 +227,15 @@ export default function FormHired(props) {
         document: CPF.value,
         payment: payment.value,
         zipCode: CEP.value,
-        group: "test",
-        day: "15",
-        month: "Abril",
+        group: groupPolitic,
+        day: dayFormatted,
+        month: monthFormatted,
         city: city.value,
         street: street.value,
-        number: number.value + complement.value,
         district: district.value,
         phone: phone.value,
         urlDocument: "test",
+        number: number.value + complement.value,
       })
       .then((response) => {
         toast.success("Contratado criada com sucesso!");
@@ -236,7 +254,7 @@ export default function FormHired(props) {
 
   useEffect(() => {
     initValues();
-  }, [initValues]);
+  }, []);
 
   return (
     <form autoComplete="on" onSubmit={handleSubmit}>
@@ -250,7 +268,7 @@ export default function FormHired(props) {
         {!openDialogConfirmInfo.open ? (
           <>
             <Grid item>
-              <Title>[PSDB] Prefeito 1 | Gerente 1</Title>
+              <Title>{title}</Title>
             </Grid>
             <Grid item xs sm md>
               <StyledTextField
@@ -262,7 +280,7 @@ export default function FormHired(props) {
                 size="small"
                 label="Nome completo"
                 variant="outlined"
-                value={name.name}
+                value={name.value}
                 error={Boolean(name.error)}
                 helperText={name.error}
                 onChange={(event) => handleChangeName(event)}
@@ -461,8 +479,6 @@ export default function FormHired(props) {
               <Grid item xs={12} sm={6} md={6}>
                 <StyledTextField
                   fullWidth
-                  error={Boolean(district.error)}
-                  helperText={district.error}
                   style={{ background: filledColor }}
                   InputLabelProps={{ shrink: true }}
                   InputProps={{
@@ -472,6 +488,8 @@ export default function FormHired(props) {
                   label="Bairro"
                   variant="outlined"
                   value={district.value}
+                  error={Boolean(district.error)}
+                  helperText={district.error}
                   onChange={(event) =>
                     setDistrict({
                       value: event.target.value,
@@ -497,13 +515,12 @@ export default function FormHired(props) {
                   }}
                   value={payment.value}
                   currencySymbol="R$ "
-                  //minimumValue="0"
                   outputFormat="string"
                   decimalCharacter=","
                   digitGroupSeparator="."
-                  onChange={(event, input) =>
-                    setPayment({ value: input, error: payment.error })
-                  }
+                  onChange={(event, input) => {
+                    setPayment({ value: input, error: payment.error });
+                  }}
                 />
               </Grid>
 
