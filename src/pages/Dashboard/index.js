@@ -224,7 +224,6 @@ export default function Dashboard() {
 
   const handleHiredListClick = (event, index) => {
     setIndexHired(index);
-    console.log(hireds[index]);
   };
 
   const handleCheckChangeHired = (event, value, indexList) => {

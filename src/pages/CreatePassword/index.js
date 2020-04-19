@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Grid, TextField } from "@material-ui/core";
+import { Grid, TextField, CircularProgress } from "@material-ui/core";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { useHistory } from "react-router-dom";
@@ -23,7 +23,7 @@ export default function CreatePassword(props) {
   const path = window.location.pathname;
   const token = path.split("/")[2];
   var type = window.location.href.split("=")[1];
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -34,25 +34,26 @@ export default function CreatePassword(props) {
       return;
     }
     setPassword2({ value: password2.value, error: "" });
-    
+
     if (type === "admin") type = "administrator";
     await apiADM
-    .put(`${type}/create-password/${token}`, {
-      password: password,
-    })
-    .then((response) => {
-      toast.success(
+      .put(`${type}/create-password/${token}`, {
+        password: password,
+      })
+      .then((response) => {
+        toast.success(
           "Senha criada com sucesso!\nVocê será redirecionado para a tela de login.",
           {
             onClose: function () {
               history.push("/");
             },
           }
-          );
-        })
+        );
+      })
       .catch((error) => {
         toast.error("Ocorreu um erro ao criar a senha!");
-      }).finally(() => setLoading(false));
+      })
+      .finally(() => setLoading(false));
   };
 
   const verifyToken = useCallback(async () => {
@@ -70,7 +71,7 @@ export default function CreatePassword(props) {
     verifyToken();
   }, [verifyToken]);
 
-  if (tokenValid === undefined || loading) return <Loading />;
+  if (tokenValid === undefined) return <Loading />;
   else
     return tokenValid ? (
       <Container>
@@ -130,14 +131,22 @@ export default function CreatePassword(props) {
               ></TextField>
             </Grid>
             <div style={{ height: 20 }}></div>
-            <StyledButton
-              type="submit"
-              variant="contained"
-              color="secondary"
-              style={{ color: "white" }}
-            >
-              OK
-            </StyledButton>
+            {loading ? (
+              <Grid container justify="center">
+                <Grid item>
+                  <CircularProgress size={35} />
+                </Grid>
+              </Grid>
+            ) : (
+              <StyledButton
+                type="submit"
+                variant="contained"
+                color="secondary"
+                style={{ color: "white" }}
+              >
+                OK
+              </StyledButton>
+            )}
           </Grid>
         </form>
       </Container>

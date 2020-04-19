@@ -1,7 +1,8 @@
-import React, { useRef, useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Button, List } from "@material-ui/core";
 
 import { FontButton, StyledButton } from "../FormHired/styles";
+import { FontList } from "./styles";
 
 export default function ConfirmReceipt(props) {
   const [receipts, setReceipts] = useState(props.receipts);
@@ -54,18 +55,19 @@ export default function ConfirmReceipt(props) {
       }}
       style={{ minWidth: 400 }}
     >
-      <List dense style={{ marginLeft: 8 }}>
+      <List dense component="nav" style={{ marginLeft: 8, maxHeight: 220, overflowY: "auto" }}>
         {receipts.map((item, index) => (
-          <Grid item container key={index}>
-            <p style={{ color: item.error ? "red" : "black" }}>
+          <Grid item container alignItems="baseline" key={index}>
+            <FontList style={{ color: item.error ? "red" : "black" }}>
               {item.file.name}
-            </p>
+            </FontList>
             {item.error ? (
-              <p style={{ color: "red", marginLeft: 5 }}>
+              <FontList style={{ color: "red", marginLeft: 5 }}>
                 (formato não suportado)
-              </p>
+              </FontList>
             ) : undefined}
             <Button
+              size="small"
               onClick={(event) => {
                 removeReceipt(event, item);
               }}
@@ -74,20 +76,19 @@ export default function ConfirmReceipt(props) {
             </Button>
           </Grid>
         ))}
-        <div style={{ height: 16 }}></div>
+      </List>
         <Grid item container justify="flex-end">
           <StyledButton
            style={{ marginRight: 16 }}
             disabled={hasError}
             type="submit"
             variant="contained"
-            size="large"
+            size="small"
             color="secondary"
           >
             <FontButton>OK</FontButton>
           </StyledButton>
         </Grid>
-      </List>
     </form>
   );
 }

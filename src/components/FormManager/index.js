@@ -68,8 +68,6 @@ export default function FormManager(props) {
     initValues();
   }, []);
 
-  console.log("initial", initialValues);
-
   return !openDialogConfirmInfo.open ? (
     <Formik
       validationSchema={validationSchema}
@@ -202,7 +200,6 @@ export default function FormManager(props) {
       info={openDialogConfirmInfo.info}
       onClick={() => sendManager(openDialogConfirmInfo.values)}
       onBack={() => {
-        console.log(openDialogConfirmInfo.values.cpf);
         setOpenDialogConfirmInfo({ open: false });
         setInitialValues({
           name: openDialogConfirmInfo.values.name,

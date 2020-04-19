@@ -69,7 +69,6 @@ export default function FormHired(props) {
         local.shift();
         complement = local.join(" ");
       } else number = viewHired.number;
-      console.log(viewHired);
       setIsEdit(true);
       setName({ value: viewHired.name, error: "" });
       setEmail({ value: viewHired.email, error: "" });
@@ -178,13 +177,8 @@ export default function FormHired(props) {
         style: "currency",
         currency: "BRL",
         minimumFractionDigits: 2,
-      });
-      
-      console.log(
-        payment.value,
-        "format",
-        formatter.format(parseFloat(payment.value))
-      );
+      });      
+    
       let p = formatter.format(parseFloat(payment.value));
       values = [
         { field: "Nome completo:", value: name.value },
