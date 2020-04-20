@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Grid } from "@material-ui/core";
 import { apiADM } from "../../services/api";
 import { toast } from "react-toastify";
@@ -8,6 +8,7 @@ import { ButtonDialog, EmptyDialog } from "./styles";
 
 export default function ConfirmDelete(props) {
   const { list, onBack, type, overId, onClickNo } = props;
+  const [dependents, setDependents] = useState("");
 
   const onClickYes = async () => {
     if (type === "politic") {
@@ -26,7 +27,7 @@ export default function ConfirmDelete(props) {
             toast.error("Ocorreu um erro ao apagar gestor(es)!");
           });
       }
-    } else if (type === "hired") {  
+    } else if (type === "hired") {
       for (let i = 0; i < list.length; i++) {
         await apiADM
           .delete(`/hired/${list[i]}?managerId=${overId}`)
@@ -38,20 +39,27 @@ export default function ConfirmDelete(props) {
     onBack();
   };
 
-  if (list === undefined) return <EmptyDialog />;
-  else if (list.length > 0)
-    return (
-      <div style={{ width: 300 }}>
+  useEffect(() => {
+    if (type === "politic")
+      setDependents(" e apagará todos os gestores/contratados relacionados");
+    else if (type === "manager")
+      setDependents(" e apagará todos os contratados relacionados");
+  }, []);
+
+    if (list === undefined) return <EmptyDialog />;
+    else return (
+      <div style={{ width: 400 }}>
         <Grid container direction="column">
           <Grid item>
-            <p>Essa ação é permanente.</p>
+            <p>{`Essa ação é permanente${dependents}.`}</p>
             <p> Deseja mesmo apagar {list.length} item(s)?</p>
+            {dependents === "" ? <br /> : undefined}
           </Grid>
 
           <div style={{ height: 30 }}></div>
 
           <Grid item container justify="flex-end" spacing={3}>
-            <ButtonDialog style={{ color: "black" }} onClick={onBack}>
+            <ButtonDialog style={{ color: "black" }} onClick={onClickNo}>
               <p>NÃO</p>
             </ButtonDialog>
 
@@ -68,26 +76,5 @@ export default function ConfirmDelete(props) {
           <div style={{ height: 20 }}></div>
         </Grid>
       </div>
-    );
-  else if (list.length === 0)
-    return (
-      <>
-        <div style={{ height: 10, width: 300 }}></div>
-
-        <p>Selecione pelo menos um item</p>
-
-        <div style={{ height: 30 }}></div>
-
-        <Grid container justify="flex-end">
-          <ButtonDialog
-            style={{ color: "black", marginRight: 25 }}
-            onClick={onClickNo}
-          >
-            <p>VOLTAR</p>
-          </ButtonDialog>
-        </Grid>
-
-        <div style={{ height: 30 }}></div>
-      </>
     );
 }

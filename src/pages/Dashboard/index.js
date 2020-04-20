@@ -1,5 +1,14 @@
 import React, { useEffect, useCallback, useState } from "react";
-import { Button, Grid, Dialog, DialogTitle, AppBar } from "@material-ui/core";
+import {
+  Button,
+  Grid,
+  Dialog,
+  DialogTitle,
+  AppBar,
+  Menu,
+  MenuItem,
+} from "@material-ui/core";
+import { ArrowDropDown } from "@material-ui/icons";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { useHistory } from "react-router-dom";
@@ -32,6 +41,7 @@ export default function Dashboard() {
   const history = useHistory();
   const [listener, setListener] = useState(true);
   const [isLessThan500, setIsLessThan500] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const [cities, setCities] = useState([]);
   const [citySelected, setCitySelected] = useState("");
   const [politics, setPolitics] = useState(undefined);
@@ -189,7 +199,7 @@ export default function Dashboard() {
   };
 
   const handleCheckChangePolitic = (event, value, indexList) => {
-    let list = checkPolitic;
+    let list = [...checkPolitic];
     if (list === undefined) list = [];
     if (value) {
       list.push(politics[indexList].id);
@@ -209,7 +219,7 @@ export default function Dashboard() {
   };
 
   const handleCheckChangeManager = (event, value, indexList) => {
-    let list = checkManager;
+    let list = [...checkManager];
     if (list === undefined) list = [];
     if (value) {
       list.push(managers[indexList].id);
@@ -227,7 +237,7 @@ export default function Dashboard() {
   };
 
   const handleCheckChangeHired = (event, value, indexList) => {
-    let list = checkHired;
+    let list = [...checkHired];
     if (list === undefined) list = [];
     if (value) {
       list.push(hireds[indexList].id);
@@ -411,9 +421,27 @@ export default function Dashboard() {
               </Grid>
               <Grid item>
                 <div style={{ marginRight: "20px" }}>
-                  <Button color="inherit" onClick={() => {}}>
+                  <Button
+                    color="inherit"
+                    onClick={(event) => setAnchorEl(event.currentTarget)}
+                  >
                     <p>{localStorage.getItem("username").split(" ")[0]}</p>
+                    <ArrowDropDown style={{ marginTop: -3 }} />
                   </Button>
+                  <Menu
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={() => setAnchorEl(null)}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        setAnchorEl(null);
+                      }}
+                    >
+                      Sair
+                    </MenuItem>
+                  </Menu>
                 </div>
               </Grid>
             </Grid>
@@ -493,6 +521,7 @@ export default function Dashboard() {
                 </Grid>
                 <Grid item>
                   <ActionButton
+                    remove={Boolean(checkPolitic.length > 0)}
                     onClicks={[
                       () => {
                         setOpenDialogAddPolitic({ open: true, action: "add" });
@@ -580,7 +609,7 @@ export default function Dashboard() {
                     onClickNo={() =>
                       setOpenDialogDelete({
                         open: false,
-                        type: "",
+                        type:"politic"
                       })
                     }
                   />
@@ -592,6 +621,7 @@ export default function Dashboard() {
             <Grid item xs={3} sm={3} md={4}>
               <div style={{ height: 4 }}></div>
               <ActionButton
+                remove={Boolean(checkManager.length > 0)}
                 onClicks={[
                   () => {
                     setOpenDialogAddManager({ open: true, action: "add" });
@@ -686,6 +716,7 @@ export default function Dashboard() {
             <Grid item xs={3} sm={3} md={3}>
               <div style={{ height: 4 }}></div>
               <ActionButton
+                remove={Boolean(checkHired.length !== 0)}
                 onClicks={[
                   () => {
                     setOpenDialogAddHired({ open: true, action: "add" });
@@ -717,7 +748,7 @@ export default function Dashboard() {
                       token: hireds[index].token,
                     });
                   },
-                  (index) => {  
+                  (index) => {
                     setOpenDialogReceipt(true);
                   },
                   (index) => {
@@ -737,8 +768,12 @@ export default function Dashboard() {
                   >
                     <DialogTitle style={{ background: "#f5f3f3" }}>
                       <FormHired
-                        groupPolitic={politics[indexPolitic].group.toUpperCase()}
-                        title={`Campanha: (${politics[indexPolitic].group.toUpperCase()}) ${
+                        groupPolitic={politics[
+                          indexPolitic
+                        ].group.toUpperCase()}
+                        title={`Campanha: (${politics[
+                          indexPolitic
+                        ].group.toUpperCase()}) ${
                           politics[indexPolitic].name.split(" ")[0]
                         } | ${managers[indexManager].name.split(" ")[0]}`}
                         manager={managers[indexManager]}
@@ -787,12 +822,8 @@ export default function Dashboard() {
                     </DialogTitle>
                   </Dialog>
                   <Dialog
-                    onClose={() =>
-                      setOpenDialogReceipt(false)
-                    }
-                    open={
-                      openDialogReceipt
-                    }
+                    onClose={() => setOpenDialogReceipt(false)}
+                    open={openDialogReceipt}
                   >
                     <DialogTitle style={{ background: "#f5f3f3" }}>
                       <Receipt

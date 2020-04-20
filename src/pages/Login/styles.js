@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Grid } from "@material-ui/core";
+import { Grid, Button, Paper } from "@material-ui/core";
 
 
 export const StyledGrid = styled(Grid)`
@@ -22,21 +22,15 @@ export const CardLogin = styled.div`
   
 `;
 
-export const ButtonLogin = styled.button`
-  background-color: #4caf50; /* Green */
-  border: none;
-  width: 150px;
-  color: white;
-  text-decoration: none;
-  display: block;
-  padding: 10px;
-  font-size: 16px;
-  text-align: center;
-  margin: 0 auto;
-`;
-
 export const Title = styled.p`
   font: bold 17px Roboto, serif;
   text-align: center;
+  margin-top: 20px;
+  margin-bottom: 15px;
+`;
+
+export const StyledPaper = styled(Paper)`
+  padding: 30px;
+  width: 400px;  
 `;
 

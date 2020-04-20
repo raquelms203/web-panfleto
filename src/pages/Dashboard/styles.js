@@ -13,13 +13,6 @@ export const Logo = styled.img`
   margin-left: 20px;
 `;
 
-// export const Logo = styled.img`
-//   font: 20px Libre Baskerville;
-//   letter-spacing: 2px;
-//   margin-left: 20px;
-//   margin-top: 6px;
-// `;
-
 export const Separator = styled.div`
   width: 2px;
   background: #babdc2;

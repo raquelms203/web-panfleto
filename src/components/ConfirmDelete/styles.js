@@ -9,8 +9,8 @@ export const ButtonDialog = styled.button`
 `;
 
 export const EmptyDialog = styled.div`  
-  height: 120px;
-   width: 300px; 
+  height: 165px;
+   width: 400px; 
 `;
 
 
