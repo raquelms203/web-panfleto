@@ -165,27 +165,38 @@ export default function FormManager(props) {
                   )}
                 </Field>
               </Grid>
-              <div style={{ height: 8 }}></div>
-              <Grid item container justify="flex-end" xs sm md>
-                <Button
-                  size="large"
-                  style={{ background: "#958a94", color: "white" }}
-                  onClick={() => {
-                    onCancel();
-                  }}
-                >
-                  Voltar
-                </Button>
-                <div style={{ width: 15 }}></div>
-                {!isEdit ? (
-                  <StyledButton
-                    type="submit"
-                    variant="contained"
+              <Grid
+                item
+                container
+                justify="flex-end"
+                xs
+                sm
+                md={12}
+                spacing={1}
+                style={{ paddingRight: 0 }}
+              >
+                <Grid item>
+                  <Button
                     size="large"
-                    color="secondary"
+                    style={{ background: "#958a94", color: "white" }}
+                    onClick={() => {
+                      onCancel();
+                    }}
                   >
-                    <FontButton>CONTINUAR</FontButton>
-                  </StyledButton>
+                    Voltar
+                  </Button>
+                </Grid>
+                {!isEdit ? (
+                  <Grid item>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      size="large"
+                      color="secondary"
+                    >
+                      <FontButton>CONTINUAR</FontButton>
+                    </Button>
+                  </Grid>
                 ) : (
                   <></>
                 )}

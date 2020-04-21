@@ -19,7 +19,7 @@ import ConfirmInfo from "../ConfirmInfo";
 import * as validate from "./validation_schema";
 
 export default function FormHired(props) {
-  const { cities, editPolitic, onClose, onCancel  } = props;
+  const { cities, editPolitic, onClose, onCancel } = props;
   const [name, setName] = useState({ value: "", error: "" });
   const [CPF, setCPF] = useState({ value: "", error: "" });
   const [CEP, setCEP] = useState({ value: "", error: "" });
@@ -58,52 +58,51 @@ export default function FormHired(props) {
   };
 
   const sendPolitic = async () => {
-
     let typeNumber;
     if (type.value === "Prefeito") typeNumber = 1;
     if (type.value === "Vereador") typeNumber = 2;
 
-    if(editPolitic === undefined) {  
+    if (editPolitic === undefined) {
       await apiADM
-      .post(`/politic?adminId=${localStorage.getItem("userId")}`, {
-        name: name.value,
-        document: CPF.value,
-        type: typeNumber,
-        group: group.value,
-        zipcode: CEP.value,
-        city: city.value,
-        street: street.value,
-        number: number.value + " " + complement.value,
-        district: district.value,
-      })
-      .then((response) => {
-        toast.success("Campanha criada com sucesso!");
-      })
-      .catch((error) => {
-        toast.error("Ocorreu um erro ao criar campanha!");
-        console.log(error);
-      });
+        .post(`/politic?adminId=${localStorage.getItem("userId")}`, {
+          name: name.value,
+          document: CPF.value,
+          type: typeNumber,
+          group: group.value,
+          zipcode: CEP.value,
+          city: city.value,
+          street: street.value,
+          number: number.value + " " + complement.value,
+          district: district.value,
+        })
+        .then((response) => {
+          toast.success("Campanha criada com sucesso!");
+        })
+        .catch((error) => {
+          toast.error("Ocorreu um erro ao criar campanha!");
+          console.log(error);
+        });
       onClose();
-    } else {  
+    } else {
       await apiADM
-      .put(`/politic?adminId=${localStorage.getItem("userId")}`, {
-        name: name.value,
-        document: CPF.value,
-        type: typeNumber,
-        group: group.value,
-        zipcode: CEP.value,
-        city: city.value,
-        street: street.value,
-        number: number.value + " " + complement.value,
-        district: district.value,
-      })
-      .then((response) => {
-        toast.success("Campanha editada com sucesso!");
-      })
-      .catch((error) => {
-        toast.error("Ocorreu um erro ao editar campanha!");
-        console.log(error);
-      });
+        .put(`/politic?adminId=${localStorage.getItem("userId")}`, {
+          name: name.value,
+          document: CPF.value,
+          type: typeNumber,
+          group: group.value,
+          zipcode: CEP.value,
+          city: city.value,
+          street: street.value,
+          number: number.value + " " + complement.value,
+          district: district.value,
+        })
+        .then((response) => {
+          toast.success("Campanha editada com sucesso!");
+        })
+        .catch((error) => {
+          toast.error("Ocorreu um erro ao editar campanha!");
+          console.log(error);
+        });
       onClose();
     }
   };
@@ -261,9 +260,6 @@ export default function FormHired(props) {
       >
         {!openDialogConfirmInfo.open ? (
           <>
-            <Grid item>
-              <Title>[PSDB] Prefeito 1 | Gerente 1</Title>
-            </Grid>
             <Grid item xs sm md>
               <StyledTextField
                 fullWidth
@@ -278,7 +274,7 @@ export default function FormHired(props) {
               />
             </Grid>
 
-            <Grid item container spacing={1} justify="space-between">
+            <Grid item container spacing={2} justify="space-between">
               <Grid item xs={12} sm={6} md={6}>
                 <InputMask
                   mask="999.999.999-99"
@@ -330,8 +326,7 @@ export default function FormHired(props) {
                 )}
               </Grid>
             </Grid>
-            <Grid item container spacing={1}>
-              {" "}
+            <Grid item container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <StyledTextField
                   fullWidth
@@ -373,7 +368,7 @@ export default function FormHired(props) {
                 </InputMask>
               </Grid>
             </Grid>
-            <Grid item container spacing={1} alignItems="center">
+            <Grid item container spacing={2} alignItems="center">
               <Grid item xs={12} sm={12} md={12}>
                 {visibleButtonCity ? (
                   <div
@@ -404,7 +399,7 @@ export default function FormHired(props) {
                 )}
               </Grid>
             </Grid>
-            <Grid item container spacing={1}>
+            <Grid item container spacing={2}>
               <Grid item xs={12} sm={8} md={8}>
                 <StyledTextField
                   fullWidth
@@ -438,7 +433,7 @@ export default function FormHired(props) {
                 />
               </Grid>
             </Grid>
-            <Grid item container spacing={1}>
+            <Grid item container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <StyledTextField
                   fullWidth
@@ -477,24 +472,30 @@ export default function FormHired(props) {
                 />
               </Grid>
             </Grid>
-
-            <Grid item container justify="flex-end">
-              <Button
-                size="large"
-                style={{ background: "#958a94", color: "white" }}
-                onClick={() => {onCancel()}}
-              >
-                Voltar
-              </Button>
-              <div style={{ width: 16 }}></div>
-              <StyledButton
-                type="submit"
-                variant="contained"
-                size="large"
-                color="secondary"
-              >
-                <FontButton>CONTINUAR</FontButton>
-              </StyledButton>
+            <Grid item container justify="flex-end" spacing={2}>
+              <Grid item>
+                {" "}
+                <Button
+                  size="large"
+                  style={{ background: "#958a94", color: "white" }}
+                  onClick={() => {
+                    onCancel();
+                  }}
+                >
+                  Voltar
+                </Button>
+              </Grid>
+              <Grid item>
+                {" "}
+                <StyledButton
+                  type="submit"
+                  variant="contained"
+                  size="large"
+                  color="secondary"
+                >
+                  <FontButton>CONTINUAR</FontButton>
+                </StyledButton>
+              </Grid>
             </Grid>
           </>
         ) : (

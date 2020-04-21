@@ -39,8 +39,8 @@ import LogoImg from "../../assets/logo.svg";
 
 export default function Dashboard() {
   const history = useHistory();
-  const [listener, setListener] = useState(true);
   const [isLessThan500, setIsLessThan500] = useState(false);
+  const [listener, setListener] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
   const [cities, setCities] = useState([]);
   const [citySelected, setCitySelected] = useState("");
@@ -249,8 +249,8 @@ export default function Dashboard() {
   };
 
   const handleFilterClick = (event) => {
-    setListener(false);
     setOpenDialogFilter(true);
+    setListener(false);
   };
 
   const handleFilterCity = (event, value) => {
@@ -263,6 +263,7 @@ export default function Dashboard() {
 
   const handleFilters = async (event) => {
     setListener(true);
+    onOrientationChange();
     if (citySelected === "" && filterPoliticSelected === 0) {
       setOpenDialogFilter(false);
       return;
@@ -400,15 +401,14 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (listener)
-      window.addEventListener("orientationchange", onOrientationChange, false);
-    else
-      window.removeEventListener(
-        "orientationchange",
-        onOrientationChange,
-        false
-      );
+      window.addEventListener("orientationchange", onOrientationChange);
+    else {
+      console.log("remove");
+      window.removeEventListener("orientationchange", onOrientationChange);
+    }
 
-    //  return  window.removeEventListener("orientationchange", onOrientationChange, false);
+    return () =>
+      window.removeEventListener("orientationchange", onOrientationChange);
   }, [listener, onOrientationChange]);
 
   if (!politics) return <Loading />;
@@ -493,7 +493,6 @@ export default function Dashboard() {
                   <Dialog
                     onClose={() => {
                       setOpenDialogFilter(false);
-                      setListener(true);
                     }}
                     open={openDialogFilter}
                   >
@@ -563,6 +562,7 @@ export default function Dashboard() {
                   },
                   () => {
                     setOpenDialogAddPolitic({ open: true, action: "edit" });
+                    setListener(false);
                   },
                 ]}
               />
@@ -576,14 +576,15 @@ export default function Dashboard() {
                   <FormPolitic
                     cities={cities}
                     onCancel={() => {
-                      onOrientationChange();
                       setOpenDialogAddPolitic({ open: false, action: "" });
                       setListener(true);
+                      onOrientationChange();
                     }}
                     onClose={async () => {
                       setOpenDialogAddPolitic({ open: false, action: "" });
                       fetchPolitics();
                       setListener(true);
+                      onOrientationChange();
                     }}
                     editPolitic={
                       openDialogAddPolitic.action === "edit"
@@ -634,8 +635,8 @@ export default function Dashboard() {
                 remove={Boolean(checkManager.length > 0)}
                 onClicks={[
                   () => {
-                    setListener(false);
                     setOpenDialogAddManager({ open: true, action: "add" });
+                    setListener(false);
                   },
                   () => {
                     setOpenDialogDelete({
@@ -657,6 +658,7 @@ export default function Dashboard() {
                 dropdownOnChange={[
                   () => {
                     setOpenDialogAddManager({ open: true, action: "edit" });
+                    setListener(false);
                   },
                 ]}
               />
@@ -667,7 +669,6 @@ export default function Dashboard() {
                   <Dialog
                     onClose={() => {
                       setOpenDialogAddManager({ open: false });
-                      setListener(true);
                     }}
                     open={openDialogAddManager.open}
                   >
@@ -675,12 +676,16 @@ export default function Dashboard() {
                       <FormManager
                         politic={politics[indexPolitic]}
                         onClose={async () => {
+                          setListener(true);
+                          onOrientationChange();
                           setOpenDialogAddManager({ open: false });
                           await fetchManagers(politics[indexPolitic].id);
                         }}
-                        onCancel={() =>
-                          setOpenDialogAddManager({ open: false })
-                        }
+                        onCancel={() => {
+                          setListener(true);
+                          onOrientationChange();
+                          setOpenDialogAddManager({ open: false });
+                        }}
                         viewManager={
                           openDialogAddManager.action === "edit"
                             ? managers[indexManager]
@@ -770,6 +775,7 @@ export default function Dashboard() {
                   },
                   (index) => {
                     setOpenDialogAddHired({ open: true, action: "edit" });
+                    setListener(false);
                   },
                   (index) => {},
                 ]}
@@ -781,7 +787,6 @@ export default function Dashboard() {
                   <Dialog
                     onClose={async () => {
                       setOpenDialogAddHired({ open: false });
-                      setListener(true);
                     }}
                     open={openDialogAddHired.open}
                   >
@@ -798,10 +803,16 @@ export default function Dashboard() {
                         manager={managers[indexManager]}
                         cities={cities}
                         onClose={async () => {
+                          setListener(true);
+                          onOrientationChange();
                           setOpenDialogAddHired({ open: false });
                           await fetchHireds(managers[indexManager].id);
                         }}
-                        onCancel={() => setOpenDialogAddHired({ open: false })}
+                        onCancel={() => {
+                          setListener(true);
+                          onOrientationChange();
+                          setOpenDialogAddHired({ open: false });
+                        }}
                         viewHired={
                           openDialogAddHired.action === "edit"
                             ? hireds[indexHired]
