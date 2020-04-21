@@ -86,7 +86,7 @@ export default function ConfirmReceipt(props) {
             size="small"
             color="secondary"
           >
-            <FontButton>OK</FontButton>
+            <FontButton>SALVAR</FontButton>
           </StyledButton>
         </Grid>
     </form>

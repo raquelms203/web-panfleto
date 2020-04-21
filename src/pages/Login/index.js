@@ -90,7 +90,7 @@ export default function Login() {
       direction="column"
       justify="center"
       alignItems="center"
-      style={{ minHeight: "100vh" }}
+      style={{ minHeight: "95vh" }}
     >
       <Grid item>
         <StyledPaper>

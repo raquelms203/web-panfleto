@@ -144,7 +144,7 @@ export default function CreatePassword(props) {
                 color="secondary"
                 style={{ color: "white" }}
               >
-                OK
+                SALVAR
               </StyledButton>
             )}
           </Grid>
@@ -152,7 +152,7 @@ export default function CreatePassword(props) {
       </Container>
     ) : (
       <ErrorPage
-        title="Token expirado"
+        title="Token expirado ou não existe"
         message="Entre em contato com o administrador para solicitar um novo email."
         file={Wait}
       />

@@ -48,10 +48,10 @@ export default function Dashboard() {
   const [filterPoliticSelected, setFilterPoliticSelected] = useState(0);
   const [checkPolitic, setCheckPolitic] = useState([]);
   const [indexPolitic, setIndexPolitic] = useState(0);
-  const [managers, setManagers] = useState([]);
+  const [managers, setManagers] = useState(undefined);
   const [indexManager, setIndexManager] = useState(0);
   const [checkManager, setCheckManager] = useState([]);
-  const [hireds, setHireds] = useState([]);
+  const [hireds, setHireds] = useState(undefined);
   const [indexHired, setIndexHired] = useState(0);
   const [checkHired, setCheckHired] = useState([]);
   const [openDialogFilter, setOpenDialogFilter] = useState(false);
@@ -189,7 +189,7 @@ export default function Dashboard() {
       //   setIsLessThan500(true);
       // }
     }
-  }, [setIsLessThan500]);
+  }, [setIsLessThan500, listener]);
 
   const handlePoliticListClick = async (event, index) => {
     setIndexPolitic(index);
@@ -249,6 +249,7 @@ export default function Dashboard() {
   };
 
   const handleFilterClick = (event) => {
+    setListener(false);
     setOpenDialogFilter(true);
   };
 
@@ -261,12 +262,14 @@ export default function Dashboard() {
   };
 
   const handleFilters = async (event) => {
+    setListener(true);
     if (citySelected === "" && filterPoliticSelected === 0) {
       setOpenDialogFilter(false);
       return;
     }
     await fetchPolitics();
     let list = [];
+    let p = [...politics];
     if (citySelected !== "" && filterPoliticSelected !== 0) {
       politics.forEach((item) => {
         if (item.city === citySelected) {
@@ -295,9 +298,14 @@ export default function Dashboard() {
         }
       });
     }
-    setPolitics(list);
     if (list.length !== 0) {
+      setPolitics(list);
       await fetchManagers(list[0].id);
+    } else {
+      p.splice(0, p.length);
+      setPolitics(p);
+      setManagers([]);
+      setHireds([]);
     }
     setOpenDialogFilter(false);
     setIndexPolitic(0);
@@ -403,8 +411,8 @@ export default function Dashboard() {
     //  return  window.removeEventListener("orientationchange", onOrientationChange, false);
   }, [listener, onOrientationChange]);
 
-  if (!Boolean(politics)) return <Loading />;
-  else if (Boolean(politics)) {
+  if (!politics) return <Loading />;
+  else if (politics) {
     if (isLessThan500) return <SmallScreenAlert />;
     else {
       return (
@@ -479,12 +487,13 @@ export default function Dashboard() {
             <Grid item xs={4} sm={4} md={4}>
               <Grid container alignItems="center" justify="space-between">
                 <Grid item>
-                  <Button onClick={handleFilterClick}>
+                  <Button onClick={(event) => handleFilterClick(event)}>
                     <strong>Filtrar</strong>
                   </Button>
                   <Dialog
                     onClose={() => {
                       setOpenDialogFilter(false);
+                      setListener(true);
                     }}
                     open={openDialogFilter}
                   >
@@ -508,9 +517,9 @@ export default function Dashboard() {
                             variant="contained"
                             size="large"
                             color="secondary"
-                            onClick={async (event) =>
-                              await handleFilters(event)
-                            }
+                            onClick={async (event) => {
+                              await handleFilters(event);
+                            }}
                           >
                             <FontButton>OK</FontButton>
                           </StyledButton>
@@ -567,13 +576,14 @@ export default function Dashboard() {
                   <FormPolitic
                     cities={cities}
                     onCancel={() => {
-                      setListener(true);
                       onOrientationChange();
                       setOpenDialogAddPolitic({ open: false, action: "" });
+                      setListener(true);
                     }}
                     onClose={async () => {
                       setOpenDialogAddPolitic({ open: false, action: "" });
                       fetchPolitics();
+                      setListener(true);
                     }}
                     editPolitic={
                       openDialogAddPolitic.action === "edit"
@@ -609,7 +619,7 @@ export default function Dashboard() {
                     onClickNo={() =>
                       setOpenDialogDelete({
                         open: false,
-                        type:"politic"
+                        type: "politic",
                       })
                     }
                   />
@@ -624,6 +634,7 @@ export default function Dashboard() {
                 remove={Boolean(checkManager.length > 0)}
                 onClicks={[
                   () => {
+                    setListener(false);
                     setOpenDialogAddManager({ open: true, action: "add" });
                   },
                   () => {
@@ -654,7 +665,10 @@ export default function Dashboard() {
               ) : (
                 <>
                   <Dialog
-                    onClose={() => setOpenDialogAddManager({ open: false })}
+                    onClose={() => {
+                      setOpenDialogAddManager({ open: false });
+                      setListener(true);
+                    }}
                     open={openDialogAddManager.open}
                   >
                     <DialogTitle style={{ background: "#f5f3f3" }}>
@@ -711,6 +725,7 @@ export default function Dashboard() {
                 </>
               )}
             </Grid>
+
             <Separator />
 
             <Grid item xs={3} sm={3} md={3}>
@@ -720,6 +735,7 @@ export default function Dashboard() {
                 onClicks={[
                   () => {
                     setOpenDialogAddHired({ open: true, action: "add" });
+                    setListener(false);
                   },
                   () => {
                     setOpenDialogDelete({
@@ -741,6 +757,7 @@ export default function Dashboard() {
                   "Adicionar assinatura",
                   "Adicionar comprovante",
                   "Detalhes",
+                  "Concluir contrato",
                 ]}
                 dropdownOnChange={[
                   (index) => {
@@ -754,15 +771,17 @@ export default function Dashboard() {
                   (index) => {
                     setOpenDialogAddHired({ open: true, action: "edit" });
                   },
+                  (index) => {},
                 ]}
               />
-              {managers.length === 0 ? (
+              {politics.length === 0 || !managers || managers.length === 0 ? (
                 <></>
               ) : (
                 <>
                   <Dialog
                     onClose={async () => {
                       setOpenDialogAddHired({ open: false });
+                      setListener(true);
                     }}
                     open={openDialogAddHired.open}
                   >

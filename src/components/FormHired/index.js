@@ -558,7 +558,7 @@ export default function FormHired(props) {
                   size="large"
                   color="secondary"
                 >
-                  <FontButton>OK</FontButton>
+                  <FontButton>CONTINUAR</FontButton>
                 </StyledButton>
               )}
             </Grid>

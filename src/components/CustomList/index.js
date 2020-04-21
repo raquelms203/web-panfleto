@@ -9,11 +9,11 @@ import {
   MenuItem,
   ListItemSecondaryAction,
   Button,
+  CircularProgress,
 } from "@material-ui/core";
+import { MoreVert } from "@material-ui/icons";
 
 import { TextOverflow } from "./styles";
-
-import { MoreVert } from "@material-ui/icons";
 
 export default function CustomList(props) {
   const {
@@ -35,86 +35,96 @@ export default function CustomList(props) {
     setAnchorEl(null);
   };
 
-
-  return (
-    <div style={{ background: "white", height: "82vh", overflowX: "hidden" }}>
-      {list.length === 0 ? (
-        <Grid container direction="column" alignItems="center">
-          <div style={{ height: "50px" }}></div>
-          <strong style={{ padding: "8px" }}> Não há registros</strong>
-        </Grid>
-      ) : (
-        <List
-          component="nav"
-          dense
-          style={{ maxHeight: "82vh", overflowY: "auto", overflowX: "hidden" }}
-        >
-          {list.map((itemList, indexList) => (
-            <ListItem
-              key={indexList}
-              divider
-              button
-              style={{ paddingRight: 0 }}
-              selected={indexSelected === indexList}
-              onClick={(event) => onClick(event, indexList)}
-            >
-              <Checkbox
-                edge="start"
-                disableRipple
-                onChange={(event, value) => {
-                  onCheckChange(event, value, indexList);
-                }}
-              />
-              <Grid
-                container
-                alignItems="center"
-                style={{ overflow: "hidden" }}
+  if (list === undefined)
+    return (
+      <Grid container justify="center" alignItems="center" style={{ marginTop: 20 }}>
+        <CircularProgress />
+      </Grid>
+    );
+  else if (list !== undefined)
+    return (
+      <div style={{ background: "white", height: "82vh", overflowX: "hidden" }}>
+        {list.length === 0 ? (
+          <Grid container direction="column" alignItems="center">
+            <div style={{ height: "50px" }}></div>
+            <strong style={{ padding: "8px" }}> Não há registros</strong>
+          </Grid>
+        ) : (
+          <List
+            component="nav"
+            dense
+            style={{
+              maxHeight: "82vh",
+              overflowY: "auto",
+              overflowX: "hidden",
+            }}
+          >
+            {list.map((itemList, indexList) => (
+              <ListItem
+                key={indexList}
+                divider
+                button
+                style={{ paddingRight: 0 }}
+                selected={indexSelected === indexList}
+                onClick={(event) => onClick(event, indexList)}
               >
-                <Grid item xs={8} sm={9} md={10}>
-                  {!itemList.hasOwnProperty("type") ? (
-                    <TextOverflow>{itemList.name}</TextOverflow>
-                  ) : (
-                    <TextOverflow>
-                      ({itemList.group.toUpperCase()}) {itemList.name}
-                    </TextOverflow>
-                  )}
-                </Grid>
-                <Grid item container xs={4} sm={3} md={2} justify="flex-end">
-                  <Button onClick={handleClickMenu}>
-                    <MoreVert
-                      style={{ color: "#525252", transform: "scale(0.8)" }}
-                    />
-                  </Button>
-                </Grid>
-              </Grid>
-              <ListItemSecondaryAction>
-                <Menu
-                  id="simple-menu"
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleCloseMenu}
+                <Checkbox
+                  edge="start"
+                  disableRipple
+                  onChange={(event, value) => {
+                    onCheckChange(event, value, indexList);
+                  }}
+                />
+                <Grid
+                  container
+                  alignItems="center"
+                  style={{ overflow: "hidden" }}
                 >
-                  {dropdownNames.map(function (item, index) {
-                    return (
-                      <MenuItem
-                        key={index}
-                        onClick={() => {
-                          dropdownOnChange[index](indexSelected);
-                          setAnchorEl(null);
-                        }}
-                      >
-                        {item}
-                      </MenuItem>
-                    );
-                  })}
-                </Menu>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
-      )}
-    </div>
-  );
+                  <Grid item xs={8} sm={9} md={10}>
+                    {!itemList.hasOwnProperty("type") ? (
+                      <TextOverflow>{itemList.name}</TextOverflow>
+                    ) : (
+                      <TextOverflow>
+                        ({itemList.group.toUpperCase()}) {itemList.name}
+                      </TextOverflow>
+                    )}
+                  </Grid>
+                  <Grid item container xs={4} sm={3} md={2} justify="flex-end">
+                    <Button onClick={handleClickMenu}>
+                      <MoreVert
+                        style={{ color: "#525252", transform: "scale(0.8)" }}
+                      />
+                    </Button>
+                  </Grid>
+                </Grid>
+                <ListItemSecondaryAction>
+                  <Menu
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleCloseMenu}
+                  >
+                    {dropdownNames.map(function (item, index) {
+                      return (
+                        <MenuItem
+                          key={index}
+                          onClick={() => {
+                            dropdownOnChange[index](indexSelected);
+                            setAnchorEl(null);
+                          }}
+                        >
+                          {item}
+                        </MenuItem>
+                      );
+                    })}
+                  </Menu>
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </div>
+    );
 }
 
 CustomList.propTypes = {

@@ -45,7 +45,7 @@ export default function ConfirmInfo(props) {
               style={{ color: "white" }}
               onClick={handleSubmit}
             >
-              OK
+              SALVAR
             </StyledButton>
           </Grid>
         </Grid>

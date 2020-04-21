@@ -1,8 +1,8 @@
 export const validateName = value => {
   if (value === "") return "Campo obrigatório";
-  else if (!value.match(/^[A-Za-z" "]+$/)) {
-    return "Apenas letras permitidas";
-  } else return "";
+  else if (!value.match(/^[A-Za-z" "]+$/)) return "Apenas letras permitidas";
+  else if (!value.includes(" ")) return "Campo incompleto";
+  else return "";
 };
 
 export const validateEmail = value => {
