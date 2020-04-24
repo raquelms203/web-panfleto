@@ -4,6 +4,7 @@ import InputMask from "react-input-mask";
 import axios from "axios";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 
 import { apiADM } from "../../services/api";
 import {
@@ -18,6 +19,7 @@ import ConfirmInfo from "../ConfirmInfo";
 import * as validate from "./validation_schema";
 
 export default function FormHired(props) {
+  const history = useHistory();
   const {
     cities,
     manager,
@@ -68,14 +70,23 @@ export default function FormHired(props) {
 
   const validateDocument = async () => {
     await apiADM
-      .post(`/hired/${viewHired.id}?manager=${manager.id}&action=validate`)
+      .post(`/hired/${viewHired.id}?managerId=${manager.id}&action=validate`)
       .then((response) => {
         console.log(response);
         toast.success("Contratado validado com sucesso!");
       })
       .catch((error) => {
-        if (Boolean(error.response) && error.response.status === 403)
+        if (Boolean(error.response) && error.response.status === 400)
           toast.info("Contratado já foi validado!");
+        else if (Boolean(error.response) && error.response.status === 401)
+          toast.info(
+            "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+            {
+              onClose: function () {
+                history.push("/");
+              },
+            }
+          );
         else toast.error("Ocorreu um erro ao validar contratado!");
       });
     onCancel();
@@ -259,7 +270,16 @@ export default function FormHired(props) {
         toast.success("Contratado criada com sucesso!");
       })
       .catch((error) => {
-        toast.error("Ocorreu um erro ao criar contratado!");
+        if (Boolean(error.response) && error.response.status === 401)
+        toast.info(
+          "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+          {
+            onClose: function () {
+              history.push("/");
+            },
+          }
+        );
+        else toast.error("Ocorreu um erro ao criar contratado!");
         console.log(error);
       });
     onClose();
@@ -276,7 +296,11 @@ export default function FormHired(props) {
   }, []);
 
   return (
-    <form autoComplete="on" onSubmit={handleSubmit}>
+    <form
+      autoComplete="on"
+      onSubmit={handleSubmit}
+      style={{ padding: "16px 24px" }}
+    >
       <Container
         container
         direction="column"

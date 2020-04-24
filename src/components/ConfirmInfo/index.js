@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Button } from "@material-ui/core";
+import { Grid, Button, Divider } from "@material-ui/core";
 
 import { FontField, FontValue } from "./styles";
 import { StyledButton } from "../FormHired/styles";
@@ -14,39 +14,53 @@ export default function ConfirmInfo(props) {
   if (info !== undefined)
     return (
       <>
-        <Grid container direction="column" spacing={1} alignItems="flex-end">
+        <Grid
+          container
+          direction="column"
+          spacing={1}
+          alignItems="flex-end"
+          style={{ background: "white", padding: "8px 24px" }}
+        >
           <Grid item xs sm md container justify="center">
-            <FontValue>Confirme as informações:</FontValue>
+            <FontField>Confirme as informações:</FontField>
             <div style={{ height: 10 }}></div>
           </Grid>
           {info.map((item, index) => (
-            <Grid key={index} item container alignItems="center" xs sm md>
-              <FontField>{item.field} </FontField>
-              <FontValue>{item.value}</FontValue>
+            <Grid item container direction="column" key={index} >
+              <Grid item container alignItems="flex-start" xs sm md>
+                <FontField>{item.field}</FontField>
+                <FontValue>{item.value}</FontValue>
+              </Grid>
+              <Grid item>
+                <Divider />
+              </Grid>
             </Grid>
           ))}
           <Grid item>
             <div style={{ height: 20 }}></div>
           </Grid>
-          <Grid item container justify="flex-end" xs sm md>
-            <Button
-              size="large"
-              style={{ background: "#958a94", color: "white" }}
-              onClick={onBack}
-            >
-              Voltar
-            </Button>
-            <div style={{ width: 15 }}></div>
-            <StyledButton
-              type="submit"
-              variant="contained"
-              size="large"
-              color="secondary"
-              style={{ color: "white" }}
-              onClick={handleSubmit}
-            >
-              SALVAR
-            </StyledButton>
+          <Grid item container justify="flex-end" xs sm md spacing={2}>
+            <Grid item>
+              <Button
+                size="large"
+                style={{ background: "#958a94", color: "white" }}
+                onClick={onBack}
+              >
+                Voltar
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                type="submit"
+                variant="contained"
+                size="large"
+                color="secondary"
+                style={{ color: "white" }}
+                onClick={handleSubmit}
+              >
+                SALVAR
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </>

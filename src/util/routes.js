@@ -12,6 +12,7 @@ export default function Routes() {
     <Switch>
       <Route path="/" exact component={Login}></Route>
       <Route path="/dashboard" component={Dashboard}></Route>
+      {/* <Route path="/gestor" component={DashManager}></Route> */}
       <Route path="/assinatura" component={Sign}></Route>
       <Route path="/criar-senha" component={CreatePassword}></Route>
       <Route

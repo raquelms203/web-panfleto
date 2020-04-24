@@ -4,6 +4,7 @@ import InputMask from "react-input-mask";
 import axios from "axios";
 import { apiADM } from "../../services/api";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 
 import {
   Container,
@@ -19,6 +20,7 @@ import ConfirmInfo from "../ConfirmInfo";
 import * as validate from "./validation_schema";
 
 export default function FormHired(props) {
+  const history = useHistory();
   const { cities, editPolitic, onClose, onCancel } = props;
   const [name, setName] = useState({ value: "", error: "" });
   const [CPF, setCPF] = useState({ value: "", error: "" });
@@ -80,13 +82,22 @@ export default function FormHired(props) {
           toast.success("Campanha criada com sucesso!");
         })
         .catch((error) => {
-          toast.error("Ocorreu um erro ao criar campanha!");
+          if (Boolean(error.response) && error.response.status === 401)
+            toast.info(
+              "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+              {
+                onClose: function () {
+                  history.push("/");
+                },
+              }
+            );
+          else toast.error("Ocorreu um erro ao criar campanha!");
           console.log(error);
         });
       onClose();
     } else {
       await apiADM
-        .put(`/politic?adminId=${localStorage.getItem("userId")}`, {
+        .put(`/politic/${editPolitic.id}?adminId=${localStorage.getItem("userId")}`, {
           name: name.value,
           document: CPF.value,
           type: typeNumber,
@@ -101,7 +112,16 @@ export default function FormHired(props) {
           toast.success("Campanha editada com sucesso!");
         })
         .catch((error) => {
-          toast.error("Ocorreu um erro ao editar campanha!");
+          if (Boolean(error.response) && error.response.status === 401)
+            toast.info(
+              "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+              {
+                onClose: function () {
+                  history.push("/");
+                },
+              }
+            );
+          else toast.error("Ocorreu um erro ao editar campanha!");
           console.log(error);
         });
       onClose();
@@ -179,11 +199,11 @@ export default function FormHired(props) {
       values = [
         { field: "Nome completo:", value: name.value },
         { field: "Categoria:", value: type.value },
-        { field: "Partido ou coligação", value: group.value },
+        { field: "Partido ou coligação:", value: group.value },
         { field: "CPF:", value: CPF.value },
         { field: "CEP:", value: CEP.value },
         { field: "Cidade:", value: city.value },
-        { field: "Rua", value: street.value },
+        { field: "Rua:", value: street.value },
         { field: "Número:", value: number.value },
         { field: "Bairro:", value: district.value },
       ];
@@ -251,7 +271,11 @@ export default function FormHired(props) {
   };
 
   return (
-    <form autoComplete="on" onSubmit={handleSubmit}>
+    <form
+      autoComplete="on"
+      onSubmit={handleSubmit}
+      style={{ padding: "16px 24px" }}
+    >
       <Container
         container
         direction="column"

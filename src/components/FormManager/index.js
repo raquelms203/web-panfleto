@@ -3,6 +3,7 @@ import { Grid, Button, TextField } from "@material-ui/core";
 import InputMask from "react-input-mask";
 import { Formik, Form, Field } from "formik";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 
 import { validationSchema } from "./validation_schema";
 import ConfirmInfo from "../ConfirmInfo";
@@ -11,12 +12,12 @@ import {
   StyledTextField,
   Title,
   FontButton,
-  StyledButton,
 } from "../FormHired/styles";
 import { apiADM } from "../../services/api";
 
 export default function FormManager(props) {
   const { onClose, onCancel, politic, viewManager } = props;
+  const history = useHistory();
   const [isEdit, setIsEdit] = useState(false);
 
   const [initialValues, setInitialValues] = useState({
@@ -49,7 +50,18 @@ export default function FormManager(props) {
       .then((response) => {
         toast.success("Gestor criado com sucesso!");
       })
-      .catch((error) => toast.error("Ocorreu um erro ao criar campanha!"));
+      .catch((error) => {
+        if (Boolean(error.response) && error.response.status === 401)
+          toast.info(
+            "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+            {
+              onClose: function () {
+                history.push("/");
+              },
+            }
+          );
+        else toast.error("Ocorreu um erro ao criar campanha!");
+      });
     onClose();
   };
 
@@ -79,7 +91,7 @@ export default function FormManager(props) {
     >
       {({ errors, setFieldValue }) => {
         return (
-          <Form autoComplete="off">
+          <Form autoComplete="off" style={{ padding: "16px 24px" }}>
             <Container
               container
               direction="column"
@@ -207,17 +219,26 @@ export default function FormManager(props) {
       }}
     </Formik>
   ) : (
-    <ConfirmInfo
-      info={openDialogConfirmInfo.info}
-      onClick={() => sendManager(openDialogConfirmInfo.values)}
-      onBack={() => {
-        setOpenDialogConfirmInfo({ open: false });
-        setInitialValues({
-          name: openDialogConfirmInfo.values.name,
-          cpf: openDialogConfirmInfo.values.cpf,
-          email: openDialogConfirmInfo.values.email,
-        });
-      }}
-    />
+    <Container
+      container
+      direction="column"
+      justify="flex-start"
+      style={{ overflow: "hidden" }}
+    >
+      <Grid item>
+        <ConfirmInfo
+          info={openDialogConfirmInfo.info}
+          onClick={() => sendManager(openDialogConfirmInfo.values)}
+          onBack={() => {
+            setOpenDialogConfirmInfo({ open: false });
+            setInitialValues({
+              name: openDialogConfirmInfo.values.name,
+              cpf: openDialogConfirmInfo.values.cpf,
+              email: openDialogConfirmInfo.values.email,
+            });
+          }}
+        />
+      </Grid>
+    </Container>
   );
 }

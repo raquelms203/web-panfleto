@@ -71,6 +71,7 @@ export default function Receipt(props) {
       return (
         <Grid item container direction="column" style={{ height: "40vh" }}>
           <ConfirmReceipt
+          onBack={onBack}
             receipts={receipts}
             idHired={idHired}
             idManager={idManager}

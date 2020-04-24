@@ -22,6 +22,8 @@ import {
   Logo,
   FontButton,
   StyledButton,
+  FontToken,
+  SpaceDiv,
 } from "./styles";
 import SmallScreenAlert from "../SmallScreenAlert";
 import ActionButton from "../../components/ActionButton";
@@ -101,7 +103,16 @@ export default function Dashboard() {
           setHireds(hiredsAll);
         })
         .catch((error) => {
-          console.log(error);
+          if (Boolean(error.response) && error.response.status === 401) {
+            toast.info(
+              "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+              {
+                onClose: function () {
+                  history.push("/");
+                },
+              }
+            );
+          } else toast.error("Ocorreu um erro ao carregar os dados!");
         });
     },
     [setHireds]
@@ -130,6 +141,16 @@ export default function Dashboard() {
           }
         })
         .catch((error) => {
+          if (Boolean(error.response) && error.response.status === 401) {
+            toast.info(
+              "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+              {
+                onClose: function () {
+                  history.push("/");
+                },
+              }
+            );
+          } else toast.error("Ocorreu um erro ao carregar os dados!");
           console.log(error);
         });
     },
@@ -174,7 +195,7 @@ export default function Dashboard() {
               },
             }
           );
-        } else toast.error("Ocorreu um erro ao carregar os dados.");
+        } else toast.error("Ocorreu um erro ao carregar os dados!");
         console.log(error);
       });
   }, [history, setPolitics, fetchManagers, fetchHireds, managers]);
@@ -207,8 +228,16 @@ export default function Dashboard() {
         if (Boolean(error.response) && error.response.status === 400) {
           toast.info("Político já assinou!");
           return;
-        }
-        toast.error("Ocorreu um erro ao gerar token");
+        } else if (Boolean(error.response) && error.response.status === 401)
+          toast.info(
+            "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+            {
+              onClose: function () {
+                history.push("/");
+              },
+            }
+          );
+        else toast.error("Ocorreu um erro ao gerar token");
       });
     return token;
   };
@@ -227,7 +256,15 @@ export default function Dashboard() {
         if (Boolean(error.response) && error.response.status === 400) {
           toast.info("Contratado já assinou!");
           return;
-        }
+        } else if (Boolean(error.response) && error.response.status === 401)
+          toast.info(
+            "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+            {
+              onClose: function () {
+                history.push("/");
+              },
+            }
+          );
         toast.error("Ocorreu um erro ao gerar token");
       });
     return token;
@@ -384,7 +421,16 @@ export default function Dashboard() {
           }
         })
         .catch((error) => {
-          toast.error("Ocorreu um erro ao carregar os dados!");
+          if (Boolean(error.response) && error.response.status === 401)
+            toast.info(
+              "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+              {
+                onClose: function () {
+                  history.push("/");
+                },
+              }
+            );
+          else toast.error("Ocorreu um erro ao carregar os dados!");
           console.log(error);
         });
 
@@ -425,6 +471,18 @@ export default function Dashboard() {
               }
             }
           }
+        })
+        .catch((error) => {
+          if (Boolean(error.response) && error.response.status === 401)
+            toast.info(
+              "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+              {
+                onClose: function () {
+                  history.push("/");
+                },
+              }
+            );
+          else toast.error("Ocorreu um erro ao carregar os dados!");
         });
       setPolitics(list);
       setIndexPolitic(0);
@@ -433,6 +491,76 @@ export default function Dashboard() {
         await fetchManagers(list[0].id);
       }
     } else await fetchPolitics();
+  };
+
+  const sendEmailContract = async () => {
+    await apiADM
+      .post(
+        `/hired/${hireds[indexHired].id}?managerId=${managers[indexManager].id}&action=sendContract`
+      )
+      .then(() => {
+        toast.success("Email enviado com sucesso!");
+      })
+      .catch((error) => {
+        if (Boolean(error.response) && error.response.status === 400) {
+          toast.error(
+            "Erro. É necessário assinar, validar e adicionar os comprovantes antes."
+          );
+        } else if (Boolean(error.response) && error.response.status === 401)
+          toast.info(
+            "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+            {
+              onClose: function () {
+                history.push("/");
+              },
+            }
+          );
+        else toast.error("Ocorreu um erro ao enviar email!");
+      });
+  };
+
+  const sendPassword = async () => {
+    await apiADM
+      .get(
+        `/manager/${managers[indexManager].id}?politicId=${politics[indexPolitic].id}&action=new-token`
+      )
+      .then(() => {
+        toast.success("Email enviado para o gestor com sucesso!");
+      })
+      .catch((error) => {
+        if (Boolean(error.response) && error.response.status === 401)
+          toast.info(
+            "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+            {
+              onClose: function () {
+                history.push("/");
+              },
+            }
+          );
+        else toast.error("Ocorreu um erro ao enviar email!");
+      });
+  };
+
+  const expiresToken = () => {
+    let d = new Date().toLocaleTimeString("pt-br", {
+      hour12: false,
+      hour: "numeric",
+      minute: "numeric",
+    });
+    let hour = parseInt(d.split(":")[0]);
+    let nextHour;
+    let nextTime;
+    if (hour === 23) nextHour = "00";
+    else if (hour === 0) nextHour = "01";
+    else {
+      if (d.split(":")[0].length === 1) {
+        nextHour = "0" + (1 + hour).toString();
+      } else {
+        nextHour = (1 + hour).toString();
+      }
+    }
+    nextTime = nextHour + ":" + d.split(":")[1];
+    return `Código gerado às ${d}. Válido até ${nextTime}.`;
   };
 
   useEffect(() => {
@@ -496,14 +624,7 @@ export default function Dashboard() {
               </Grid>
             </Grid>
           </AppBar>
-          <div
-            style={{
-              marginLeft: 45,
-              marginTop: 10,
-              marginBottom: 0,
-              paddingBottom: 0,
-            }}
-          >
+          <SpaceDiv>
             {citySelected !== "" ? (
               <Button onClick={removeFilterCity}>
                 {citySelected.length > 10 ? (
@@ -524,7 +645,7 @@ export default function Dashboard() {
                 )}
               </Button>
             ) : undefined}
-          </div>
+          </SpaceDiv>
           <StyledGrid container item justify="center">
             <Grid item xs={4} sm={4} md={4}>
               <Grid container alignItems="center" justify="space-between">
@@ -601,8 +722,10 @@ export default function Dashboard() {
                 dropdownOnChange={[
                   async (index) => {
                     let token = await fetchTokenPolitic();
-                    if (token.length > 0)
+                    if (token.length > 0) {
                       setOpenDialogSign({ open: true, token: token });
+                      setListener(false);
+                    }
                   },
                   () => {
                     setOpenDialogAddPolitic({ open: true, action: "edit" });
@@ -618,7 +741,7 @@ export default function Dashboard() {
                 }}
                 open={openDialogAddPolitic.open}
               >
-                <DialogTitle style={{ background: "#f5f3f3" }}>
+                <DialogTitle style={{ background: "#f5f3f3", padding: 0 }}>
                   <FormPolitic
                     cities={cities}
                     onCancel={() => {
@@ -652,7 +775,7 @@ export default function Dashboard() {
                   openDialogDelete.open && openDialogDelete.type === "politic"
                 }
               >
-                <DialogTitle style={{ background: "#f5f3f3" }}>
+                <DialogTitle>
                   <ConfirmDelete
                     type={openDialogDelete.type}
                     list={openDialogDelete.list}
@@ -700,11 +823,14 @@ export default function Dashboard() {
                 indexSelected={indexManager}
                 list={managers}
                 onCheckChange={handleCheckChangeManager}
-                dropdownNames={["Detalhes"]}
+                dropdownNames={["Detalhes", "Recuperar senha"]}
                 dropdownOnChange={[
                   () => {
                     setOpenDialogAddManager({ open: true, action: "edit" });
                     setListener(false);
+                  },
+                  async () => {
+                    await sendPassword();
                   },
                 ]}
               />
@@ -720,7 +846,7 @@ export default function Dashboard() {
                     }}
                     open={openDialogAddManager.open}
                   >
-                    <DialogTitle style={{ background: "#f5f3f3" }}>
+                    <DialogTitle style={{ background: "#f5f3f3", padding: 0 }}>
                       <FormManager
                         politic={politics[indexPolitic]}
                         onClose={async () => {
@@ -755,7 +881,7 @@ export default function Dashboard() {
                       openDialogDelete.type === "manager"
                     }
                   >
-                    <DialogTitle style={{ background: "#f5f3f3" }}>
+                    <DialogTitle>
                       <ConfirmDelete
                         overId={politics[indexPolitic].id}
                         type={openDialogDelete.type}
@@ -825,7 +951,9 @@ export default function Dashboard() {
                   (index) => {
                     setOpenDialogReceipt(true);
                   },
-                  (index) => {},
+                  (index) => {
+                    sendEmailContract();
+                  },
                 ]}
               />
               {politics.length === 0 || !managers || managers.length === 0 ? (
@@ -840,7 +968,7 @@ export default function Dashboard() {
                     }}
                     open={openDialogAddHired.open}
                   >
-                    <DialogTitle style={{ background: "#f5f3f3" }}>
+                    <DialogTitle style={{ background: "#f5f3f3", padding: 0 }}>
                       <FormHired
                         groupPolitic={politics[
                           indexPolitic
@@ -883,7 +1011,7 @@ export default function Dashboard() {
                       openDialogDelete.open && openDialogDelete.type === "hired"
                     }
                   >
-                    <DialogTitle style={{ background: "#f5f3f3" }}>
+                    <DialogTitle>
                       <ConfirmDelete
                         onBack={() => {
                           setOpenDialogDelete({ open: false });
@@ -910,7 +1038,7 @@ export default function Dashboard() {
                       }}
                       open={openDialogReceipt}
                     >
-                      <DialogTitle style={{ background: "#f5f3f3" }}>
+                      <DialogTitle>
                         <Receipt
                           idManager={managers[indexManager].id}
                           idHired={hireds[indexHired].id}
@@ -925,19 +1053,39 @@ export default function Dashboard() {
               )}
               <Dialog
                 onClose={async () => {
-                  setOpenDialogSign({ open: false });
+                  setOpenDialogSign({ open: false, token: "" });
                   setListener(true);
                   onOrientationChange();
                 }}
                 open={openDialogSign.open}
               >
-                <DialogTitle style={{ background: "#f5f3f3" }}>
-                  <p>
-                    Código gerado 19h36. Válido até 20h36. Para concluir o
-                    cadastro baixe o aplicativo E-CONTRATO para celular e use o
-                    código:
-                  </p>
-                  <p>{`${openDialogSign.token}`}</p>
+                <DialogTitle>
+                  <Grid container direction="column" spacing={1}>
+                    <Grid item>
+                      <p>
+                        Para concluir o cadastro baixe o aplicativo e-Contrato
+                        para celular e use o código:
+                      </p>
+                      <FontToken>{`${openDialogSign.token}`}</FontToken>
+                      <p>{expiresToken()}</p>
+                    </Grid>
+                    <Grid item>
+                      <Grid item container direction="row-reverse">
+                        <StyledButton
+                          style={{ background: "#958a94" }}
+                          variant="contained"
+                          size="large"
+                          onClick={async (event) => {
+                            setOpenDialogSign({ open: false, token: "" });
+                            setListener(true);
+                            onOrientationChange();
+                          }}
+                        >
+                          <FontButton>Voltar</FontButton>
+                        </StyledButton>
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </DialogTitle>
               </Dialog>
             </Grid>

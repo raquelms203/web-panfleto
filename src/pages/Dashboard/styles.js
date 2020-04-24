@@ -6,7 +6,7 @@ export const StyledGrid = styled(Grid)`
   padding-top: 20px;
 `;
 
-export const Logo = styled.img`  
+export const Logo = styled.img`
   padding: 0;
   margin: 0;
   height: 27px;
@@ -18,8 +18,22 @@ export const Separator = styled.div`
   background: #babdc2;
 `;
 
+export const SpaceDiv = styled.div`
+  margin-left: 45;
+  margin-top: 10;
+  margin-bottom: 0;
+  padding-bottom: 0;
+`;
+
 export const Subtitle = styled.p`
   padding-left: 8px;
+`;
+
+export const FontToken = styled.p`
+  text-align: center;
+  font-size: 40px;
+  color: #2b5279;
+  letter-spacing: 8px;
 `;
 
 export const LabelFilter = styled.p`
@@ -42,18 +56,17 @@ export const Footer = styled.div`
   background: #454545;
   font: 15px Microsoft New Tai Lue;
   letter-spacing: 0.4px;
-  pre {  
-    color: #2B5279;
+  pre {
+    color: #2b5279;
     font: 15px Microsoft New Tai Lue;
-
   }
 `;
 
-export const FontButton = styled.p`   
-  color: #FFF;
+export const FontButton = styled.p`
+  color: #fff;
 `;
 
-export const StyledButton = styled(Button)`  
+export const StyledButton = styled(Button)`
   margin-top: 30px;
   width: 150px;
 `;
