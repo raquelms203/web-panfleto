@@ -1,14 +1,18 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Grid, Button, List } from "@material-ui/core";
+import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 import { FileDrop } from "react-file-drop";
-import { Grid, Button } from "@material-ui/core";
 import { isMobile } from "react-device-detect";
 
 import "./styles.css";
-
-import ConfirmReceipt from "../ConfirmReceipt";
+import { apiADM } from "../../services/api";
+import { FontButton, StyledButton } from "../FormHired/styles";
 
 export default function Receipt(props) {
   const { onBack, idHired, idManager } = props;
+  const [hasError, setHasError] = useState(false);
+  const history = useHistory();
   const inputFile = useRef(null);
   const [receipts, setReceipts] = useState([]);
 
@@ -22,7 +26,10 @@ export default function Receipt(props) {
           files[i].type === "image/jpg"
         ) {
           list.push({ error: false, file: files[i] });
-        } else list.push({ error: true, file: files[i] });
+        } else {
+          setHasError(true);
+          list.push({ error: true, file: files[i] });
+        }
       }
     }
     setReceipts(list);
@@ -42,12 +49,64 @@ export default function Receipt(props) {
     inputFile.current.click();
   };
 
+  const sendReceipts = async (event) => {
+    event.preventDefault();
+    for (let i = 0; i < receipts.length; i++) {
+      let fd = new FormData();
+      fd.append("file", receipts[i].file);
+      await apiADM
+        .put(`hired/${idHired}?managerId=${idManager}`, fd, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          toast.success("Comprovante(s) adicionado com sucesso!");
+        })
+        .catch((error) => {
+          if (Boolean(error.response) && error.response.status === 401)
+            toast.info(
+              "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+              {
+                onClose: function () {
+                  history.push("/");
+                },
+              }
+            );
+          else if (Boolean(error.response) && error.response.status === 400) {
+            toast.error("Erro. É necessário assinar e validar antes.");
+          } else toast.error("Ocorreu um erro ao enviar email!");
+        });
+    }
+    onBack();
+  };
+
+  const removeReceipt = (event, item) => {
+    let list = [...receipts];
+    let i;
+    let position;
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].file.name === item.file.name) {
+        position = i;
+        break;
+      }
+    }
+    list.splice(position, 1);
+    for (i = 0; i < list.length; i++) {
+      if (list[i].error) {
+        setHasError(true);
+        break;
+      }
+    }
+    if (i === list.length) setHasError(false);
+    setReceipts(list);
+  };
+
   const mobileView = () => {
-    if (receipts.length == 0)
       return (
         <Grid
           container
-          justify="center"
+          direction="column"
           alignItems="center"
           style={{ marginTop: 30 }}
         >
@@ -65,17 +124,29 @@ export default function Receipt(props) {
               Selecione arquivos
             </Button>
           </Grid>
-        </Grid>
-      );
-    else
-      return (
-        <Grid item container direction="column" style={{ height: "40vh" }}>
-          <ConfirmReceipt
-          onBack={onBack}
-            receipts={receipts}
-            idHired={idHired}
-            idManager={idManager}
-          />
+          <Grid item container direction="row" justify="flex-end" spacing={2}>
+            <Grid item>
+              <Button
+                size="large"
+                style={{ background: "#958a94", color: "white" }}
+                onClick={() => onBack()}
+              >
+                Voltar
+              </Button>
+            </Grid>
+            <Grid item>
+              <StyledButton
+                style={{ marginRight: 16 }}
+                disabled={hasError || receipts.length === 0}
+                type="submit"
+                variant="contained"
+                size="large"
+                color="secondary"
+              >
+                <FontButton>SALVAR</FontButton>
+              </StyledButton>
+            </Grid>
+          </Grid>
         </Grid>
       );
   };
@@ -129,23 +200,53 @@ export default function Receipt(props) {
               </Grid>
             ) : (
               <Grid
-                item
                 container
                 direction="column"
+                justify="space-between"
+                alignItems="stretch"
                 style={{ height: "40vh" }}
               >
-                <ConfirmReceipt
-                  receipts={receipts}
-                  idHired={idHired}
-                  idManager={idManager}
-                />
+                <Grid item>
+                  <List
+                    dense
+                    component="nav"
+                    style={{ marginLeft: 8, maxHeight: 220, overflowY: "auto" }}
+                  >
+                    {receipts.map((item, index) => (
+                      <Grid item container alignItems="baseline" key={index}>
+                        <p
+                          className="font-list"
+                          style={{ color: item.error ? "red" : "black" }}
+                        >
+                          {item.file.name}
+                        </p>
+                        {item.error ? (
+                          <p
+                            className="font-list"
+                            style={{ color: "red", marginLeft: 5 }}
+                          >
+                            (formato não suportado)
+                          </p>
+                        ) : undefined}
+                        <Button
+                          size="small"
+                          onClick={(event) => {
+                            removeReceipt(event, item);
+                          }}
+                        >
+                          X
+                        </Button>
+                      </Grid>
+                    ))}
+                  </List>
+                </Grid>
               </Grid>
             )}
           </FileDrop>
         </div>
       )}
       <div style={{ height: 16 }}></div>
-      <Grid container direction="row" justify="flex-end">
+      <Grid container direction="row" justify="flex-end" spacing={2}>
         <Grid item>
           <Button
             size="large"
@@ -154,6 +255,18 @@ export default function Receipt(props) {
           >
             Voltar
           </Button>
+        </Grid>
+        <Grid item>
+          <StyledButton
+            style={{ marginRight: 16 }}
+            disabled={hasError || receipts.length === 0}
+            onClick={sendReceipts}
+            variant="contained"
+            size="large"
+            color="secondary"
+          >
+            <FontButton>SALVAR</FontButton>
+          </StyledButton>
         </Grid>
       </Grid>
     </>

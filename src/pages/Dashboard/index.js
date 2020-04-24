@@ -504,7 +504,7 @@ export default function Dashboard() {
       .catch((error) => {
         if (Boolean(error.response) && error.response.status === 400) {
           toast.error(
-            "Erro. É necessário assinar, validar e adicionar os comprovantes antes."
+            "Erro. É necessário assinar e validar antes."
           );
         } else if (Boolean(error.response) && error.response.status === 401)
           toast.info(
