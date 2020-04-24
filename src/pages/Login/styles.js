@@ -1,26 +1,5 @@
 import styled from "styled-components";
-import { Grid, Button, Paper } from "@material-ui/core";
-
-
-export const StyledGrid = styled(Grid)`
-  margin: 20px;
-  min-height: 85vh;
-  overflow-x: hidden;
-  width: 100%;
-`;
-
-export const CardLogin = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center; 
-  flex-direction: column;
-  padding: 20px;
-  width: 380px;
-  min-width: 100px;
-  background-color: white;
-  color: black;
-  
-`;
+import { Grid } from "@material-ui/core";
 
 export const Title = styled.p`
   font: bold 17px Roboto, serif;
@@ -29,8 +8,11 @@ export const Title = styled.p`
   margin-bottom: 15px;
 `;
 
-export const StyledPaper = styled(Paper)`
-  padding: 30px;
-  width: 400px;  
+export const BackgroundWhite = styled(Grid)`
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-right: 20px;
+  padding-left: 20px;
+  background: white;
 `;
 

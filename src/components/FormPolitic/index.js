@@ -76,6 +76,7 @@ export default function FormHired(props) {
           district: district.value,
         })
         .then((response) => {
+          console.log(response);
           toast.success("Campanha criada com sucesso!");
         })
         .catch((error) => {
@@ -441,7 +442,7 @@ export default function FormHired(props) {
                   error={Boolean(complement.error)}
                   helperText={complement.error}
                   size="small"
-                  label="Complemento (Opcional)"
+                  label="Complemento(Opcional)"
                   variant="outlined"
                   value={complement.value}
                   onChange={(event) =>

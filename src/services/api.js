@@ -6,7 +6,7 @@ export const apiCities = axios.create({
 });
 
 const apiADM = axios.create({  
-  baseURL: "https://econtracts.herokuapp.com"
+  baseURL: "http://64.225.27.98"
 });
 
 apiADM.interceptors.request.use(requestSuccessInterceptor);

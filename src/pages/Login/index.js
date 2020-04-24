@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import Computer from "../../assets/logo_2.svg";
-import { Title, StyledPaper } from "./styles";
+import { Title, BackgroundWhite } from "./styles";
 import * as validate from "./validationSchema";
 import { apiADM } from "../../services/api";
 
@@ -19,13 +19,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [hidePass, setHidePass] = useState(true);
   const history = useHistory();
-
-  // const imageWidth = () => {
-  //   if (!Boolean(email.error) && !Boolean(password.error)) return 295.5;
-  //   else if (!Boolean(email.error) && Boolean(password.error)) return 325;
-  //   else if (Boolean(email.error) && !Boolean(password.error)) return 325;
-  //   else if (Boolean(email.error) && Boolean(password.error)) return 350;
-  // };
 
   const sendLogin = async () => {
     setLoading(true);
@@ -84,31 +77,27 @@ export default function Login() {
   };
 
   return (
-    <Grid
-      item
-      container
-      direction="column"
-      justify="center"
-      alignItems="center"
-      style={{ minHeight: "95vh" }}
-    >
-      <Grid item>
-        <StyledPaper>
+    <Grid item container justify="center">
+      <Grid
+        item
+        container
+        direction="column"
+        justify="center"
+        alignItems="stretch"
+        style={{ minHeight: "95vh", maxWidth: 450 }}
+      >
+        <BackgroundWhite item>
           <Grid item container justify="center" xs={12} sm={12} md={12}>
-            <img
-              src={Computer}
-              alt="login"
-              style={{ width: 150 }}
-            ></img>
+            <img src={Computer} alt="login" style={{ width: 150 }}></img>
           </Grid>
           <Grid
             item
             container
-            xs={12} sm={12} md={12}
+            xs={12}
+            sm={12}
+            md={12}
             direction="column"
-            alignItems="stretch"
             justify="center"
-            style={{ maxWidth: 400 }}
           >
             <Grid item xs={12} sm={12} md={12}>
               <form autoComplete="off" onSubmit={handleSubmit}>
@@ -179,7 +168,7 @@ export default function Login() {
               </form>
             </Grid>
           </Grid>
-        </StyledPaper>
+        </BackgroundWhite>
       </Grid>
     </Grid>
   );

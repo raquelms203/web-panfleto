@@ -5,6 +5,7 @@ import axios from "axios";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
 import { toast } from "react-toastify";
 
+import { apiADM } from "../../services/api";
 import {
   Container,
   StyledTextField,
@@ -13,12 +14,19 @@ import {
   FontButton,
 } from "./styles";
 import DropdownCities from "../DropdownCities";
-import { apiADM } from "../../services/api";
 import ConfirmInfo from "../ConfirmInfo";
 import * as validate from "./validation_schema";
 
 export default function FormHired(props) {
-  const { cities, manager, onClose, viewHired, onCancel, title, groupPolitic } = props;
+  const {
+    cities,
+    manager,
+    onClose,
+    viewHired,
+    onCancel,
+    title,
+    groupPolitic,
+  } = props;
   const [isEdit, setIsEdit] = useState(false);
   const [name, setName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
@@ -56,6 +64,21 @@ export default function FormHired(props) {
     });
     setVisibleButtonCity(true);
     setDistrict({ value: response.data.bairro, error: district.error });
+  };
+
+  const validateDocument = async () => {
+    await apiADM
+      .post(`/hired/${viewHired.id}?manager=${manager.id}&action=validate`)
+      .then((response) => {
+        console.log(response);
+        toast.success("Contratado validado com sucesso!");
+      })
+      .catch((error) => {
+        if (Boolean(error.response) && error.response.status === 403)
+          toast.info("Contratado já foi validado!");
+        else toast.error("Ocorreu um erro ao validar contratado!");
+      });
+    onCancel();
   };
 
   const initValues = () => {
@@ -102,7 +125,7 @@ export default function FormHired(props) {
     let allValid = true;
     let values = [];
     let complementPosition = 7;
-    
+
     if (validate.validateName(name.value) !== "") {
       setName({ value: name.value, error: validate.validateName(name.value) });
       allValid = false;
@@ -177,8 +200,8 @@ export default function FormHired(props) {
         style: "currency",
         currency: "BRL",
         minimumFractionDigits: 2,
-      });      
-    
+      });
+
       let p = formatter.format(parseFloat(payment.value));
       values = [
         { field: "Nome completo:", value: name.value },
@@ -210,9 +233,10 @@ export default function FormHired(props) {
   const sendHired = async () => {
     let date = new Date();
     let dayFormatted = date.getDate().toString();
-    if(dayFormatted.length === 1) dayFormatted = "0" + dayFormatted;
+    if (dayFormatted.length === 1) dayFormatted = "0" + dayFormatted;
     let month = date.toLocaleString("pt-br", { month: "long" });
-    let monthFormatted = month[0].toUpperCase() + month.substring(1, month.length);
+    let monthFormatted =
+      month[0].toUpperCase() + month.substring(1, month.length);
     await apiADM
       .post(`/hired?managerId=${manager.id}`, {
         name: name.value,
@@ -243,7 +267,8 @@ export default function FormHired(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    validateFields();
+    if (isEdit) validateDocument();
+    else validateFields();
   };
 
   useEffect(() => {
@@ -299,7 +324,7 @@ export default function FormHired(props) {
                 }
               />
             </Grid>
-            <Grid item container spacing={1} justify="space-between">
+            <Grid item container spacing={2} justify="space-between">
               <Grid item xs={12} sm={6} md={6}>
                 <InputMask
                   mask="999.999.999-99"
@@ -349,7 +374,7 @@ export default function FormHired(props) {
                 </InputMask>
               </Grid>
             </Grid>
-            <Grid item container spacing={1} alignItems="center">
+            <Grid item container spacing={2} alignItems="center">
               <Grid item xs={12} sm={4} md={4}>
                 <InputMask
                   mask="99999-999"
@@ -408,7 +433,7 @@ export default function FormHired(props) {
                 )}
               </Grid>
             </Grid>
-            <Grid item container spacing={1}>
+            <Grid item container spacing={2}>
               <Grid item xs={12} sm={8} md={8}>
                 <StyledTextField
                   fullWidth
@@ -448,7 +473,7 @@ export default function FormHired(props) {
                 />
               </Grid>
             </Grid>
-            <Grid item container spacing={1}>
+            <Grid item container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <StyledTextField
                   fullWidth
@@ -459,7 +484,7 @@ export default function FormHired(props) {
                   error={Boolean(complement.error)}
                   helperText={complement.error}
                   size="small"
-                  label="Complemento (Opcional)"
+                  label="Complemento(Opcional)"
                   variant="outlined"
                   value={complement.value}
                   onChange={(event) =>
@@ -493,7 +518,7 @@ export default function FormHired(props) {
                 />
               </Grid>
             </Grid>
-            <Grid item container spacing={1} justify="space-between">
+            <Grid item container spacing={2} justify="space-between">
               <Grid item xs={12} sm={4} md={4}>
                 <CurrencyTextField
                   fullWidth
@@ -540,27 +565,36 @@ export default function FormHired(props) {
                 />
               </Grid>
             </Grid>
-            <Grid item container justify="flex-end">
-              <Button
-                size="large"
-                style={{ background: "#958a94", color: "white" }}
-                onClick={() => onCancel()}
-              >
-                Voltar
-              </Button>
-              <div style={{ width: 16 }}></div>
-              {isEdit ? (
-                <></>
-              ) : (
+            <Grid
+              item
+              container
+              justify="flex-end"
+              spacing={1}
+              xs
+              sm
+              md={12}
+              style={{ paddingRight: 0 }}
+            >
+              <Grid item>
+                <Button
+                  size="large"
+                  style={{ background: "#958a94", color: "white" }}
+                  onClick={() => onCancel()}
+                >
+                  Voltar
+                </Button>
+              </Grid>
+
+              <Grid item>
                 <StyledButton
                   type="submit"
                   variant="contained"
                   size="large"
                   color="secondary"
                 >
-                  <FontButton>CONTINUAR</FontButton>
+                  <FontButton>{isEdit ? "VALIDAR" : "CONTINUAR"}</FontButton>
                 </StyledButton>
-              )}
+              </Grid>
             </Grid>
           </>
         ) : (

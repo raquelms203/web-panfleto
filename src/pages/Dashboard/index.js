@@ -73,6 +73,10 @@ export default function Dashboard() {
     list: [],
     type: "",
   });
+  const [openDialogSign, setOpenDialogSign] = useState({
+    open: false,
+    token: "",
+  });
 
   const fetchCities = useCallback(async () => {
     if (cities.length === 0) {
@@ -157,6 +161,7 @@ export default function Dashboard() {
           await fetchManagers(politicsAll[0].id);
         } else {
           setManagers([]);
+          setHireds([]);
         }
       })
       .catch((error) => {
@@ -184,12 +189,49 @@ export default function Dashboard() {
       // if (allow) {
       setIsLessThan500(false);
       return;
-      //}
-      // if (window.screen.availWidth < 500) {
-      //   setIsLessThan500(true);
-      // }
     }
   }, [setIsLessThan500, listener]);
+
+  const fetchTokenPolitic = async () => {
+    let token = "";
+    await apiADM
+      .get(
+        `/politic/${politics[indexPolitic].id}?adminId=${localStorage.getItem(
+          "userId"
+        )}` + `&action=new-token`
+      )
+      .then((response) => {
+        token = response.data.token;
+      })
+      .catch((error) => {
+        if (Boolean(error.response) && error.response.status === 400) {
+          toast.info("Político já assinou!");
+          return;
+        }
+        toast.error("Ocorreu um erro ao gerar token");
+      });
+    return token;
+  };
+
+  const fetchTokenHired = async () => {
+    let token = "";
+    await apiADM
+      .get(
+        `/hired/${hireds[indexHired].id}?managerId=${managers[indexManager].id}` +
+          `&action=new-token`
+      )
+      .then((response) => {
+        token = response.data.token;
+      })
+      .catch((error) => {
+        if (Boolean(error.response) && error.response.status === 400) {
+          toast.info("Contratado já assinou!");
+          return;
+        }
+        toast.error("Ocorreu um erro ao gerar token");
+      });
+    return token;
+  };
 
   const handlePoliticListClick = async (event, index) => {
     setIndexPolitic(index);
@@ -493,6 +535,8 @@ export default function Dashboard() {
                   <Dialog
                     onClose={() => {
                       setOpenDialogFilter(false);
+                      setListener(true);
+                      onOrientationChange();
                     }}
                     open={openDialogFilter}
                   >
@@ -555,10 +599,10 @@ export default function Dashboard() {
                 onCheckChange={handleCheckChangePolitic}
                 dropdownNames={["Adicionar assinatura", "Editar"]}
                 dropdownOnChange={[
-                  (index) => {
-                    history.push(`/assinatura/${politics[index].token}`, {
-                      token: politics[index].token,
-                    });
+                  async (index) => {
+                    let token = await fetchTokenPolitic();
+                    if (token.length > 0)
+                      setOpenDialogSign({ open: true, token: token });
                   },
                   () => {
                     setOpenDialogAddPolitic({ open: true, action: "edit" });
@@ -569,6 +613,8 @@ export default function Dashboard() {
               <Dialog
                 onClose={() => {
                   setOpenDialogAddPolitic({ open: false, action: "" });
+                  setListener(true);
+                  onOrientationChange();
                 }}
                 open={openDialogAddPolitic.open}
               >
@@ -595,13 +641,13 @@ export default function Dashboard() {
                 </DialogTitle>
               </Dialog>
               <Dialog
-                onClose={() =>
+                onClose={() => {
                   setOpenDialogDelete({
                     open: false,
                     list: undefined,
                     type: "",
-                  })
-                }
+                  });
+                }}
                 open={
                   openDialogDelete.open && openDialogDelete.type === "politic"
                 }
@@ -669,6 +715,8 @@ export default function Dashboard() {
                   <Dialog
                     onClose={() => {
                       setOpenDialogAddManager({ open: false });
+                      setListener(true);
+                      onOrientationChange();
                     }}
                     open={openDialogAddManager.open}
                   >
@@ -695,13 +743,13 @@ export default function Dashboard() {
                     </DialogTitle>
                   </Dialog>
                   <Dialog
-                    onClose={() =>
+                    onClose={() => {
                       setOpenDialogDelete({
                         open: false,
                         list: undefined,
                         type: "",
-                      })
-                    }
+                      });
+                    }}
                     open={
                       openDialogDelete.open &&
                       openDialogDelete.type === "manager"
@@ -760,22 +808,22 @@ export default function Dashboard() {
                 onCheckChange={handleCheckChangeHired}
                 dropdownNames={[
                   "Adicionar assinatura",
+                  "Validar informações",
                   "Adicionar comprovante",
-                  "Detalhes",
                   "Concluir contrato",
                 ]}
                 dropdownOnChange={[
-                  (index) => {
-                    history.push(`/assinatura/${hireds[index].token}`, {
-                      token: hireds[index].token,
-                    });
-                  },
-                  (index) => {
-                    setOpenDialogReceipt(true);
+                  async (index) => {
+                    let token = await fetchTokenHired();
+                    if (token.length > 0)
+                      setOpenDialogSign({ open: true, token: token });
                   },
                   (index) => {
                     setOpenDialogAddHired({ open: true, action: "edit" });
                     setListener(false);
+                  },
+                  (index) => {
+                    setOpenDialogReceipt(true);
                   },
                   (index) => {},
                 ]}
@@ -787,6 +835,8 @@ export default function Dashboard() {
                   <Dialog
                     onClose={async () => {
                       setOpenDialogAddHired({ open: false });
+                      setListener(true);
+                      onOrientationChange();
                     }}
                     open={openDialogAddHired.open}
                   >
@@ -822,13 +872,13 @@ export default function Dashboard() {
                     </DialogTitle>
                   </Dialog>
                   <Dialog
-                    onClose={() =>
+                    onClose={() => {
                       setOpenDialogDelete({
                         open: false,
                         list: undefined,
                         type: "",
-                      })
-                    }
+                      });
+                    }}
                     open={
                       openDialogDelete.open && openDialogDelete.type === "hired"
                     }
@@ -851,20 +901,45 @@ export default function Dashboard() {
                       />
                     </DialogTitle>
                   </Dialog>
-                  <Dialog
-                    onClose={() => setOpenDialogReceipt(false)}
-                    open={openDialogReceipt}
-                  >
-                    <DialogTitle style={{ background: "#f5f3f3" }}>
-                      <Receipt
-                        onBack={() => {
-                          setOpenDialogReceipt(false);
-                        }}
-                      />
-                    </DialogTitle>
-                  </Dialog>
+                  {hireds && hireds.length > 0 ? (
+                    <Dialog
+                      onClose={() => {
+                        setOpenDialogReceipt(false);
+                        setListener(true);
+                        onOrientationChange();
+                      }}
+                      open={openDialogReceipt}
+                    >
+                      <DialogTitle style={{ background: "#f5f3f3" }}>
+                        <Receipt
+                          idManager={managers[indexManager].id}
+                          idHired={hireds[indexHired].id}
+                          onBack={() => {
+                            setOpenDialogReceipt(false);
+                          }}
+                        />
+                      </DialogTitle>
+                    </Dialog>
+                  ) : undefined}
                 </>
               )}
+              <Dialog
+                onClose={async () => {
+                  setOpenDialogSign({ open: false });
+                  setListener(true);
+                  onOrientationChange();
+                }}
+                open={openDialogSign.open}
+              >
+                <DialogTitle style={{ background: "#f5f3f3" }}>
+                  <p>
+                    Código gerado 19h36. Válido até 20h36. Para concluir o
+                    cadastro baixe o aplicativo E-CONTRATO para celular e use o
+                    código:
+                  </p>
+                  <p>{`${openDialogSign.token}`}</p>
+                </DialogTitle>
+              </Dialog>
             </Grid>
           </StyledGrid>
           <Footer>Site desenvolvido por Easycode - 2020</Footer>

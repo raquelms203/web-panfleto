@@ -8,7 +8,7 @@ import "./styles.css";
 import ConfirmReceipt from "../ConfirmReceipt";
 
 export default function Receipt(props) {
-  const { onBack } = props;
+  const { onBack, idHired, idManager } = props;
   const inputFile = useRef(null);
   const [receipts, setReceipts] = useState([]);
 
@@ -34,6 +34,7 @@ export default function Receipt(props) {
       for (let i = 0; i < event.target.files.length; i++) {
         list.push({ error: false, file: event.target.files[i] });
       }
+      console.log(list);
       setReceipts(list);
     }
   };
@@ -42,29 +43,40 @@ export default function Receipt(props) {
   };
 
   const mobileView = () => {
-    return (
-      <Grid
-        container
-        justify="center"
-        alignItems="center"
-        style={{ marginTop: 30 }}
-      >
-        <Grid item>
-          <Button onClick={handleClick} variant="outlined" color="secondary">
-            <input
-              multiple
-              type="file"
-              accept=".png, .jpg, .jpeg"
-              id="file"
-              onChange={handleImageChange}
-              ref={inputFile}
-              style={{ display: "none" }}
-            ></input>
-            Selecione arquivos
-          </Button>
+    if (receipts.length == 0)
+      return (
+        <Grid
+          container
+          justify="center"
+          alignItems="center"
+          style={{ marginTop: 30 }}
+        >
+          <Grid item>
+            <Button onClick={handleClick} variant="outlined" color="secondary">
+              <input
+                multiple
+                type="file"
+                accept=".png, .jpg, .jpeg"
+                id="file"
+                onChange={handleImageChange}
+                ref={inputFile}
+                style={{ display: "none" }}
+              ></input>
+              Selecione arquivos
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
-    );
+      );
+    else
+      return (
+        <Grid item container direction="column" style={{ height: "40vh" }}>
+          <ConfirmReceipt
+            receipts={receipts}
+            idHired={idHired}
+            idManager={idManager}
+          />
+        </Grid>
+      );
   };
 
   useEffect(() => {
@@ -121,7 +133,11 @@ export default function Receipt(props) {
                 direction="column"
                 style={{ height: "40vh" }}
               >
-                <ConfirmReceipt receipts={receipts} />
+                <ConfirmReceipt
+                  receipts={receipts}
+                  idHired={idHired}
+                  idManager={idManager}
+                />
               </Grid>
             )}
           </FileDrop>
