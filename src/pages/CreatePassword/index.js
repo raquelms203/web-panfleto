@@ -26,13 +26,13 @@ export default function CreatePassword(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true);
     let errorValidate = validatePassword(password, password2.value);
     if (errorValidate !== "") {
       setPassword("");
       setPassword2({ value: "", error: errorValidate });
       return;
     }
+    setLoading(true);
     setPassword2({ value: password2.value, error: "" });
 
     if (type === "admin") type = "administrator";
@@ -74,14 +74,21 @@ export default function CreatePassword(props) {
   if (tokenValid === undefined) return <Loading />;
   else
     return tokenValid ? (
-      <Container>
-        <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
+        <Container
+          container
+          justify="center"
+          alignItems="center"
+          style={{ padding: 10 }}
+        >
           <Grid
+            item
             container
             direction="column"
             justify="center"
-            alignItems="center"
+            alignItems="stretch"
             spacing={2}
+            style={{ maxWidth: 350 }}
           >
             <div style={{ height: 20 }}></div>
             <Grid item xs sm md>
@@ -90,7 +97,7 @@ export default function CreatePassword(props) {
               </RoundedDiv>
             </Grid>
             <Grid item xs sm md>
-              <h2>Cadastre a sua senha</h2>
+              <h2 style={{ textAlign: "center" }}>Cadastre a sua senha</h2>
             </Grid>
             <Grid item xs sm md>
               <p>
@@ -101,7 +108,8 @@ export default function CreatePassword(props) {
             <div style={{ height: 10 }}></div>
             <Grid item xs sm md>
               <TextField
-                style={{ width: 350, background: "white" }}
+                style={{ background: "white" }}
+                fullWidth
                 InputLabelProps={{ shrink: true }}
                 size="small"
                 label="Senha"
@@ -113,7 +121,8 @@ export default function CreatePassword(props) {
             </Grid>
             <Grid item xs sm md>
               <TextField
-                style={{ width: 350, background: "white" }}
+                style={{ background: "white" }}
+                fullWidth
                 InputLabelProps={{ shrink: true }}
                 size="small"
                 type="password"
@@ -138,18 +147,22 @@ export default function CreatePassword(props) {
                 </Grid>
               </Grid>
             ) : (
-              <StyledButton
-                type="submit"
-                variant="contained"
-                color="secondary"
-                style={{ color: "white" }}
-              >
-                SALVAR
-              </StyledButton>
+              <Grid item xs xm md container justify="center">
+                <Grid item>
+                  <StyledButton
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    style={{ color: "white" }}
+                  >
+                    SALVAR
+                  </StyledButton>
+                </Grid>
+              </Grid>
             )}
           </Grid>
-        </form>
-      </Container>
+        </Container>
+      </form>
     ) : (
       <ErrorPage
         title="Token expirado ou não existe"

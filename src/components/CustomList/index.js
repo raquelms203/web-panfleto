@@ -23,6 +23,7 @@ export default function CustomList(props) {
     onCheckChange,
     dropdownNames,
     dropdownOnChange,
+    disableCheckBox,
   } = props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -37,7 +38,12 @@ export default function CustomList(props) {
 
   if (list === undefined)
     return (
-      <Grid container justify="center" alignItems="center" style={{ marginTop: 20 }}>
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        style={{ marginTop: 20 }}
+      >
         <CircularProgress />
       </Grid>
     );
@@ -68,13 +74,15 @@ export default function CustomList(props) {
                 selected={indexSelected === indexList}
                 onClick={(event) => onClick(event, indexList)}
               >
-                <Checkbox
-                  edge="start"
-                  disableRipple
-                  onChange={(event, value) => {
-                    onCheckChange(event, value, indexList);
-                  }}
-                />
+                {disableCheckBox ? undefined : (
+                  <Checkbox
+                    edge="start"
+                    disableRipple
+                    onChange={(event, value) => {
+                      onCheckChange(event, value, indexList);
+                    }}
+                  />
+                )}
                 <Grid
                   container
                   alignItems="center"

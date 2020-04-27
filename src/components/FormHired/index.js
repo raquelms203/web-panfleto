@@ -22,7 +22,7 @@ export default function FormHired(props) {
   const history = useHistory();
   const {
     cities,
-    manager,
+    managerId,
     onClose,
     viewHired,
     onCancel,
@@ -70,7 +70,7 @@ export default function FormHired(props) {
 
   const validateDocument = async () => {
     await apiADM
-      .post(`/hired/${viewHired.id}?managerId=${manager.id}&action=validate`)
+      .post(`/hired/${viewHired.id}?managerId=${managerId}&action=validate`)
       .then((response) => {
         console.log(response);
         toast.success("Contratado validado com sucesso!");
@@ -215,17 +215,17 @@ export default function FormHired(props) {
 
       let p = formatter.format(parseFloat(payment.value));
       values = [
-        { field: "Nome completo:", value: name.value },
+        { field: "Nome completo:", value: name.value},
         { field: "Email:", value: email.value },
         { field: "CPF:", value: CPF.value },
-        { field: "Celular", value: phone.value },
+        { field: "Celular:", value: phone.value },
         { field: "CEP:", value: CEP.value },
         { field: "Cidade:", value: city.value },
         { field: "Rua", value: street.value },
         { field: "Número:", value: number.value },
         { field: "Bairro:", value: district.value },
         { field: "Pagamento:", value: p },
-        { field: "Cargo", value: office.value },
+        { field: "Cargo:", value: office.value},
       ];
 
       if (complement.value.length !== 0)
@@ -248,11 +248,15 @@ export default function FormHired(props) {
     let month = date.toLocaleString("pt-br", { month: "long" });
     let monthFormatted =
       month[0].toUpperCase() + month.substring(1, month.length);
+    let streetFormatted = street.value;
+    if(streetFormatted.substring(0,4).toUpperCase === "RUA") {  
+      streetFormatted.splice(0,4);
+    }
     await apiADM
-      .post(`/hired?managerId=${manager.id}`, {
-        name: name.value,
+      .post(`/hired?managerId=${managerId}`, {
+        name: name.value.toUpperCase(),
         email: email.value,
-        office: office.value,
+        office: office.value.toLowerCase(),
         document: CPF.value,
         payment: payment.value,
         zipCode: CEP.value,
@@ -260,7 +264,7 @@ export default function FormHired(props) {
         day: dayFormatted,
         month: monthFormatted,
         city: city.value,
-        street: street.value,
+        street: streetFormatted,
         district: district.value,
         phone: phone.value,
         urlDocument: "test",
@@ -279,6 +283,8 @@ export default function FormHired(props) {
             },
           }
         );
+        else if (Boolean(error.response) && error.response.status === 409)
+        toast.error("Houve conflito com um contratado já cadastrado!");
         else toast.error("Ocorreu um erro ao criar contratado!");
         console.log(error);
       });

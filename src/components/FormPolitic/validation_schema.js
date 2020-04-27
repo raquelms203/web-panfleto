@@ -1,7 +1,7 @@
-export const validateName = value => {
+export const validateName = (value) => {
   if (value === "") return "Campo obrigatório";
-  else if (!value.match(/^[A-Za-z" "]+$/)) return "Apenas letras permitidas";
   else if (!value.includes(" ")) return "Campo incompleto";
+  else if (!value.match(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/)) return "Apenas letras permitidas";
   else return "";
 };
 

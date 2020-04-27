@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const ButtonDialog = styled.button`
   border: none;
-   background: #f5f3f3;
+   background: white;
    p {  
      font-size: 18px;
    }

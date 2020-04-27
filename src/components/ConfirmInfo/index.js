@@ -19,7 +19,7 @@ export default function ConfirmInfo(props) {
           direction="column"
           spacing={1}
           alignItems="flex-end"
-          style={{ background: "white", padding: "8px 24px" }}
+          style={{ padding: "8px 24px" }}
         >
           <Grid item xs sm md container justify="center">
             <FontField>Confirme as informações:</FontField>

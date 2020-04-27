@@ -1,19 +1,10 @@
 import * as yup from "yup";
 
-// setLocale({
-//   mixed: {
-//     default: 'Não é válido',
-//   },
-//   number: {
-//     min: 'Deve ser maior que ${min}',
-//   },
-// });
-
 export const validationSchema = () => {
   return yup.object().shape({
     name: yup
       .string()
-      .matches(/^[A-Za-z" "]/, "Apenas letras permitidas")
+      .matches(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/, "Apenas letras permitidas")
       .test(
         "sobrenome",
         "Campo incompleto",

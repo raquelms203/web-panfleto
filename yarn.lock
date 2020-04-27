@@ -10392,6 +10392,11 @@ react-file-drop@^3.0.6:
   dependencies:
     prop-types "^15.7.2"
 
+react-image-file-resizer@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/react-image-file-resizer/-/react-image-file-resizer-0.2.3.tgz#ce1f22b053b8ca516a4b7b4a9d799ea74d6449e5"
+  integrity sha512-IyNDL3Ybdq3MI4IIvlb2kw+rF5JCBKExBOx7liphp9Qo+8iiNkkEGMyjoaRFUJcw97GklpWYqAiI9lwopElGOg==
+
 react-input-mask@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/react-input-mask/-/react-input-mask-2.0.4.tgz#9ade5cf8196f4a856dbf010820fe75a795f3eb14"

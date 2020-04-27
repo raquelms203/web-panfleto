@@ -31,9 +31,11 @@ export default function Login() {
         setLoading(false);
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data.userId);
-        localStorage.setItem("email", response.data.email);
+        localStorage.setItem("isLogged", true);
         localStorage.setItem("username", response.data.username);
+        if(response.data.userType === "admin")
         history.push("/dashboard");
+        else history.push("/dashboard-gestor");
       })
       .catch(function (error) {
         setLoading(false);

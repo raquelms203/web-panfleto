@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { FileDrop } from "react-file-drop";
 import { isMobile } from "react-device-detect";
-
+import Resizer from "react-image-file-resizer";
 import "./styles.css";
 import { apiADM } from "../../services/api";
 import { FontButton, StyledButton } from "../FormHired/styles";
@@ -52,6 +52,18 @@ export default function Receipt(props) {
   const sendReceipts = async (event) => {
     event.preventDefault();
     for (let i = 0; i < receipts.length; i++) {
+      Resizer.imageFileResizer(
+        receipts[i].file,
+        400,
+        400,
+        "PNG",
+        100,
+        0,
+        (uri) => {
+          console.log(uri);
+        },
+        "base64"
+      );
       let fd = new FormData();
       fd.append("file", receipts[i].file);
       await apiADM
@@ -61,7 +73,7 @@ export default function Receipt(props) {
           },
         })
         .then((response) => {
-          toast.success("Comprovante(s) adicionado com sucesso!");
+          toast.success("Comprovante adicionado com sucesso!");
         })
         .catch((error) => {
           if (Boolean(error.response) && error.response.status === 401)
@@ -75,7 +87,7 @@ export default function Receipt(props) {
             );
           else if (Boolean(error.response) && error.response.status === 400) {
             toast.error("Erro. É necessário assinar e validar antes.");
-          } else toast.error("Ocorreu um erro ao enviar email!");
+          } else toast.error("Ocorreu um erro ao adicionar comprovante!");
         });
     }
     onBack();
@@ -103,52 +115,53 @@ export default function Receipt(props) {
   };
 
   const mobileView = () => {
-      return (
-        <Grid
-          container
-          direction="column"
-          alignItems="center"
-          style={{ marginTop: 30 }}
-        >
+    return (
+      <Grid
+        container
+        direction="column"
+        alignItems="center"
+        spacing={2}
+        style={{ marginTop: 30 }}
+      >
+        <Grid item>
+          <Button onClick={handleClick} variant="outlined" color="secondary">
+            <input
+              multiple
+              type="file"
+              accept=".png, .jpg, .jpeg"
+              id="file"
+              onChange={handleImageChange}
+              ref={inputFile}
+              style={{ display: "none" }}
+            ></input>
+            Selecione arquivos
+          </Button>
+        </Grid>
+        <Grid item container direction="row" justify="flex-end" spacing={2}>
           <Grid item>
-            <Button onClick={handleClick} variant="outlined" color="secondary">
-              <input
-                multiple
-                type="file"
-                accept=".png, .jpg, .jpeg"
-                id="file"
-                onChange={handleImageChange}
-                ref={inputFile}
-                style={{ display: "none" }}
-              ></input>
-              Selecione arquivos
+            <Button
+              size="large"
+              style={{ background: "#958a94", color: "white" }}
+              onClick={() => onBack()}
+            >
+              Voltar
             </Button>
           </Grid>
-          <Grid item container direction="row" justify="flex-end" spacing={2}>
-            <Grid item>
-              <Button
-                size="large"
-                style={{ background: "#958a94", color: "white" }}
-                onClick={() => onBack()}
-              >
-                Voltar
-              </Button>
-            </Grid>
-            <Grid item>
-              <StyledButton
-                style={{ marginRight: 16 }}
-                disabled={hasError || receipts.length === 0}
-                type="submit"
-                variant="contained"
-                size="large"
-                color="secondary"
-              >
-                <FontButton>SALVAR</FontButton>
-              </StyledButton>
-            </Grid>
+          <Grid item>
+            <StyledButton
+              style={{ marginRight: 16 }}
+              disabled={hasError || receipts.length === 0}
+              onClick={sendReceipts}
+              variant="contained"
+              size="large"
+              color="secondary"
+            >
+              <FontButton>SALVAR</FontButton>
+            </StyledButton>
           </Grid>
         </Grid>
-      );
+      </Grid>
+    );
   };
 
   useEffect(() => {
@@ -166,109 +179,115 @@ export default function Receipt(props) {
       {isMobile ? (
         mobileView()
       ) : (
-        <div className="drag">
-          <FileDrop onDrop={handleImageDrop}>
-            {receipts.length === 0 ? (
-              <Grid
-                container
-                direction="column"
-                style={{ height: "40vh" }}
-                justify="center"
-                alignItems="center"
-                spacing={2}
-              >
-                <Grid item>Arraste as imagens aqui</Grid>
-                <Grid item>ou</Grid>
-                <Grid item>
-                  <Button
-                    onClick={handleClick}
-                    variant="outlined"
-                    color="secondary"
-                  >
-                    <input
-                      multiple
-                      type="file"
-                      accept=".png, .jpg, .jpeg"
-                      id="file"
-                      onChange={handleImageChange}
-                      ref={inputFile}
-                      style={{ display: "none" }}
-                    ></input>
-                    Selecione arquivos
-                  </Button>
+        <>
+          <div className="drag">
+            <FileDrop onDrop={handleImageDrop}>
+              {receipts.length === 0 ? (
+                <Grid
+                  container
+                  direction="column"
+                  style={{ height: "40vh" }}
+                  justify="center"
+                  alignItems="center"
+                  spacing={2}
+                >
+                  <Grid item>Arraste as imagens aqui</Grid>
+                  <Grid item>ou</Grid>
+                  <Grid item>
+                    <Button
+                      onClick={handleClick}
+                      variant="outlined"
+                      color="secondary"
+                    >
+                      <input
+                        multiple
+                        type="file"
+                        accept=".png, .jpg, .jpeg"
+                        id="file"
+                        onChange={handleImageChange}
+                        ref={inputFile}
+                        style={{ display: "none" }}
+                      ></input>
+                      Selecione arquivos
+                    </Button>
+                  </Grid>
                 </Grid>
-              </Grid>
-            ) : (
-              <Grid
-                container
-                direction="column"
-                justify="space-between"
-                alignItems="stretch"
-                style={{ height: "40vh" }}
-              >
-                <Grid item>
-                  <List
-                    dense
-                    component="nav"
-                    style={{ marginLeft: 8, maxHeight: 220, overflowY: "auto" }}
-                  >
-                    {receipts.map((item, index) => (
-                      <Grid item container alignItems="baseline" key={index}>
-                        <p
-                          className="font-list"
-                          style={{ color: item.error ? "red" : "black" }}
-                        >
-                          {item.file.name}
-                        </p>
-                        {item.error ? (
+              ) : (
+                <Grid
+                  container
+                  direction="column"
+                  justify="space-between"
+                  alignItems="stretch"
+                  style={{ height: "40vh" }}
+                >
+                  <Grid item>
+                    <List
+                      dense
+                      component="nav"
+                      style={{
+                        marginLeft: 8,
+                        maxHeight: 220,
+                        overflowY: "auto",
+                      }}
+                    >
+                      {receipts.map((item, index) => (
+                        <Grid item container alignItems="baseline" key={index}>
                           <p
                             className="font-list"
-                            style={{ color: "red", marginLeft: 5 }}
+                            style={{ color: item.error ? "red" : "black" }}
                           >
-                            (formato não suportado)
+                            {item.file.name}
                           </p>
-                        ) : undefined}
-                        <Button
-                          size="small"
-                          onClick={(event) => {
-                            removeReceipt(event, item);
-                          }}
-                        >
-                          X
-                        </Button>
-                      </Grid>
-                    ))}
-                  </List>
+                          {item.error ? (
+                            <p
+                              className="font-list"
+                              style={{ color: "red", marginLeft: 5 }}
+                            >
+                              (formato não suportado)
+                            </p>
+                          ) : undefined}
+                          <Button
+                            size="small"
+                            onClick={(event) => {
+                              removeReceipt(event, item);
+                            }}
+                          >
+                            X
+                          </Button>
+                        </Grid>
+                      ))}
+                    </List>
+                  </Grid>
                 </Grid>
-              </Grid>
-            )}
-          </FileDrop>
-        </div>
+              )}
+            </FileDrop>
+          </div>
+          <div style={{ height: 16 }}></div>
+          <Grid container direction="row" justify="flex-end" spacing={2}>
+            <Grid item>
+              <Button
+                size="large"
+                style={{ background: "#958a94", color: "white" }}
+                onClick={() => onBack()}
+              >
+                Voltar
+              </Button>
+            </Grid>
+            <Grid item>
+              <StyledButton
+                style={{ marginRight: 16 }}
+                disabled={hasError || receipts.length === 0}
+                onClick={sendReceipts}
+                variant="contained"
+                size="large"
+                color="secondary"
+              >
+                <FontButton>SALVAR</FontButton>
+              </StyledButton>
+            </Grid>
+          </Grid>
+        </>
       )}
-      <div style={{ height: 16 }}></div>
-      <Grid container direction="row" justify="flex-end" spacing={2}>
-        <Grid item>
-          <Button
-            size="large"
-            style={{ background: "#958a94", color: "white" }}
-            onClick={() => onBack()}
-          >
-            Voltar
-          </Button>
-        </Grid>
-        <Grid item>
-          <StyledButton
-            style={{ marginRight: 16 }}
-            disabled={hasError || receipts.length === 0}
-            onClick={sendReceipts}
-            variant="contained"
-            size="large"
-            color="secondary"
-          >
-            <FontButton>SALVAR</FontButton>
-          </StyledButton>
-        </Grid>
-      </Grid>
     </>
   );
 }

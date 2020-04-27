@@ -503,9 +503,7 @@ export default function Dashboard() {
       })
       .catch((error) => {
         if (Boolean(error.response) && error.response.status === 400) {
-          toast.error(
-            "Erro. É necessário assinar e validar antes."
-          );
+          toast.error("Erro. É necessário assinar e validar antes.");
         } else if (Boolean(error.response) && error.response.status === 401)
           toast.info(
             "Após 1h a sessão expira. Você será redirecionado para a página de login.",
@@ -563,7 +561,8 @@ export default function Dashboard() {
     return `Código gerado às ${d}. Válido até ${nextTime}.`;
   };
 
-  useEffect(() => {
+   useEffect(() => {
+    console.log("in", localStorage.getItem("isLogged"));
     fetchPolitics();
     fetchCities();
     onOrientationChange();
@@ -581,7 +580,12 @@ export default function Dashboard() {
       window.removeEventListener("orientationchange", onOrientationChange);
   }, [listener, onOrientationChange]);
 
-  if (!politics) return <Loading />;
+
+  if(localStorage.length === 0) {  
+    history.push("/");
+    return null;
+  }
+  else if (!politics) return <Loading />;
   else if (politics) {
     if (isLessThan500) return <SmallScreenAlert />;
     else {
@@ -614,6 +618,8 @@ export default function Dashboard() {
                   >
                     <MenuItem
                       onClick={() => {
+                        localStorage.clear();
+                        history.push("/");
                         setAnchorEl(null);
                       }}
                     >
@@ -978,7 +984,7 @@ export default function Dashboard() {
                         ].group.toUpperCase()}) ${
                           politics[indexPolitic].name.split(" ")[0]
                         } | ${managers[indexManager].name.split(" ")[0]}`}
-                        manager={managers[indexManager]}
+                        managerId={managers[indexManager].id}
                         cities={cities}
                         onClose={async () => {
                           setListener(true);

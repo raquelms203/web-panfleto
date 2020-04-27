@@ -43,7 +43,7 @@ export default function FormManager(props) {
   const sendManager = async (values) => {
     await apiADM
       .post(`/manager?politicId=${politic.id}`, {
-        name: values.name,
+        name: values.name.toUpperCase(),
         email: values.email,
         document: values.cpf,
       })
@@ -60,7 +60,9 @@ export default function FormManager(props) {
               },
             }
           );
-        else toast.error("Ocorreu um erro ao criar campanha!");
+          else if (Boolean(error.response) && error.response.status === 409)
+          toast.error("Houve conflito com um gestor já cadastrado!");
+        else toast.error("Ocorreu um erro ao criar gestor!");
       });
     onClose();
   };

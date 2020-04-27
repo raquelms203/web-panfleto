@@ -17,7 +17,7 @@ export default function ErrorPage(props) {
         container
         justify="center"
         alignItems="center"
-        spacing={4}
+        spacing={2}
       
       >
         <Grid
@@ -25,11 +25,12 @@ export default function ErrorPage(props) {
           container
           direction="column"
           justify="center"
+          spacing={2}
           alignItems="center"
           item
           xs={12}
           sm={12}
-          md={5}
+          md={6}
           lg={6}
           style={{ background: "white", minHeight: "99vh" }}
         >
@@ -40,8 +41,8 @@ export default function ErrorPage(props) {
             <Message>{message}</Message>
           </Grid>
         </Grid>
-        <Grid item container justify="flex-end" xs={12} sm={12} md={7} lg={6}>
-          <img src={file} alt=""></img>
+        <Grid item container justify="center" xs={12} sm={12} md={6} lg={6}>
+          <img src={file} style={{ height: 400, width: 400 }} alt=""></img>
         </Grid>
       </Container>
     </Grid>

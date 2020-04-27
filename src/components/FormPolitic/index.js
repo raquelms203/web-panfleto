@@ -67,7 +67,7 @@ export default function FormHired(props) {
     if (editPolitic === undefined) {
       await apiADM
         .post(`/politic?adminId=${localStorage.getItem("userId")}`, {
-          name: name.value,
+          name: name.value.toUpperCase(),
           document: CPF.value,
           type: typeNumber,
           group: group.value,
@@ -91,6 +91,8 @@ export default function FormHired(props) {
                 },
               }
             );
+            else if (Boolean(error.response) && error.response.status === 409)
+            toast.error("Houve conflito com um político já cadastrado!");
           else toast.error("Ocorreu um erro ao criar campanha!");
           console.log(error);
         });
