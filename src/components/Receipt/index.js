@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Grid, Button, List } from "@material-ui/core";
+import { Grid, Button, List, CircularProgress } from "@material-ui/core";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { FileDrop } from "react-file-drop";
@@ -15,6 +15,7 @@ export default function Receipt(props) {
   const history = useHistory();
   const inputFile = useRef(null);
   const [receipts, setReceipts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleImageDrop = (files, event) => {
     let list = [...receipts];
@@ -52,13 +53,14 @@ export default function Receipt(props) {
 
   const sendReceipts = async (event) => {
     event.preventDefault();
+    setLoading(true);
     for (let i = 0; i < receipts.length; i++) {
-      var archive;
-      var list = [];
+      let archive;
+      let list = [];
       Resizer.imageFileResizer(
         receipts[i].file,
-        400,
-        400,
+        600,
+        600,
         "PNG",
         100,
         0,
@@ -92,15 +94,13 @@ export default function Receipt(props) {
                 Boolean(error.response) &&
                 error.response.status === 400
               ) {
-                if (
-                  error.response.data.message ===
-                  "Invalid file"
-                )
-                  toast.error("Erro ao enviar imagem!");
+                if (error.response.data.message === "Invalid file")
+                  toast.error("Erro. Imagem precisa ser .PNG e até 1 MB.");
                 else toast.error("Erro. É necessário assinar e validar antes.");
               } else toast.error("Ocorreu um erro ao adicionar comprovante!");
             });
           onBack();
+          setLoading(false);
           return;
         },
         "blob"
@@ -162,16 +162,29 @@ export default function Receipt(props) {
             </Button>
           </Grid>
           <Grid item>
-            <StyledButton
-              style={{ marginRight: 16 }}
-              disabled={hasError || receipts.length === 0}
-              onClick={sendReceipts}
-              variant="contained"
-              size="large"
-              color="secondary"
-            >
-              <FontButton>SALVAR</FontButton>
-            </StyledButton>
+            {loading ? (
+              <Grid container justify="center">
+                <Grid item>
+                  <CircularProgress size={35} />
+                </Grid>
+              </Grid>
+            ) : (
+              <StyledButton
+                style={{ marginRight: 16 }}
+                disabled={hasError || receipts.length === 0}
+                onClick={sendReceipts}
+                variant="contained"
+                size="large"
+                color="secondary"
+              >
+                <FontButton>SALVAR</FontButton>
+              </StyledButton>
+            )}
+            <Grid item>
+              <p style={{ fontSize: 12, marginTop: 10 }}>
+                (.PNG com tamanho até 1MB)
+              </p>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -214,7 +227,6 @@ export default function Receipt(props) {
                       color="secondary"
                     >
                       <input
-                        multiple
                         type="file"
                         accept=".png"
                         id="file"
@@ -295,16 +307,24 @@ export default function Receipt(props) {
               </Button>
             </Grid>
             <Grid item>
-              <StyledButton
-                style={{ marginRight: 16 }}
-                disabled={hasError || receipts.length === 0}
-                onClick={sendReceipts}
-                variant="contained"
-                size="large"
-                color="secondary"
-              >
-                <FontButton>SALVAR</FontButton>
-              </StyledButton>
+              {loading ? (
+                <Grid container justify="center">
+                  <Grid item>
+                    <CircularProgress size={35} />
+                  </Grid>
+                </Grid>
+              ) : (
+                <StyledButton
+                  style={{ marginRight: 16 }}
+                  disabled={hasError || receipts.length === 0}
+                  onClick={sendReceipts}
+                  variant="contained"
+                  size="large"
+                  color="secondary"
+                >
+                  <FontButton>SALVAR</FontButton>
+                </StyledButton>
+              )}
             </Grid>
           </Grid>
         </>

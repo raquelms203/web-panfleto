@@ -21,7 +21,6 @@ export default function ErrorPage(props) {
       
       >
         <Grid
-          item
           container
           direction="column"
           justify="center"

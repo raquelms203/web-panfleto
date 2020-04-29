@@ -13,10 +13,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { useHistory } from "react-router-dom";
 import {
-  StyledGrid,
-  Separator,
   Subtitle,
-  LabelFilter,
   Footer,
   Logo,
   FontButton,
@@ -27,7 +24,6 @@ import {
 import SmallScreenAlert from "../SmallScreenAlert";
 import ActionButton from "../../components/ActionButton";
 import CustomList from "../../components/CustomList";
-import DropdownPolitics from "../../components/DropdownPolitics";
 import FormHired from "../../components/FormHired/index";
 import Loading from "../../components/Loading";
 import { apiADM, apiCities } from "../../services/api";
@@ -85,7 +81,7 @@ export default function DashManager(props) {
           } else toast.error("Ocorreu um erro ao carregar os dados!");
         });
     },
-    [setHireds]
+    [setHireds, history]
   );
 
   const onOrientationChange = useCallback(() => {
@@ -99,7 +95,7 @@ export default function DashManager(props) {
       setIsLessThan500(false);
       return;
     }
-  }, [setIsLessThan500, listener]);
+  }, [setIsLessThan500]);
 
   const fetchTokenHired = async () => {
     let token = "";
@@ -107,7 +103,7 @@ export default function DashManager(props) {
       .get(
         `/hired/${hireds[indexHired].id}?managerId=${localStorage.getItem(
           "userId"
-        )}` + `&action=new-token`
+        )}&action=new-token`
       )
       .then((response) => {
         token = response.data.token;

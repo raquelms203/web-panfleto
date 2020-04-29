@@ -2,7 +2,6 @@ import React from "react";
 import { Grid, Button, Divider } from "@material-ui/core";
 
 import { FontField, FontValue } from "./styles";
-import { StyledButton } from "../FormHired/styles";
 
 export default function ConfirmInfo(props) {
   const { info, onClick, onBack } = props;

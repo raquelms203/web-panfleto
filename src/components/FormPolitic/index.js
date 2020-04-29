@@ -10,7 +10,6 @@ import {
   Container,
   StyledTextField,
   StyledButton,
-  Title,
   FontButton,
 } from "../FormHired/styles";
 import { StyledFormHelperText } from "../DropdownPolitics/styles";
@@ -96,7 +95,7 @@ export default function FormHired(props) {
                 },
               }
             );
-            else if (Boolean(error.response) && error.response.status === 409)
+          else if (Boolean(error.response) && error.response.status === 409)
             toast.error("Houve conflito com um político já cadastrado!");
           else toast.error("Ocorreu um erro ao criar campanha!");
           console.log(error);
@@ -104,17 +103,22 @@ export default function FormHired(props) {
       onClose();
     } else {
       await apiADM
-        .put(`/politic/${editPolitic.id}?adminId=${localStorage.getItem("userId")}`, {
-          name: name.value,
-          document: CPF.value,
-          type: typeNumber,
-          group: group.value,
-          zipcode: CEP.value,
-          city: city.value,
-          street: street.value,
-          number: number.value + " " + complement.value,
-          district: district.value,
-        })
+        .put(
+          `/politic/${editPolitic.id}?adminId=${localStorage.getItem(
+            "userId"
+          )}`,
+          {
+            name: name.value,
+            document: CPF.value,
+            type: typeNumber,
+            group: group.value,
+            zipcode: CEP.value,
+            city: city.value,
+            street: street.value,
+            number: number.value + " " + complement.value,
+            district: district.value,
+          }
+        )
         .then((response) => {
           toast.success("Campanha editada com sucesso!");
         })
@@ -255,6 +259,7 @@ export default function FormHired(props) {
       setGroup({ value: editPolitic.group, error: "" });
     }
   }, [
+    editPolitic,
     setName,
     setCPF,
     setCEP,
@@ -262,7 +267,8 @@ export default function FormHired(props) {
     setStreet,
     setNumber,
     setComplement,
-    setDistrict.setType,
+    setDistrict,
+    setType,
     setGroup,
     setVisibleButtonPolitic,
     setVisibleButtonCity,

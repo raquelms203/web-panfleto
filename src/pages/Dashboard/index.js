@@ -115,7 +115,7 @@ export default function Dashboard() {
           } else toast.error("Ocorreu um erro ao carregar os dados!");
         });
     },
-    [setHireds]
+    [setHireds, history]
   );
 
   const fetchManagers = useCallback(
@@ -154,7 +154,7 @@ export default function Dashboard() {
           console.log(error);
         });
     },
-    [setManagers]
+    [setManagers, fetchHireds, history]
   );
 
   const fetchPolitics = useCallback(async () => {
@@ -198,7 +198,7 @@ export default function Dashboard() {
         } else toast.error("Ocorreu um erro ao carregar os dados!");
         console.log(error);
       });
-  }, [history, setPolitics, fetchManagers, fetchHireds, managers]);
+  }, [history, setPolitics, fetchManagers]);
 
   const onOrientationChange = useCallback(() => {
     if (window.screen.availWidth < 500) {
@@ -211,7 +211,7 @@ export default function Dashboard() {
       setIsLessThan500(false);
       return;
     }
-  }, [setIsLessThan500, listener]);
+  }, [setIsLessThan500]);
 
   const fetchTokenPolitic = async () => {
     let token = "";
@@ -219,7 +219,7 @@ export default function Dashboard() {
       .get(
         `/politic/${politics[indexPolitic].id}?adminId=${localStorage.getItem(
           "userId"
-        )}` + `&action=new-token`
+        )}action=new-token`
       )
       .then((response) => {
         token = response.data.token;
@@ -517,27 +517,7 @@ export default function Dashboard() {
       });
   };
 
-  const sendPassword = async () => {
-    await apiADM
-      .get(
-        `/manager/${managers[indexManager].id}?politicId=${politics[indexPolitic].id}&action=new-token`
-      )
-      .then(() => {
-        toast.success("Email enviado para o gestor com sucesso!");
-      })
-      .catch((error) => {
-        if (Boolean(error.response) && error.response.status === 401)
-          toast.info(
-            "Após 1h a sessão expira. Você será redirecionado para a página de login.",
-            {
-              onClose: function () {
-                history.push("/");
-              },
-            }
-          );
-        else toast.error("Ocorreu um erro ao enviar email!");
-      });
-  };
+ 
 
   const expiresToken = () => {
     let d = new Date().toLocaleTimeString("pt-br", {
@@ -832,15 +812,13 @@ export default function Dashboard() {
                 indexSelected={indexManager}
                 list={managers}
                 onCheckChange={handleCheckChangeManager}
-                dropdownNames={["Detalhes", "Recuperar senha"]}
+                dropdownNames={["Detalhes"]}
                 dropdownOnChange={[
                   () => {
                     setOpenDialogAddManager({ open: true, action: "edit" });
                     setListener(false);
                   },
-                  async () => {
-                    await sendPassword();
-                  },
+                
                 ]}
               />
               {politics.length === 0 ? (

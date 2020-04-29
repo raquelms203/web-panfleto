@@ -76,7 +76,7 @@ export default function FormManager(props) {
       });
       setIsEdit(true);
     }
-  }, [setInitialValues, setIsEdit]);
+  }, [setInitialValues, setIsEdit, viewManager]);
 
   useEffect(() => {
     initValues();

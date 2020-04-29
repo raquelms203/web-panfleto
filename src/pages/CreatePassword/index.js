@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Grid, TextField, CircularProgress } from "@material-ui/core";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { apiADM } from "../../services/api";
 import axios from "axios";
