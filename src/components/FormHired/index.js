@@ -296,7 +296,7 @@ export default function FormHired(props) {
             }
           );
         else if (Boolean(error.response) && error.response.status === 409)
-          toast.error("Houve conflito com um contratado já cadastrado!");
+          toast.error("Houve conflito com um usuário já cadastrado!");
         else toast.error("Ocorreu um erro ao criar contratado!");
         console.log(error);
       });

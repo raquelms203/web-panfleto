@@ -61,7 +61,7 @@ export default function FormManager(props) {
             }
           );
           else if (Boolean(error.response) && error.response.status === 409)
-          toast.error("Houve conflito com um gestor já cadastrado!");
+          toast.error("Houve conflito com um usuário já cadastrado!");
         else toast.error("Ocorreu um erro ao criar gestor!");
       });
     onClose();

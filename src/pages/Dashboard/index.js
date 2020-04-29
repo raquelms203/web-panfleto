@@ -200,6 +200,28 @@ export default function Dashboard() {
       });
   }, [history, setPolitics, fetchManagers]);
 
+  const sendEmailManager = async () => {
+    await apiADM
+      .get(
+        `/manager/${managers[indexManager].id}?politicId=${politics[indexPolitic].id}&action=new-token`
+      )
+      .then(() => {
+        toast.success("Email enviado para o gestor com sucesso!");
+      })
+      .catch((error) => {
+        if (Boolean(error.response) && error.response.status === 401)
+          toast.info(
+            "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+            {
+              onClose: function () {
+                history.push("/");
+              },
+            }
+          );
+        else toast.error("Ocorreu um erro ao enviar email!");
+      });
+  };
+
   const onOrientationChange = useCallback(() => {
     if (window.screen.availWidth < 500) {
       setIsLessThan500(true);
@@ -812,13 +834,15 @@ export default function Dashboard() {
                 indexSelected={indexManager}
                 list={managers}
                 onCheckChange={handleCheckChangeManager}
-                dropdownNames={["Detalhes"]}
+                dropdownNames={["Detalhes", "Reenviar email cadastro"]}
                 dropdownOnChange={[
                   () => {
                     setOpenDialogAddManager({ open: true, action: "edit" });
                     setListener(false);
                   },
-                
+                  async () => {
+                    await sendEmailManager();
+                  },
                 ]}
               />
               {politics.length === 0 ? (
