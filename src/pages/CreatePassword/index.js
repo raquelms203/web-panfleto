@@ -3,9 +3,9 @@ import { Grid, TextField, CircularProgress } from "@material-ui/core";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 import { apiADM } from "../../services/api";
-import axios from "axios";
 import { validatePassword } from "./validationSchema";
 import { StyledButton, Container } from "../../components/FormHired/styles";
 import Logo from "../../assets/logo.svg";
@@ -43,11 +43,12 @@ export default function CreatePassword(props) {
       })
       .then((response) => {
         toast.success(
-          "Senha criada com sucesso!\nVocê será redirecionado para a tela de login.",
+          "Sucesso!\nVocê será redirecionado para a tela de login.",
           {
             onClose: function () {
               history.push("/");
             },
+            autoClose: 4000,
           }
         );
       })
@@ -59,13 +60,13 @@ export default function CreatePassword(props) {
 
   const verifyToken = useCallback(async () => {
     await axios
-      .get(`https://econtracts.herokuapp.com/token/is-valid-token/${token}`)
+      .get(`http://64.225.27.98/token/is-valid-token/${token}`, {
+        headers: { "key": `${process.env.REACT_APP_KEY}` },
+      })
       .then(function (response) {
         setTokenValid(response.data.isValidToken);
       })
-      .catch(function (error) {
-        console.log(error);
-      });
+      .catch(function (error) {console.log(error)});
   }, [setTokenValid, token]);
 
   useEffect(() => {

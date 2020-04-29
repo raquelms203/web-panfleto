@@ -162,7 +162,6 @@ export default function DashManager(props) {
     if (listener)
       window.addEventListener("orientationchange", onOrientationChange);
     else {
-      console.log("remove");
       window.removeEventListener("orientationchange", onOrientationChange);
     }
 

@@ -1,10 +1,10 @@
 import React from "react";
 
-import { Grid } from "@material-ui/core";
+import { Grid, Tooltip } from "@material-ui/core";
 import { Add, Delete } from "@material-ui/icons";
 
 export default function ActionButton(props) {
-  const { onClicks, remove } = props;
+  const { onClicks, remove, disabledAdd, overType } = props;
 
   return (
     <Grid container direction="row-reverse">
@@ -20,12 +20,20 @@ export default function ActionButton(props) {
       ) : undefined}
       <div style={{ width: "15px" }}></div>
       <Grid item>
-        <button
-          style={{ border: "none", color: "green" }}
-          onClick={() => onClicks[0]()}
-        >
-          <Add></Add>
-        </button>
+        {disabledAdd ? (
+          <Tooltip title={`Cadastre ${overType} antes!`}>
+            <button style={{ border: "none", color: "grey" }} disabled>
+              <Add />
+            </button>
+          </Tooltip>
+        ) : (
+          <button
+            style={{ border: "none", color: "green" }}
+            onClick={() => onClicks[0]()}
+          >
+            <Add />
+          </button>
+        )}
       </Grid>
     </Grid>
   );

@@ -151,7 +151,6 @@ export default function Dashboard() {
               }
             );
           } else toast.error("Ocorreu um erro ao carregar os dados!");
-          console.log(error);
         });
     },
     [setManagers, fetchHireds, history]
@@ -196,7 +195,6 @@ export default function Dashboard() {
             }
           );
         } else toast.error("Ocorreu um erro ao carregar os dados!");
-        console.log(error);
       });
   }, [history, setPolitics, fetchManagers]);
 
@@ -453,7 +451,6 @@ export default function Dashboard() {
               }
             );
           else toast.error("Ocorreu um erro ao carregar os dados!");
-          console.log(error);
         });
 
       setPolitics(list);
@@ -539,8 +536,6 @@ export default function Dashboard() {
       });
   };
 
- 
-
   const expiresToken = () => {
     let d = new Date().toLocaleTimeString("pt-br", {
       hour12: false,
@@ -563,7 +558,7 @@ export default function Dashboard() {
     return `Código gerado às ${d}. Válido até ${nextTime}.`;
   };
 
-   useEffect(() => {
+  useEffect(() => {
     fetchPolitics();
     fetchCities();
     onOrientationChange();
@@ -574,7 +569,6 @@ export default function Dashboard() {
     if (listener)
       window.addEventListener("orientationchange", onOrientationChange);
     else {
-      console.log("remove");
       window.removeEventListener("orientationchange", onOrientationChange);
     }
 
@@ -582,12 +576,10 @@ export default function Dashboard() {
       window.removeEventListener("orientationchange", onOrientationChange);
   }, [listener, onOrientationChange]);
 
-
-  if(localStorage.length === 0) {  
+  if (localStorage.length === 0) {
     history.push("/");
     return null;
-  }
-  else if (!politics) return <Loading />;
+  } else if (!politics) return <Loading />;
   else if (politics) {
     if (isLessThan500) return <SmallScreenAlert />;
     else {
@@ -658,9 +650,13 @@ export default function Dashboard() {
             <Grid item xs={4} sm={4} md={4}>
               <Grid container alignItems="center" justify="space-between">
                 <Grid item>
-                  <Button onClick={(event) => handleFilterClick(event)}>
-                    <strong>Filtrar</strong>
-                  </Button>
+                  {politics.length > 0 ? (
+                    <Button onClick={(event) => handleFilterClick(event)}>
+                      <strong>Filtrar</strong>
+                    </Button>
+                  ) : (
+                    <div style={{ height: 36 }} />
+                  )}
                   <Dialog
                     onClose={() => {
                       setOpenDialogFilter(false);
@@ -810,12 +806,10 @@ export default function Dashboard() {
               <div style={{ height: 4 }}></div>
               <ActionButton
                 remove={Boolean(checkManager.length > 0)}
+                disabledAdd={!Boolean(politics) || politics.length === 0}
+                overType="campanhas"
                 onClicks={[
                   () => {
-                    if(politics.length === 0) {  
-                      alert("Cadastre campanhas antes de adicionar gestores!");
-                      return;
-                    }
                     setOpenDialogAddManager({ open: true, action: "add" });
                     setListener(false);
                   },
@@ -922,13 +916,11 @@ export default function Dashboard() {
             <Grid item xs={3} sm={3} md={3}>
               <div style={{ height: 4 }}></div>
               <ActionButton
+                disabledAdd={!Boolean(managers) || managers.length === 0}
+                overType="gestores"
                 remove={Boolean(checkHired.length !== 0)}
                 onClicks={[
                   () => {
-                    if(politics.length === 0) {  
-                      alert("Cadastre gestores antes de adicionar gestores!");
-                      return;
-                    }
                     setOpenDialogAddHired({ open: true, action: "add" });
                     setListener(false);
                   },

@@ -43,7 +43,6 @@ export default function Receipt(props) {
           list.push({ error: 2, file: item });
         else list.push({ error: 0, file: item });
       }
-      console.log(list);
       setReceipts(list);
     }
   };
@@ -80,7 +79,7 @@ export default function Receipt(props) {
               toast.success("Comprovante adicionado com sucesso!");
             })
             .catch((error) => {
-              console.log(error);
+              
               if (Boolean(error.response) && error.response.status === 401)
                 toast.info(
                   "Após 1h a sessão expira. Você será redirecionado para a página de login.",

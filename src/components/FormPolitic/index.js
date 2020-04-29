@@ -82,7 +82,6 @@ export default function FormHired(props) {
           district: district.value,
         })
         .then((response) => {
-          console.log(response);
           toast.success("Campanha criada com sucesso!");
         })
         .catch((error) => {
@@ -98,7 +97,7 @@ export default function FormHired(props) {
           else if (Boolean(error.response) && error.response.status === 409)
             toast.error("Houve conflito com um usuário já cadastrado!");
           else toast.error("Ocorreu um erro ao criar campanha!");
-          console.log(error);
+          
         });
       onClose();
     } else {
@@ -133,7 +132,7 @@ export default function FormHired(props) {
               }
             );
           else toast.error("Ocorreu um erro ao editar campanha!");
-          console.log(error);
+          
         });
       onClose();
     }

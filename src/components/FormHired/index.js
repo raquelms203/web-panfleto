@@ -76,7 +76,6 @@ export default function FormHired(props) {
       })
       .catch((error) => {
         if (Boolean(error.response) && error.response.status === 400) {
-          console.log(error.response);
           if (
             error.response.data.message ===
             "Hired signature is required before document validation"
@@ -298,7 +297,6 @@ export default function FormHired(props) {
         else if (Boolean(error.response) && error.response.status === 409)
           toast.error("Houve conflito com um usuário já cadastrado!");
         else toast.error("Ocorreu um erro ao criar contratado!");
-        console.log(error);
       });
     onClose();
   };
@@ -311,7 +309,6 @@ export default function FormHired(props) {
 
   useEffect(() => {
     initValues();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
