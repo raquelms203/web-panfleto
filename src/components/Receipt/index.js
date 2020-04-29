@@ -20,16 +20,14 @@ export default function Receipt(props) {
     let list = [...receipts];
     if (files) {
       for (let i = 0; i < files.length; i++) {
-        if (
-          files[i].type === "image/png" ||
-          files[i].type === "image/jpeg" ||
-          files[i].type === "image/jpg"
-        ) {
-          list.push({ error: false, file: files[i] });
-        } else {
+        let item = files[i];
+        if (files[i].type !== "image/png") {
           setHasError(true);
-          list.push({ error: true, file: files[i] });
-        }
+          list.push({ error: 1, file: files[i] });
+        } else if ((item.size / 1024 / 1024).toFixed(4) > 1) {
+          setHasError(true);
+          list.push({ error: 2, file: files[i] });
+        } else list.push({ error: 0, file: files[i] });
       }
     }
     setReceipts(list);
@@ -39,7 +37,10 @@ export default function Receipt(props) {
     let list = [...receipts];
     if (event.target.files) {
       for (let i = 0; i < event.target.files.length; i++) {
-        list.push({ error: false, file: event.target.files[i] });
+        let item = event.target.files[i];
+        if ((item.size / 1024 / 1024).toFixed(4) > 1)
+          list.push({ error: 2, file: item });
+        else list.push({ error: 0, file: item });
       }
       console.log(list);
       setReceipts(list);
@@ -52,6 +53,8 @@ export default function Receipt(props) {
   const sendReceipts = async (event) => {
     event.preventDefault();
     for (let i = 0; i < receipts.length; i++) {
+      var archive;
+      var list = [];
       Resizer.imageFileResizer(
         receipts[i].file,
         400,
@@ -59,40 +62,51 @@ export default function Receipt(props) {
         "PNG",
         100,
         0,
-        (uri) => {
-          console.log(uri);
+        async (uri) => {
+          list.push(uri);
+          archive = new File(list, receipts[i].file.name, { type: uri.type });
+          let fd = new FormData();
+          fd.append("file", archive);
+          await apiADM
+            .put(`hired/${idHired}?managerId=${idManager}`, fd, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                "Access-Control-Allow-Origin": "*",
+              },
+            })
+            .then((response) => {
+              toast.success("Comprovante adicionado com sucesso!");
+            })
+            .catch((error) => {
+              console.log(error);
+              if (Boolean(error.response) && error.response.status === 401)
+                toast.info(
+                  "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+                  {
+                    onClose: function () {
+                      history.push("/");
+                    },
+                  }
+                );
+              else if (
+                Boolean(error.response) &&
+                error.response.status === 400
+              ) {
+                if (
+                  error.response.data.message ===
+                  "Invalid file"
+                )
+                  toast.error("Erro ao enviar imagem!");
+                else toast.error("Erro. É necessário assinar e validar antes.");
+              } else toast.error("Ocorreu um erro ao adicionar comprovante!");
+            });
+          onBack();
+          return;
         },
-        "base64"
+        "blob"
       );
-      let fd = new FormData();
-      fd.append("file", receipts[i].file);
-      await apiADM
-        .put(`hired/${idHired}?managerId=${idManager}`, fd, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          toast.success("Comprovante adicionado com sucesso!");
-        })
-        .catch((error) => {
-          if (Boolean(error.response) && error.response.status === 401)
-            toast.info(
-              "Após 1h a sessão expira. Você será redirecionado para a página de login.",
-              {
-                onClose: function () {
-                  history.push("/");
-                },
-              }
-            );
-          else if (Boolean(error.response) && error.response.status === 400) {
-            toast.error("Erro. É necessário assinar e validar antes.");
-          } else toast.error("Ocorreu um erro ao adicionar comprovante!");
-        });
     }
-    onBack();
   };
-
   const removeReceipt = (event, item) => {
     let list = [...receipts];
     let i;
@@ -105,7 +119,7 @@ export default function Receipt(props) {
     }
     list.splice(position, 1);
     for (i = 0; i < list.length; i++) {
-      if (list[i].error) {
+      if (list[i].error > 0) {
         setHasError(true);
         break;
       }
@@ -128,7 +142,7 @@ export default function Receipt(props) {
             <input
               multiple
               type="file"
-              accept=".png, .jpg, .jpeg"
+              accept=".png"
               id="file"
               onChange={handleImageChange}
               ref={inputFile}
@@ -202,7 +216,7 @@ export default function Receipt(props) {
                       <input
                         multiple
                         type="file"
-                        accept=".png, .jpg, .jpeg"
+                        accept=".png"
                         id="file"
                         onChange={handleImageChange}
                         ref={inputFile}
@@ -210,6 +224,11 @@ export default function Receipt(props) {
                       ></input>
                       Selecione arquivos
                     </Button>
+                    <Grid item>
+                      <p style={{ fontSize: 12, marginTop: 10 }}>
+                        (.PNG com tamanho até 1MB)
+                      </p>
+                    </Grid>
                   </Grid>
                 </Grid>
               ) : (
@@ -234,16 +253,18 @@ export default function Receipt(props) {
                         <Grid item container alignItems="baseline" key={index}>
                           <p
                             className="font-list"
-                            style={{ color: item.error ? "red" : "black" }}
+                            style={{ color: item.error > 0 ? "red" : "black" }}
                           >
                             {item.file.name}
                           </p>
-                          {item.error ? (
+                          {item.error > 0 ? (
                             <p
                               className="font-list"
                               style={{ color: "red", marginLeft: 5 }}
                             >
-                              (formato não suportado)
+                              {item.error === 1
+                                ? "(formato não suportado)"
+                                : "(maior que 1MB)"}
                             </p>
                           ) : undefined}
                           <Button

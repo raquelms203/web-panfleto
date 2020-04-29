@@ -562,7 +562,6 @@ export default function Dashboard() {
   };
 
    useEffect(() => {
-    console.log("in", localStorage.getItem("isLogged"));
     fetchPolitics();
     fetchCities();
     onOrientationChange();
@@ -810,6 +809,10 @@ export default function Dashboard() {
                 remove={Boolean(checkManager.length > 0)}
                 onClicks={[
                   () => {
+                    if(politics.length === 0) {  
+                      alert("Cadastre campanhas antes de adicionar gestores!");
+                      return;
+                    }
                     setOpenDialogAddManager({ open: true, action: "add" });
                     setListener(false);
                   },
@@ -919,6 +922,10 @@ export default function Dashboard() {
                 remove={Boolean(checkHired.length !== 0)}
                 onClicks={[
                   () => {
+                    if(politics.length === 0) {  
+                      alert("Cadastre gestores antes de adicionar gestores!");
+                      return;
+                    }
                     setOpenDialogAddHired({ open: true, action: "add" });
                     setListener(false);
                   },
@@ -1059,7 +1066,7 @@ export default function Dashboard() {
               )}
               <Dialog
                 onClose={async () => {
-                  setOpenDialogSign({ open: false, token: "" });
+                  setOpenDialogSign({ open: false, token: ` ` });
                   setListener(true);
                   onOrientationChange();
                 }}
@@ -1082,7 +1089,7 @@ export default function Dashboard() {
                           variant="contained"
                           size="large"
                           onClick={async (event) => {
-                            setOpenDialogSign({ open: false, token: "" });
+                            setOpenDialogSign({ open: false, token: ` ` });
                             setListener(true);
                             onOrientationChange();
                           }}

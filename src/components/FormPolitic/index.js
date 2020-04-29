@@ -64,6 +64,11 @@ export default function FormHired(props) {
     if (type.value === "Prefeito") typeNumber = 1;
     if (type.value === "Vereador") typeNumber = 2;
 
+    let streetFormatted = street.value;
+    if (streetFormatted.substring(0, 3).toUpperCase() === "RUA") {
+      streetFormatted = streetFormatted.substring(4, streetFormatted.length);
+    }
+
     if (editPolitic === undefined) {
       await apiADM
         .post(`/politic?adminId=${localStorage.getItem("userId")}`, {
@@ -73,7 +78,7 @@ export default function FormHired(props) {
           group: group.value,
           zipcode: CEP.value,
           city: city.value,
-          street: street.value,
+          street: streetFormatted,
           number: number.value + " " + complement.value,
           district: district.value,
         })

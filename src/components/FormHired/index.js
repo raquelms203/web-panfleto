@@ -72,13 +72,18 @@ export default function FormHired(props) {
     await apiADM
       .post(`/hired/${viewHired.id}?managerId=${managerId}&action=validate`)
       .then((response) => {
-        console.log(response);
         toast.success("Contratado validado com sucesso!");
       })
       .catch((error) => {
-        if (Boolean(error.response) && error.response.status === 400)
-          toast.info("Contratado já foi validado!");
-        else if (Boolean(error.response) && error.response.status === 401)
+        if (Boolean(error.response) && error.response.status === 400) {
+          console.log(error.response);
+          if (
+            error.response.data.message ===
+            "Hired signature is required before document validation"
+          )
+            toast.error("Erro. É necessário o político e contratado assinar antes.");
+          else toast.info("Contratado já foi validado!");
+        } else if (Boolean(error.response) && error.response.status === 401)
           toast.info(
             "Após 1h a sessão expira. Você será redirecionado para a página de login.",
             {
@@ -199,7 +204,7 @@ export default function FormHired(props) {
       });
       allValid = false;
     }
-    if (validate.validateNotEmpty(payment.value) !== "") {
+    if (validate.validateNotEmpty(payment.value !== "")) {
       setPayment({
         value: payment.value,
         error: validate.validateNotEmpty(payment.value),
@@ -207,31 +212,31 @@ export default function FormHired(props) {
       allValid = false;
     }
     if (allValid) {
-      const formatter = new Intl.NumberFormat("pt-br", {
+      let formatter = new Intl.NumberFormat("pt-br", {
         style: "currency",
         currency: "BRL",
         minimumFractionDigits: 2,
       });
+      let p = formatter.format(payment.value);
 
-      let p = formatter.format(parseFloat(payment.value));
       values = [
-        { field: "Nome completo:", value: name.value},
+        { field: "Nome completo:", value: name.value },
         { field: "Email:", value: email.value },
         { field: "CPF:", value: CPF.value },
         { field: "Celular:", value: phone.value },
         { field: "CEP:", value: CEP.value },
         { field: "Cidade:", value: city.value },
-        { field: "Rua", value: street.value },
+        { field: "Rua:", value: street.value },
         { field: "Número:", value: number.value },
         { field: "Bairro:", value: district.value },
         { field: "Pagamento:", value: p },
-        { field: "Cargo:", value: office.value},
+        { field: "Cargo:", value: office.value },
       ];
 
       if (complement.value.length !== 0)
         values.splice(complementPosition, 0, {
           field: "Complemento:",
-          value: " " + complement.value,
+          value: ` ${complement.value}`,
         });
 
       setOpenDialogConfirmInfo({
@@ -249,16 +254,23 @@ export default function FormHired(props) {
     let monthFormatted =
       month[0].toUpperCase() + month.substring(1, month.length);
     let streetFormatted = street.value;
-    if(streetFormatted.substring(0,4).toUpperCase === "RUA") {  
-      streetFormatted.splice(0,4);
+    if (streetFormatted.substring(0, 3).toUpperCase() === "RUA") {
+      streetFormatted = streetFormatted.substring(4, streetFormatted.length);
     }
+    let formatter = new Intl.NumberFormat("pt-br", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+    });
+    let p = formatter.format(payment.value);
+
     await apiADM
       .post(`/hired?managerId=${managerId}`, {
         name: name.value.toUpperCase(),
         email: email.value,
         office: office.value.toLowerCase(),
         document: CPF.value,
-        payment: payment.value,
+        payment: p,
         zipCode: CEP.value,
         group: groupPolitic,
         day: dayFormatted,
@@ -271,20 +283,20 @@ export default function FormHired(props) {
         number: number.value + complement.value,
       })
       .then((response) => {
-        toast.success("Contratado criada com sucesso!");
+        toast.success("Contratado criado com sucesso!");
       })
       .catch((error) => {
         if (Boolean(error.response) && error.response.status === 401)
-        toast.info(
-          "Após 1h a sessão expira. Você será redirecionado para a página de login.",
-          {
-            onClose: function () {
-              history.push("/");
-            },
-          }
-        );
+          toast.info(
+            "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+            {
+              onClose: function () {
+                history.push("/");
+              },
+            }
+          );
         else if (Boolean(error.response) && error.response.status === 409)
-        toast.error("Houve conflito com um contratado já cadastrado!");
+          toast.error("Houve conflito com um contratado já cadastrado!");
         else toast.error("Ocorreu um erro ao criar contratado!");
         console.log(error);
       });
@@ -550,27 +562,40 @@ export default function FormHired(props) {
             </Grid>
             <Grid item container spacing={2} justify="space-between">
               <Grid item xs={12} sm={4} md={4}>
-                <CurrencyTextField
-                  fullWidth
-                  error={Boolean(payment.error)}
-                  helperText={payment.error}
-                  size="small"
-                  style={{ background: "white" }}
-                  label="Pagamento"
-                  variant="outlined"
-                  InputLabelProps={{ shrink: true }}
-                  InputProps={{
-                    readOnly: isEdit,
-                  }}
-                  value={payment.value}
-                  currencySymbol="R$ "
-                  outputFormat="string"
-                  decimalCharacter=","
-                  digitGroupSeparator="."
-                  onChange={(event, input) => {
-                    setPayment({ value: input, error: payment.error });
-                  }}
-                />
+                {Boolean(viewHired) ? (
+                  <StyledTextField
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    size="small"
+                    label="Pagamento"
+                    variant="outlined"
+                    value={payment.value}
+                  />
+                ) : (
+                  <CurrencyTextField
+                    fullWidth
+                    error={Boolean(payment.error)}
+                    helperText={payment.error}
+                    size="small"
+                    style={{ background: "white" }}
+                    label="Pagamento"
+                    variant="outlined"
+                    InputLabelProps={{ shrink: true }}
+                    InputProps={{
+                      readOnly: isEdit,
+                    }}
+                    currencySymbol="R$"
+                    outputFormat="number"
+                    decimalCharacter=","
+                    digitGroupSeparator="."
+                    onChange={(event, input) => {
+                      setPayment({ value: input, error: payment.error });
+                    }}
+                  />
+                )}
               </Grid>
 
               <Grid item xs={12} sm={8} md={8}>

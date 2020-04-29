@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Grid, TextField, CircularProgress } from "@material-ui/core";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import { apiADM } from "../../services/api";
 import axios from "axios";
@@ -22,7 +22,8 @@ export default function CreatePassword(props) {
   const history = useHistory();
   const path = window.location.pathname;
   const token = path.split("/")[2];
-  var type = window.location.href.split("=")[1];
+  var type = window.location.href.split("=")[1].split("&")[0];
+  var action = window.location.href.split("=")[2];
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -97,7 +98,11 @@ export default function CreatePassword(props) {
               </RoundedDiv>
             </Grid>
             <Grid item xs sm md>
-              <h2 style={{ textAlign: "center" }}>Cadastre a sua senha</h2>
+              {action === "criar" ? (
+                <h2 style={{ textAlign: "center" }}>Cadastre a sua senha</h2>
+              ) : (
+                <h2 style={{ textAlign: "center" }}>Redefina a sua senha</h2>
+              )}
             </Grid>
             <Grid item xs sm md>
               <p>
