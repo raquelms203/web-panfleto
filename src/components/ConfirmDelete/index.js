@@ -44,6 +44,7 @@ export default function ConfirmDelete(props) {
       setDependents(" e apagará todos os gestores/contratados relacionados");
     else if (type === "manager")
       setDependents(" e apagará todos os contratados relacionados");
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
     if (list === undefined) return <EmptyDialog />;

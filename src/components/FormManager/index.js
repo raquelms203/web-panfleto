@@ -80,6 +80,7 @@ export default function FormManager(props) {
 
   useEffect(() => {
     initValues();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return !openDialogConfirmInfo.open ? (

@@ -311,6 +311,7 @@ export default function FormHired(props) {
 
   useEffect(() => {
     initValues();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

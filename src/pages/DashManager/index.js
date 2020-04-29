@@ -155,6 +155,7 @@ export default function DashManager(props) {
     fetchHireds(localStorage.getItem("userId"));
     fetchCities();
     onOrientationChange();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

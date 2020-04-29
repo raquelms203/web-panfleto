@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
   List,
   ListItem,
@@ -134,9 +133,3 @@ export default function CustomList(props) {
       </div>
     );
 }
-
-CustomList.propTypes = {
-  list: PropTypes.array.isRequired,
-  onClick: PropTypes.func.isRequired,
-  indexSelected: PropTypes.number,
-};

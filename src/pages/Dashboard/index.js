@@ -567,6 +567,7 @@ export default function Dashboard() {
     fetchPolitics();
     fetchCities();
     onOrientationChange();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
