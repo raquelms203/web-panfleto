@@ -182,6 +182,18 @@ export default function Login() {
                     error={Boolean(password.error)}
                     helperText={password.error}
                   />
+                  <Grid container justify="flex-end">
+                    <Grid item style={{ marginTop: 10 }}>
+                      <button
+                        style={{ background: "white", border: "none" }}
+                        onClick={() => setForgotPass(true)}
+                      >
+                        <p style={{ textDecoration: "underline" }}>
+                          Esqueci minha senha
+                        </p>
+                      </button>
+                    </Grid>
+                  </Grid>
                   <div style={{ height: "30px" }}></div>
                   {loading ? (
                     <Grid container justify="center">
@@ -199,18 +211,6 @@ export default function Login() {
                       Entrar
                     </Button>
                   )}
-                  <Grid container justify="flex-end">
-                    <Grid item style={{ marginTop: 10 }}>
-                      <button
-                        style={{ background: "white", border: "none" }}
-                        onClick={() => setForgotPass(true)}
-                      >
-                        <p style={{ textDecoration: "underline" }}>
-                          Esqueci minha senha
-                        </p>
-                      </button>
-                    </Grid>
-                  </Grid>
                 </form>
               </Grid>
             </Grid>
