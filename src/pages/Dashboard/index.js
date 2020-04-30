@@ -247,7 +247,7 @@ export default function Dashboard() {
       .get(
         `/politic/${politics[indexPolitic].id}?adminId=${localStorage.getItem(
           "userId"
-        )}action=new-token`
+        )}&action=new-token`
       )
       .then((response) => {
         token = response.data.token;
