@@ -1,3 +1,5 @@
+import CpfValidator from "cpf";
+
 export const validateName = (value) => {
   if (value === "") return "Campo obrigatório";
   else if (!value.includes(" ")) return "Campo incompleto";
@@ -17,6 +19,13 @@ export const validateMask = value => {
 
   return "";
 };
+
+export const validateCPF = value => {
+  if (value === "" || value.includes("_")) return "Campo obrigatório";
+  if(!CpfValidator.isValid(value)) {console.log("oi");return "Campo inválido";}
+  return "";
+};
+
 
 export const validatePhoneIncomplete = value => {
  if (value.match(/[0-9]/) && value.includes("_"))

@@ -42,6 +42,7 @@ export default function FormHired(props) {
   const [district, setDistrict] = useState({ value: "", error: "" });
   const [office, setOffice] = useState({ value: "", error: "" });
   const [payment, setPayment] = useState({ value: "", error: "" });
+  const [rawPayment, setRawPayment] = useState(0);
   const [visibleButtonCity, setVisibleButtonCity] = useState(false);
   const [filledColor, setFilledColor] = useState("white");
   const [openDialogConfirmInfo, setOpenDialogConfirmInfo] = useState({
@@ -80,7 +81,9 @@ export default function FormHired(props) {
             error.response.data.message ===
             "Hired signature is required before document validation"
           )
-            toast.error("Erro. É necessário o político e contratado assinar antes.");
+            toast.error(
+              "Erro. É necessário o político e contratado assinar antes."
+            );
           else toast.info("Contratado já foi validado!");
         } else if (Boolean(error.response) && error.response.status === 401)
           toast.info(
@@ -88,6 +91,7 @@ export default function FormHired(props) {
             {
               onClose: function () {
                 history.push("/");
+                localStorage.setItem("isLogged",false);
               },
             }
           );
@@ -152,8 +156,8 @@ export default function FormHired(props) {
       });
       allValid = false;
     }
-    if (validate.validateMask(CPF.value) !== "") {
-      setCPF({ value: CPF.value, error: validate.validateMask(CPF.value) });
+    if (validate.validateCPF(CPF.value) !== "") {
+      setCPF({ value: CPF.value, error: validate.validateCPF(CPF.value) });
       allValid = false;
     }
     if (validate.validatePhoneIncomplete(phone.value) !== "") {
@@ -203,10 +207,10 @@ export default function FormHired(props) {
       });
       allValid = false;
     }
-    if (validate.validateNotEmpty(payment.value !== "")) {
+    if (validate.validatePayment(rawPayment) !== "") {
       setPayment({
         value: payment.value,
-        error: validate.validateNotEmpty(payment.value),
+        error: validate.validatePayment(rawPayment),
       });
       allValid = false;
     }
@@ -291,6 +295,7 @@ export default function FormHired(props) {
             {
               onClose: function () {
                 history.push("/");
+                localStorage.setItem("isLogged",false);
               },
             }
           );
@@ -586,11 +591,13 @@ export default function FormHired(props) {
                       readOnly: isEdit,
                     }}
                     currencySymbol="R$"
+                    value={rawPayment}
                     outputFormat="number"
                     decimalCharacter=","
                     digitGroupSeparator="."
                     onChange={(event, input) => {
                       setPayment({ value: input, error: payment.error });
+                      setRawPayment(input);
                     }}
                   />
                 )}

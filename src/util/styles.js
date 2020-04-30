@@ -1,5 +1,5 @@
 import { createGlobalStyle } from "styled-components";
-import { normalize } from 'styled-normalize';
+import { normalize } from "styled-normalize";
 
 export default createGlobalStyle`  
 ${normalize}
@@ -31,16 +31,14 @@ ${normalize}
         -webkit-appearance: none;
         margin: 0;
       }
-    }
- }
+  }
+  body, input, button {  
+    font: 14px Roboto, sans-serif;
+    background: #ecf0f9; 
+  }
 
- body, input, button {  
-   font: 14px Roboto, sans-serif;
-   background: #ecf0f9; 
- }
- 
- button {  
-   cursor: pointer;
-   
- }
+  button {  
+    cursor: pointer;
+    
+  }
 `;

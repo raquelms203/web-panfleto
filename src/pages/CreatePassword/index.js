@@ -66,7 +66,7 @@ export default function CreatePassword(props) {
       .then(function (response) {
         setTokenValid(response.data.isValidToken);
       })
-      .catch(function (error) {console.log(error)});
+      .catch(function (error) {});
   }, [setTokenValid, token]);
 
   useEffect(() => {

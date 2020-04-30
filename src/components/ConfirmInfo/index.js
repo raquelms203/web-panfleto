@@ -1,14 +1,17 @@
-import React from "react";
-import { Grid, Button, Divider } from "@material-ui/core";
+import React, { useState } from "react";
+import { Grid, Button, Divider, CircularProgress } from "@material-ui/core";
 
 import { FontField, FontValue } from "./styles";
 
 export default function ConfirmInfo(props) {
   const { info, onClick, onBack } = props;
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    onClick();
+    setLoading(true);
+    await onClick();
+    setLoading(false);
   };
   if (info !== undefined)
     return (
@@ -25,7 +28,7 @@ export default function ConfirmInfo(props) {
             <div style={{ height: 10 }}></div>
           </Grid>
           {info.map((item, index) => (
-            <Grid item container direction="column" key={index} >
+            <Grid item container direction="column" key={index}>
               <Grid item container alignItems="flex-start" xs sm md>
                 <FontField>{item.field}</FontField>
                 <FontValue>{item.value}</FontValue>
@@ -38,29 +41,38 @@ export default function ConfirmInfo(props) {
           <Grid item>
             <div style={{ height: 20 }}></div>
           </Grid>
-          <Grid item container justify="flex-end" xs sm md spacing={2}>
-            <Grid item>
-              <Button
-                size="large"
-                style={{ background: "#958a94", color: "white" }}
-                onClick={onBack}
-              >
-                Voltar
-              </Button>
+
+          {loading ? (
+            <Grid container justify="center">
+              <Grid item>
+                <CircularProgress size={35} />
+              </Grid>
             </Grid>
-            <Grid item>
-              <Button
-                type="submit"
-                variant="contained"
-                size="large"
-                color="secondary"
-                style={{ color: "white" }}
-                onClick={handleSubmit}
-              >
-                SALVAR
-              </Button>
+          ) : (
+            <Grid item container justify="flex-end" xs sm md spacing={2}>
+              <Grid item>
+                <Button
+                  size="large"
+                  style={{ background: "#958a94", color: "white" }}
+                  onClick={onBack}
+                >
+                  Voltar
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  size="large"
+                  color="secondary"
+                  style={{ color: "white" }}
+                  onClick={handleSubmit}
+                >
+                  SALVAR
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
         </Grid>
       </>
     );

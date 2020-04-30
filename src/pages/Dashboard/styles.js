@@ -19,8 +19,9 @@ export const Separator = styled.div`
 `;
 
 export const SpaceDiv = styled.div`
-  margin-left: 45;
-  margin-top: 10;
+background-color: #ecf0f9;
+  padding-left: 45px;
+  margin-top: 10px;
   margin-bottom: 0;
   padding-bottom: 0;
 `;

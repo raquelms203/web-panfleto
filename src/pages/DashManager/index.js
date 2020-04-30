@@ -75,6 +75,7 @@ export default function DashManager(props) {
               {
                 onClose: function () {
                   history.push("/");
+                  localStorage.setItem("isLogged",false);
                 },
               }
             );
@@ -118,6 +119,7 @@ export default function DashManager(props) {
             {
               onClose: function () {
                 history.push("/");
+                localStorage.setItem("isLogged",false);
               },
             }
           );
@@ -171,6 +173,7 @@ export default function DashManager(props) {
 
   if (localStorage.length === 0) {
     history.push("/");
+      localStorage.setItem("isLogged",false);
     return null;
   } else if (!hireds) return <Loading />;
   else if (hireds) {
@@ -209,6 +212,7 @@ export default function DashManager(props) {
                         onClick={() => {
                           localStorage.clear();
                           history.push("/");
+                          localStorage.setItem("isLogged",false);
                           setAnchorEl(null);
                         }}
                       >

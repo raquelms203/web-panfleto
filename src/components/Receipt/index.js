@@ -86,6 +86,7 @@ export default function Receipt(props) {
                   {
                     onClose: function () {
                       history.push("/");
+                      localStorage.setItem("isLogged",false);
                     },
                   }
                 );

@@ -1,7 +1,10 @@
+import CpfValidator from "cpf";
+
 export const validateName = (value) => {
   if (value === "") return "Campo obrigatório";
   else if (!value.includes(" ")) return "Campo incompleto";
-  else if (!value.match(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/)) return "Apenas letras permitidas";
+  else if (!value.match(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/))
+    return "Apenas letras permitidas";
   else return "";
 };
 
@@ -18,6 +21,12 @@ export const validateMask = (value) => {
   return "";
 };
 
+export const validateCPF = (value) => {
+  if (value === "" || value.includes("_")) return "Campo obrigatório";
+  if(!CpfValidator.isValid(value)) return "Campo inválido";
+  return "";
+};
+
 export const validatePhoneIncomplete = (value) => {
   if (value === "") return "Campo obrigatório";
   if (value.match(/[0-9]/) && value.includes("_")) return "Campo incompleto";
@@ -31,5 +40,10 @@ export const validateSelect = (value) => {
 
 export const validateNotEmpty = (value) => {
   if (value === "") return "Campo obrigatório";
+  return "";
+};
+
+export const validatePayment = (value) => {
+  if (value === 0) return "Campo obrigatório";
   return "";
 };

@@ -57,6 +57,7 @@ export default function FormManager(props) {
             {
               onClose: function () {
                 history.push("/");
+                localStorage.setItem("isLogged",false);
               },
             }
           );

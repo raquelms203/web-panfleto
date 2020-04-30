@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import CpfValidator from "cpf";
 
 export const validationSchema = () => {
   return yup.object().shape({
@@ -17,7 +18,7 @@ export const validationSchema = () => {
         "cpf",
         "Campo obrigatório",
         (value) => value !== undefined && !value.includes("_")
-      ),
+      ).test("valid", "Campo inválido", (value) => CpfValidator.isValid(value)),
     email: yup
       .string()
       .matches(/^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/, "Email inválido")

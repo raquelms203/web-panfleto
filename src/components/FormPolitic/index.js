@@ -91,6 +91,7 @@ export default function FormHired(props) {
               {
                 onClose: function () {
                   history.push("/");
+                  localStorage.setItem("isLogged",false);
                 },
               }
             );
@@ -128,6 +129,7 @@ export default function FormHired(props) {
               {
                 onClose: function () {
                   history.push("/");
+                  localStorage.setItem("isLogged",false);
                 },
               }
             );
@@ -159,8 +161,8 @@ export default function FormHired(props) {
       allValid = false;
     }
 
-    if (validate.validateMask(CPF.value) !== "") {
-      setCPF({ value: CPF.value, error: validate.validateMask(CPF.value) });
+    if (validate.validateCPF(CPF.value) !== "") {
+      setCPF({ value: CPF.value, error: validate.validateCPF(CPF.value) });
       allValid = false;
     }
     if (type.value === "") {
@@ -524,7 +526,6 @@ export default function FormHired(props) {
                 </Button>
               </Grid>
               <Grid item>
-                {" "}
                 <StyledButton
                   type="submit"
                   variant="contained"

@@ -71,7 +71,11 @@ export default function CustomList(props) {
                 button
                 style={{ paddingRight: 0 }}
                 selected={indexSelected === indexList}
-                onClick={(event) => onClick(event, indexList)}
+                onClick={(event) => {
+                  if(indexList === indexSelected)
+                    return;
+                  onClick(event, indexList);
+                  }}
               >
                 {disableCheckBox ? undefined : (
                   <Checkbox

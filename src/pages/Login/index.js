@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import {
   TextField,
@@ -101,6 +101,11 @@ export default function Login() {
     event.preventDefault();
     validateField();
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("isLogged") === "true") history.push("/dashboard");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Grid item container justify="center">

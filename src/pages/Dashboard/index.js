@@ -7,6 +7,7 @@ import {
   AppBar,
   Menu,
   MenuItem,
+  CircularProgress,
 } from "@material-ui/core";
 import { ArrowDropDown } from "@material-ui/icons";
 import { toast } from "react-toastify";
@@ -46,8 +47,11 @@ export default function Dashboard() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [cities, setCities] = useState([]);
   const [citySelected, setCitySelected] = useState("");
-  const [politics, setPolitics] = useState(undefined);
+  const [cityDropdown, setCityDropdown] = useState("");
   const [filterPoliticSelected, setFilterPoliticSelected] = useState(0);
+  const [politicDropdown, setPoliticDropdown] = useState(0);
+  const [loadingFilter, setLoadingFilter] = useState(false);
+  const [politics, setPolitics] = useState(undefined);
   const [checkPolitic, setCheckPolitic] = useState([]);
   const [indexPolitic, setIndexPolitic] = useState(0);
   const [managers, setManagers] = useState(undefined);
@@ -109,6 +113,7 @@ export default function Dashboard() {
               {
                 onClose: function () {
                   history.push("/");
+                  localStorage.setItem("isLogged", false);
                 },
               }
             );
@@ -147,6 +152,7 @@ export default function Dashboard() {
               {
                 onClose: function () {
                   history.push("/");
+                  localStorage.setItem("isLogged", false);
                 },
               }
             );
@@ -191,6 +197,7 @@ export default function Dashboard() {
             {
               onClose: function () {
                 history.push("/");
+                localStorage.setItem("isLogged", false);
               },
             }
           );
@@ -213,6 +220,7 @@ export default function Dashboard() {
             {
               onClose: function () {
                 history.push("/");
+                localStorage.setItem("isLogged", false);
               },
             }
           );
@@ -254,6 +262,7 @@ export default function Dashboard() {
             {
               onClose: function () {
                 history.push("/");
+                localStorage.setItem("isLogged", false);
               },
             }
           );
@@ -282,6 +291,7 @@ export default function Dashboard() {
             {
               onClose: function () {
                 history.push("/");
+                localStorage.setItem("isLogged", false);
               },
             }
           );
@@ -353,28 +363,29 @@ export default function Dashboard() {
   };
 
   const handleFilterCity = (event, value) => {
-    setCitySelected(value);
+    setCityDropdown(value);
   };
 
   const handleFilterPolitic = (event) => {
-    setFilterPoliticSelected(event.target.value);
+    setPoliticDropdown(event.target.value);
   };
 
   const handleFilters = async (event) => {
     setListener(true);
+    setLoadingFilter(true);
     onOrientationChange();
-    if (citySelected === "" && filterPoliticSelected === 0) {
+    if (cityDropdown === "" && politicDropdown === 0) {
       setOpenDialogFilter(false);
       return;
     }
     await fetchPolitics();
     let list = [];
     let p = [...politics];
-    if (citySelected !== "" && filterPoliticSelected !== 0) {
+    if (cityDropdown !== "" && politicDropdown !== 0) {
       politics.forEach((item) => {
-        if (item.city === citySelected) {
+        if (item.city === cityDropdown) {
           if (!list.includes(item)) {
-            if (item.type === filterPoliticSelected) {
+            if (item.type === politicDropdown) {
               if (!list.includes(item)) {
                 list.push(item);
               }
@@ -382,16 +393,16 @@ export default function Dashboard() {
           }
         }
       });
-    } else if (filterPoliticSelected !== 0 && citySelected === "") {
-      let n = filterPoliticSelected;
+    } else if (politicDropdown !== 0 && cityDropdown === "") {
+      let n = politicDropdown;
       politics.forEach((item) => {
         if (item.type === n) {
           if (list.indexOf(item) === -1) list.push(item);
         }
       });
-    } else if (filterPoliticSelected === 0 && citySelected !== "") {
+    } else if (politicDropdown === 0 && cityDropdown !== "") {
       politics.forEach((item) => {
-        if (item.city === citySelected) {
+        if (item.city === cityDropdown) {
           if (list.indexOf(item) === -1) {
             list.push(item);
           }
@@ -407,8 +418,13 @@ export default function Dashboard() {
       setManagers([]);
       setHireds([]);
     }
+    setFilterPoliticSelected(politicDropdown);
+    setCitySelected(cityDropdown);
+    setPoliticDropdown(0);
+    setCityDropdown("");
     setOpenDialogFilter(false);
     setIndexPolitic(0);
+    setLoadingFilter(false);
   };
 
   const removeFilterCity = async () => {
@@ -447,6 +463,7 @@ export default function Dashboard() {
               {
                 onClose: function () {
                   history.push("/");
+                  localStorage.setItem("isLogged", false);
                 },
               }
             );
@@ -498,6 +515,7 @@ export default function Dashboard() {
               {
                 onClose: function () {
                   history.push("/");
+                  localStorage.setItem("isLogged", false);
                 },
               }
             );
@@ -529,6 +547,7 @@ export default function Dashboard() {
             {
               onClose: function () {
                 history.push("/");
+                localStorage.setItem("isLogged", false);
               },
             }
           );
@@ -578,6 +597,7 @@ export default function Dashboard() {
 
   if (localStorage.length === 0) {
     history.push("/");
+    localStorage.setItem("isLogged", false);
     return null;
   } else if (!politics) return <Loading />;
   else if (politics) {
@@ -614,6 +634,7 @@ export default function Dashboard() {
                       onClick={() => {
                         localStorage.clear();
                         history.push("/");
+                        localStorage.setItem("isLogged", false);
                         setAnchorEl(null);
                       }}
                     >
@@ -624,6 +645,7 @@ export default function Dashboard() {
               </Grid>
             </Grid>
           </AppBar>
+
           <SpaceDiv>
             {citySelected !== "" ? (
               <Button onClick={removeFilterCity}>
@@ -681,16 +703,24 @@ export default function Dashboard() {
                           ></DropdownCities>
                         </Grid>
                         <Grid item container direction="row-reverse">
-                          <StyledButton
-                            variant="contained"
-                            size="large"
-                            color="secondary"
-                            onClick={async (event) => {
-                              await handleFilters(event);
-                            }}
-                          >
-                            <FontButton>OK</FontButton>
-                          </StyledButton>
+                          {loadingFilter ? (
+                            <Grid container justify="center">
+                              <Grid item>
+                                <CircularProgress size={35} />
+                              </Grid>
+                            </Grid>
+                          ) : (
+                            <StyledButton
+                              variant="contained"
+                              size="large"
+                              color="secondary"
+                              onClick={async (event) => {
+                                await handleFilters(event);
+                              }}
+                            >
+                              <FontButton>OK</FontButton>
+                            </StyledButton>
+                          )}
                         </Grid>
                       </Grid>
                     </DialogTitle>
@@ -889,7 +919,7 @@ export default function Dashboard() {
                   >
                     <DialogTitle>
                       <ConfirmDelete
-                        overId={politics[indexPolitic].id}
+                        overId={politics && politics[indexPolitic].id}
                         type={openDialogDelete.type}
                         list={openDialogDelete.list}
                         onBack={async () => {
