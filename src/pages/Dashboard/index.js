@@ -467,7 +467,7 @@ export default function Dashboard() {
                 },
               }
             );
-          else toast.error("Ocorreu um erro ao carregar os dados!");
+          else {toast.error("Ocorreu um erro ao carregar os dados!"); }
         });
 
       setPolitics(list);

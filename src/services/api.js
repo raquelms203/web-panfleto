@@ -6,7 +6,7 @@ export const apiCities = axios.create({
 });
 
 const apiADM = axios.create({  
-  baseURL: "http://64.225.27.98"
+  baseURL: "http://64.225.27.98:3333"
 });
 
 apiADM.interceptors.request.use(requestSuccessInterceptor);

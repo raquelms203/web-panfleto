@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid, TextField, Button } from "@material-ui/core";
+import { Grid, TextField, Button, CircularProgress } from "@material-ui/core";
 import InputMask from "react-input-mask";
 import axios from "axios";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
@@ -29,6 +29,7 @@ export default function FormHired(props) {
     title,
     groupPolitic,
   } = props;
+  const [loading, setLoading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [name, setName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
@@ -70,6 +71,7 @@ export default function FormHired(props) {
   };
 
   const validateDocument = async () => {
+    setLoading(true);
     await apiADM
       .post(`/hired/${viewHired.id}?managerId=${managerId}&action=validate`)
       .then((response) => {
@@ -97,6 +99,7 @@ export default function FormHired(props) {
           );
         else toast.error("Ocorreu um erro ao validar contratado!");
       });
+    setLoading(false);
     onCancel();
   };
 
@@ -630,36 +633,48 @@ export default function FormHired(props) {
                 />
               </Grid>
             </Grid>
-            <Grid
-              item
-              container
-              justify="flex-end"
-              spacing={1}
-              xs
-              sm
-              md={12}
-              style={{ paddingRight: 0 }}
-            >
-              <Grid item>
-                <Button
-                  size="large"
-                  style={{ background: "#958a94", color: "white" }}
-                  onClick={() => onCancel()}
-                >
-                  Voltar
-                </Button>
-              </Grid>
 
-              <Grid item>
-                <StyledButton
-                  type="submit"
-                  variant="contained"
-                  size="large"
-                  color="secondary"
+            <Grid item>
+              {loading ? (
+                <Grid container justify="center">
+                  <Grid item>
+                    <CircularProgress size={35} />
+                  </Grid>
+                </Grid>
+              ) : (
+                <Grid
+                  item
+                  container
+                  justify="flex-end"
+                  spacing={1}
+                  xs
+                  sm
+                  md={12}
+                  style={{ paddingRight: 0 }}
                 >
-                  <FontButton>{isEdit ? "VALIDAR" : "CONTINUAR"}</FontButton>
-                </StyledButton>
-              </Grid>
+                  <Grid item>
+                    <Button
+                      size="large"
+                      style={{ background: "#958a94", color: "white" }}
+                      onClick={() => onCancel()}
+                    >
+                      Voltar
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <StyledButton
+                      type="submit"
+                      variant="contained"
+                      size="large"
+                      color="secondary"
+                    >
+                      <FontButton>
+                        {isEdit ? "VALIDAR" : "CONTINUAR"}
+                      </FontButton>
+                    </StyledButton>                               =-
+                  </Grid>
+                </Grid>
+              )}
             </Grid>
           </>
         ) : (

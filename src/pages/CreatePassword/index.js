@@ -60,7 +60,7 @@ export default function CreatePassword(props) {
 
   const verifyToken = useCallback(async () => {
     await axios
-      .get(`http://64.225.27.98/token/is-valid-token/${token}`, {
+      .get(`http://64.225.27.98:3333/token/is-valid-token/${token}`, {
         headers: { "key": `${process.env.REACT_APP_KEY}` },
       })
       .then(function (response) {
