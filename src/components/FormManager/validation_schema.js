@@ -9,10 +9,10 @@ export const validationSchema = () => {
         /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/,
         "Apenas letras permitidas"
       )
-      .required("Campo obrigatório")
       .test("sobrenome", "Campo incompleto", (value) => {
-        if (value !== undefined) return !value.includes(" ");
-      }),
+        if (value !== undefined) return value.includes(" ");
+      })
+      .required("Campo obrigatório"),
     cpf: yup
       .string()
       .test("cpf", "Campo obrigatório", (value) => {

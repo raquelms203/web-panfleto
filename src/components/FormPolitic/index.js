@@ -161,7 +161,7 @@ export default function FormHired(props) {
     if (validate.validateCPF(CPF.value) !== "") {
       allValid = false;
     }
-    if (type.value === "") {
+    if (validate.validateNotEmpty(type.value) !== "") {
       allValid = false;
     }
     if (validate.validateNotEmpty(group.value) !== "") {
@@ -185,7 +185,7 @@ export default function FormHired(props) {
 
     setCPF({ value: CPF.value, error: validate.validateCPF(CPF.value) });
 
-    setType({ value: type.value, error: "Selecione uma opção" });
+    setType({ value: type.value, error: validate.validateNotEmpty(type.value) });
 
     setGroup({
       value: group.value,
