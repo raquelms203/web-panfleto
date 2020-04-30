@@ -3,42 +3,43 @@ import CpfValidator from "cpf";
 export const validateName = (value) => {
   if (value === "") return "Campo obrigatório";
   else if (!value.includes(" ")) return "Campo incompleto";
-  else if (!value.match(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/)) return "Apenas letras permitidas";
+  else if (!value.match(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/))
+    return "Apenas letras permitidas";
   else return "";
 };
 
-export const validateEmail = value => {
+export const validateEmail = (value) => {
   if (value === "") return "Campo obrigatório";
   else if (!value.match(/^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/))
     return "Email inválido";
   else return "";
 };
 
-export const validateMask = value => {
+export const validateMask = (value) => {
   if (value === "" || value.includes("_")) return "Campo obrigatório";
 
   return "";
 };
 
-export const validateCPF = value => {
+export const validateCPF = (value) => {
   if (value === "" || value.includes("_")) return "Campo obrigatório";
-  if(!CpfValidator.isValid(value)) {console.log("oi");return "Campo inválido";}
+  if (!CpfValidator.isValid(value)) {
+    return "Campo inválido";
+  }
   return "";
 };
 
-
-export const validatePhoneIncomplete = value => {
- if (value.match(/[0-9]/) && value.includes("_"))
-  return "Campo incompleto";
+export const validatePhoneIncomplete = (value) => {
+  if (value.match(/[0-9]/) && value.includes("_")) return "Campo incompleto";
   else return "";
 };
 
-export const validateSelect = value => {
+export const validateSelect = (value) => {
   if (value === "") return "Selecione uma opção";
   else return "";
 };
 
-export const validateNotEmpty = value => {
+export const validateNotEmpty = (value) => {
   if (value === "") return "Campo obrigatório";
   return "";
 };
