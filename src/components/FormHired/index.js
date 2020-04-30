@@ -671,7 +671,7 @@ export default function FormHired(props) {
                       <FontButton>
                         {isEdit ? "VALIDAR" : "CONTINUAR"}
                       </FontButton>
-                    </StyledButton>                               =-
+                    </StyledButton>                              
                   </Grid>
                 </Grid>
               )}

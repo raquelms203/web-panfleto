@@ -185,6 +185,7 @@ export default function Login() {
                   <Grid container justify="flex-end">
                     <Grid item style={{ marginTop: 10 }}>
                       <button
+                        type="button"
                         style={{ background: "white", border: "none" }}
                         onClick={() => setForgotPass(true)}
                       >
