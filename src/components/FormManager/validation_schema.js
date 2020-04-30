@@ -5,20 +5,20 @@ export const validationSchema = () => {
   return yup.object().shape({
     name: yup
       .string()
-      .matches(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/, "Apenas letras permitidas")
-      .test(
-        "sobrenome",
-        "Campo incompleto",
-        (value) => value.includes(" ")
+      .matches(
+        /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/,
+        "Apenas letras permitidas"
       )
-      .required("Campo obrigatório"),
+      .required("Campo obrigatório")
+      .test("sobrenome", "Campo incompleto", (value) => {
+        if (value !== undefined) return !value.includes(" ");
+      }),
     cpf: yup
       .string()
-      .test(
-        "cpf",
-        "Campo obrigatório",
-        (value) => value !== undefined && !value.includes("_")
-      ).test("valid", "Campo inválido", (value) => CpfValidator.isValid(value)),
+      .test("cpf", "Campo obrigatório", (value) => {
+        if (value !== undefined) return !value.includes("_");
+      })
+      .test("valid", "Campo inválido", (value) => CpfValidator.isValid(value)),
     email: yup
       .string()
       .matches(/^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/, "Email inválido")

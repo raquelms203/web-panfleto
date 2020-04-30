@@ -91,14 +91,13 @@ export default function FormHired(props) {
               {
                 onClose: function () {
                   history.push("/");
-                  localStorage.setItem("isLogged",false);
+                  localStorage.setItem("isLogged", false);
                 },
               }
             );
           else if (Boolean(error.response) && error.response.status === 409)
             toast.error("Houve conflito com um usuário já cadastrado!");
           else toast.error("Ocorreu um erro ao criar campanha!");
-          
         });
       onClose();
     } else {
@@ -129,12 +128,11 @@ export default function FormHired(props) {
               {
                 onClose: function () {
                   history.push("/");
-                  localStorage.setItem("isLogged",false);
+                  localStorage.setItem("isLogged", false);
                 },
               }
             );
           else toast.error("Ocorreu um erro ao editar campanha!");
-          
         });
       onClose();
     }
@@ -157,56 +155,60 @@ export default function FormHired(props) {
     let values = [];
     let complementPosition = 9;
     if (validate.validateName(name.value) !== "") {
-      setName({ value: name.value, error: validate.validateName(name.value) });
       allValid = false;
     }
 
     if (validate.validateCPF(CPF.value) !== "") {
-      setCPF({ value: CPF.value, error: validate.validateCPF(CPF.value) });
       allValid = false;
     }
     if (type.value === "") {
-      setType({ value: type.value, error: "Selecione uma opção" });
       allValid = false;
     }
     if (validate.validateNotEmpty(group.value) !== "") {
-      setGroup({
-        value: group.value,
-        error: validate.validateNotEmpty(group.value),
-      });
     }
     if (validate.validateMask(CEP.value) !== "") {
-      setCEP({ value: CEP.value, error: validate.validateMask(CEP.value) });
       allValid = false;
     }
     if (validate.validateSelect(city.value) !== "") {
-      setCity({
-        value: city.value,
-        error: validate.validateSelect(city.value),
-      });
       allValid = false;
     }
     if (validate.validateNotEmpty(street.value) !== "") {
-      setStreet({
-        value: street.value,
-        error: validate.validateNotEmpty(street.value),
-      });
       allValid = false;
     }
     if (validate.validateNotEmpty(number.value) !== "") {
-      setNumber({
-        value: number.value,
-        error: validate.validateNotEmpty(number.value),
-      });
       allValid = false;
     }
     if (validate.validateNotEmpty(district.value) !== "") {
-      setDistrict({
-        value: district.value,
-        error: validate.validateNotEmpty(district.value),
-      });
       allValid = false;
     }
+    setName({ value: name.value, error: validate.validateName(name.value) });
+
+    setCPF({ value: CPF.value, error: validate.validateCPF(CPF.value) });
+
+    setType({ value: type.value, error: "Selecione uma opção" });
+
+    setGroup({
+      value: group.value,
+      error: validate.validateNotEmpty(group.value),
+    });
+    setCEP({ value: CEP.value, error: validate.validateMask(CEP.value) });
+
+    setCity({
+      value: city.value,
+      error: validate.validateSelect(city.value),
+    });
+    setStreet({
+      value: street.value,
+      error: validate.validateNotEmpty(street.value),
+    });
+    setNumber({
+      value: number.value,
+      error: validate.validateNotEmpty(number.value),
+    });
+    setDistrict({
+      value: district.value,
+      error: validate.validateNotEmpty(district.value),
+    });
     if (allValid) {
       values = [
         { field: "Nome completo:", value: name.value },

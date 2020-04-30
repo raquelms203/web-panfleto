@@ -91,7 +91,7 @@ export default function FormHired(props) {
             {
               onClose: function () {
                 history.push("/");
-                localStorage.setItem("isLogged",false);
+                localStorage.setItem("isLogged", false);
               },
             }
           );
@@ -146,74 +146,78 @@ export default function FormHired(props) {
     let complementPosition = 7;
 
     if (validate.validateName(name.value) !== "") {
-      setName({ value: name.value, error: validate.validateName(name.value) });
       allValid = false;
     }
     if (validate.validateEmail(email.value) !== "") {
-      setEmail({
-        value: email.value,
-        error: validate.validateEmail(email.value),
-      });
       allValid = false;
     }
     if (validate.validateCPF(CPF.value) !== "") {
-      setCPF({ value: CPF.value, error: validate.validateCPF(CPF.value) });
       allValid = false;
     }
     if (validate.validatePhoneIncomplete(phone.value) !== "") {
-      setPhone({
-        value: phone.value,
-        error: validate.validatePhoneIncomplete(phone.value),
-      });
       allValid = false;
     }
 
     if (validate.validateMask(CEP.value) !== "") {
-      setCEP({ value: CEP.value, error: validate.validateMask(CEP.value) });
       allValid = false;
     }
     if (validate.validateSelect(city.value) !== "") {
-      setCity({
-        value: city.value,
-        error: validate.validateSelect(city.value),
-      });
       allValid = false;
     }
     if (validate.validateNotEmpty(street.value) !== "") {
-      setStreet({
-        value: street.value,
-        error: validate.validateNotEmpty(street.value),
-      });
       allValid = false;
     }
     if (validate.validateNotEmpty(number.value) !== "") {
-      setNumber({
-        value: number.value,
-        error: validate.validateNotEmpty(number.value),
-      });
       allValid = false;
     }
     if (validate.validateNotEmpty(district.value) !== "") {
-      setDistrict({
-        value: district.value,
-        error: validate.validateNotEmpty(district.value),
-      });
       allValid = false;
     }
     if (validate.validateNotEmpty(office.value) !== "") {
-      setOffice({
-        value: office.value,
-        error: validate.validateNotEmpty(office.value),
-      });
       allValid = false;
     }
     if (validate.validatePayment(rawPayment) !== "") {
-      setPayment({
-        value: payment.value,
-        error: validate.validatePayment(rawPayment),
-      });
       allValid = false;
     }
+    setName({ value: name.value, error: validate.validateName(name.value) });
+
+    setEmail({
+      value: email.value,
+      error: validate.validateEmail(email.value),
+    });
+
+    setCPF({ value: CPF.value, error: validate.validateCPF(CPF.value) });
+
+    setPhone({
+      value: phone.value,
+      error: validate.validatePhoneIncomplete(phone.value),
+    });
+    setCEP({ value: CEP.value, error: validate.validateMask(CEP.value) });
+
+    setCity({
+      value: city.value,
+      error: validate.validateSelect(city.value),
+    });
+    setStreet({
+      value: street.value,
+      error: validate.validateNotEmpty(street.value),
+    });
+    setNumber({
+      value: number.value,
+      error: validate.validateNotEmpty(number.value),
+    });
+    setDistrict({
+      value: district.value,
+      error: validate.validateNotEmpty(district.value),
+    });
+    setOffice({
+      value: office.value,
+      error: validate.validateNotEmpty(office.value),
+    });
+    setPayment({
+      value: payment.value,
+      error: validate.validatePayment(rawPayment),
+    });
     if (allValid) {
       let formatter = new Intl.NumberFormat("pt-br", {
         style: "currency",
@@ -295,7 +299,7 @@ export default function FormHired(props) {
             {
               onClose: function () {
                 history.push("/");
-                localStorage.setItem("isLogged",false);
+                localStorage.setItem("isLogged", false);
               },
             }
           );
@@ -314,6 +318,7 @@ export default function FormHired(props) {
 
   useEffect(() => {
     initValues();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

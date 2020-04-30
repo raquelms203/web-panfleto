@@ -22,9 +22,9 @@ export default function ActionButton(props) {
       <Grid item>
         {disabledAdd ? (
           <Tooltip title={`Cadastre ${overType} antes!`}>
-            <button style={{ border: "none", color: "grey" }} disabled>
+            <span style={{ border: "none", color: "grey" }}>
               <Add />
-            </button>
+            </span>
           </Tooltip>
         ) : (
           <button
