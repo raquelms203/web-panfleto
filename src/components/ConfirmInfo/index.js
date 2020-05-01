@@ -27,17 +27,19 @@ export default function ConfirmInfo(props) {
             <FontField>Confirme as informações:</FontField>
             <div style={{ height: 10 }}></div>
           </Grid>
-          {info.map((item, index) => (
-            <Grid item container direction="column" key={index}>
-              <Grid item container alignItems="flex-start" xs sm md>
-                <FontField>{item.field}</FontField>
-                <FontValue>{item.value}</FontValue>
+          <Grid item container direction="column" spacing={1} >
+            {info.map((item, index) => (
+              <Grid item key={index}>
+                <Grid item container alignItems="flex-start" xs sm md>
+                  <FontField>{item.field}</FontField>
+                  <FontValue>{item.value}</FontValue>
+                </Grid>
+                <Grid item>
+                  <Divider />
+                </Grid>
               </Grid>
-              <Grid item>
-                <Divider />
-              </Grid>
-            </Grid>
-          ))}
+            ))}
+          </Grid>
           <Grid item>
             <div style={{ height: 20 }}></div>
           </Grid>

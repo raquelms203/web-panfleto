@@ -692,7 +692,7 @@ export default function Dashboard() {
                         <div style={{ width: 400 }}></div>
                         <Grid item xs sm={12} md={12}>
                           <DropdownPolitics
-                            isFilter={1}
+                            isFilter={true}
                             onChange={handleFilterPolitic}
                           />
                         </Grid>

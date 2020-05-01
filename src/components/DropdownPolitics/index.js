@@ -12,7 +12,7 @@ export default function DropdownPolitics(props) {
     else setOptions(["Prefeito", "Vereador"]);
   }, [setOptions, isFilter]);
 
-  if (isFilter)
+  if (Boolean(isFilter))
     return (
       <>
         <StyledFormHelperText style={{ color: error ? "#ef9a9a" : "black" }}>
