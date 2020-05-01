@@ -19,15 +19,17 @@ export default function DropdownPolitics(props) {
           Categoria
         </StyledFormHelperText>
         <StyledSelect
-          defaultValue=""
+          defaultValue={0}
           fullWidth
           variant="outlined"
           size="small"
           onChange={onChange}
           style={{ border: error ? "1px solid #ef5350" : "1px solid #f3f5f5" }}
         >
+          <MenuItem key={0} value={0} disabled></MenuItem>
+
           {options.map((item, index) => (
-            <MenuItem key={index} value={index}>
+            <MenuItem key={index + 1} value={index + 1}>
               {item}
             </MenuItem>
           ))}
@@ -42,7 +44,7 @@ export default function DropdownPolitics(props) {
           Categoria
         </StyledFormHelperText>
         <StyledSelect
-          defaultValue=""
+          defaultValue={0}
           fullWidth
           variant="outlined"
           size="small"
