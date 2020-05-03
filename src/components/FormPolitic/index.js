@@ -12,7 +12,6 @@ import {
   StyledButton,
   FontButton,
 } from "../FormHired/styles";
-import { StyledFormHelperText } from "../DropdownPolitics/styles";
 import DropdownCities from "../DropdownCities";
 import DropdownPolitics from "../DropdownPolitics";
 import ConfirmInfo from "../ConfirmInfo";
@@ -30,9 +29,8 @@ export default function FormHired(props) {
   const [complement, setComplement] = useState({ value: "", error: "" });
   const [district, setDistrict] = useState({ value: "", error: "" });
   const [type, setType] = useState({ value: "", error: "" });
+  const [numberType, setNumberType] = useState(0);
   const [group, setGroup] = useState({ value: "", error: "" });
-  const [visibleButtonCity, setVisibleButtonCity] = useState(false);
-  const [visibleButtonPolitic, setVisibleButtonPolitic] = useState(false);
   const [filledColor, setFilledColor] = useState("white");
   const [openDialogConfirmInfo, setOpenDialogConfirmInfo] = useState({
     open: false,
@@ -40,7 +38,7 @@ export default function FormHired(props) {
   });
 
   const fetchCEP = async (cep) => {
-    if (cep[8] === "_") return;
+    if (cep.includes("_")) return;
     let api = axios.create({
       baseURL: `https://viacep.com.br/ws/${cep}/json/`,
     });
@@ -54,7 +52,6 @@ export default function FormHired(props) {
       value: response.data.localidade + " - " + response.data.uf,
       error: city.error,
     });
-    setVisibleButtonCity(true);
     setDistrict({ value: response.data.bairro, error: district.error });
   };
 
@@ -185,7 +182,10 @@ export default function FormHired(props) {
 
     setCPF({ value: CPF.value, error: validate.validateCPF(CPF.value) });
 
-    setType({ value: type.value, error: validate.validateNotEmpty(type.value) });
+    setType({
+      value: type.value,
+      error: validate.validateNotEmpty(type.value),
+    });
 
     setGroup({
       value: group.value,
@@ -245,20 +245,18 @@ export default function FormHired(props) {
         complement = local.join(" ");
       } else number = editPolitic.number;
 
-      if (editPolitic.type === 1) typeName = "Prefeito";
-      else typeName = "Vereador";
+      if (editPolitic.type === "Prefeitos") setNumberType(1);
+      else setNumberType(2);
 
       setName({ value: editPolitic.name, error: "" });
       setCPF({ value: editPolitic.document, error: "" });
       setCEP({ value: editPolitic.zipcode, error: "" });
       setCity({ value: editPolitic.city, error: "" });
-      setVisibleButtonCity(true);
       setStreet({ value: editPolitic.street, error: "" });
       setNumber({ value: number, error: "" });
       setComplement({ value: complement, error: "" });
       setDistrict({ value: editPolitic.district, error: "" });
       setType({ value: typeName, error: "" });
-      setVisibleButtonPolitic(true);
       setGroup({ value: editPolitic.group, error: "" });
     }
   }, [
@@ -273,8 +271,6 @@ export default function FormHired(props) {
     setDistrict,
     setType,
     setGroup,
-    setVisibleButtonPolitic,
-    setVisibleButtonCity,
   ]);
 
   useEffect(() => {
@@ -339,33 +335,17 @@ export default function FormHired(props) {
                 </InputMask>
               </Grid>
               <Grid item xs={12} sm={6} md={6} style={{ marginTop: -17 }}>
-                {visibleButtonPolitic ? (
-                  <div
-                    onClick={() => {
-                      setVisibleButtonPolitic(false);
-                      setType({ value: "", error: city.error });
-                    }}
-                  >
-                    <StyledFormHelperText>Categoria</StyledFormHelperText>
-                    <TextField
-                      fullWidth
-                      style={{ background: "white" }}
-                      value={type.value}
-                      size="small"
-                      variant="outlined"
-                    ></TextField>
-                  </div>
-                ) : (
-                  <DropdownPolitics
-                    isFilter={false}
-                    error={Boolean(type.error)}
-                    onChange={(event) => {
-                      if (event.target.value === 1)
-                        setType({ value: "Prefeito", error: type.error });
-                      else setType({ value: "Vereador", error: type.error });
-                    }}
-                  />
-                )}
+                <DropdownPolitics
+                  value={numberType}
+                  isFilter={false}
+                  error={Boolean(type.error)}
+                  onChange={(event) => {
+                    setNumberType(event.target.value)
+                    if (event.target.value === 1)
+                      setType({ value: "Prefeito", error: type.error });
+                    else setType({ value: "Vereador", error: type.error });
+                  }}
+                />
               </Grid>
             </Grid>
             <Grid item container spacing={2}>
@@ -412,33 +392,16 @@ export default function FormHired(props) {
             </Grid>
             <Grid item container spacing={2} alignItems="center">
               <Grid item xs={12} sm={12} md={12}>
-                {visibleButtonCity ? (
-                  <div
-                    onClick={() => {
-                      setVisibleButtonCity(false);
-                      setCity({ value: "", error: city.error });
-                    }}
-                  >
-                    <TextField
-                      fullWidth
-                      style={{ background: filledColor }}
-                      value={city.value}
-                      InputLabelProps={{ shrink: true, readOnly: true }}
-                      size="small"
-                      variant="outlined"
-                      label="Cidade"
-                    ></TextField>
-                  </div>
-                ) : (
-                  <DropdownCities
-                    error={Boolean(city.error)}
-                    helperText={city.error}
-                    list={cities}
-                    onChange={(event, input) => {
-                      setCity({ value: input, error: city.error });
-                    }}
-                  />
-                )}
+                <DropdownCities
+                  filledColor={filledColor}
+                  citySelected={city.value}
+                  error={Boolean(city.error)}
+                  helperText={city.error}
+                  list={cities}
+                  onChange={(event, input) => {
+                    setCity({ value: input, error: city.error });
+                  }}
+                />
               </Grid>
             </Grid>
             <Grid item container spacing={2}>
@@ -544,8 +507,6 @@ export default function FormHired(props) {
             info={openDialogConfirmInfo.info}
             onClick={() => sendPolitic(openDialogConfirmInfo.values)}
             onBack={() => {
-              setVisibleButtonPolitic(true);
-              setVisibleButtonCity(true);
               setOpenDialogConfirmInfo({ open: false });
             }}
           />

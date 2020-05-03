@@ -4,7 +4,7 @@ import { MenuItem } from "@material-ui/core";
 import { ErrorText, StyledSelect, StyledFormHelperText } from "./styles";
 
 export default function DropdownPolitics(props) {
-  const { onChange, isFilter, error } = props;
+  const { onChange, isFilter, error, value } = props;
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function DropdownPolitics(props) {
           Categoria
         </StyledFormHelperText>
         <StyledSelect
-          defaultValue={0}
+          value={value}
           fullWidth
           variant="outlined"
           size="small"

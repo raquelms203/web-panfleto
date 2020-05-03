@@ -44,7 +44,6 @@ export default function FormHired(props) {
   const [office, setOffice] = useState({ value: "", error: "" });
   const [payment, setPayment] = useState({ value: "", error: "" });
   const [rawPayment, setRawPayment] = useState(0);
-  const [visibleButtonCity, setVisibleButtonCity] = useState(false);
   const [filledColor, setFilledColor] = useState("white");
   const [openDialogConfirmInfo, setOpenDialogConfirmInfo] = useState({
     open: false,
@@ -52,7 +51,7 @@ export default function FormHired(props) {
   });
 
   const fetchCEP = async (cep) => {
-    if (cep[8] === "_") return;
+    if (cep.includes("_")) return;
     let api = axios.create({
       baseURL: `https://viacep.com.br/ws/${cep}/json/`,
     });
@@ -66,7 +65,6 @@ export default function FormHired(props) {
       value: response.data.localidade + " - " + response.data.uf,
       error: city.error,
     });
-    setVisibleButtonCity(true);
     setDistrict({ value: response.data.bairro, error: district.error });
   };
 
@@ -127,7 +125,6 @@ export default function FormHired(props) {
       setDistrict({ value: viewHired.district, error: "" });
       setOffice({ value: viewHired.office, error: "" });
       setPayment({ value: viewHired.payment, error: "" });
-      setVisibleButtonCity(true);
     }
   };
 
@@ -454,37 +451,16 @@ export default function FormHired(props) {
                 </InputMask>
               </Grid>
               <Grid item xs={12} sm={8} md={8}>
-                {visibleButtonCity ? (
-                  <div
-                    onClick={() => {
-                      setVisibleButtonCity(false);
-                      setCity({ value: "", error: city.error });
-                    }}
-                  >
-                    <TextField
-                      fullWidth
-                      style={{ background: filledColor }}
-                      value={city.value}
-                      InputLabelProps={{ shrink: true, readOnly: true }}
-                      InputProps={{
-                        readOnly: isEdit,
-                      }}
-                      size="small"
-                      variant="outlined"
-                      label="Cidade"
-                    ></TextField>
-                  </div>
-                ) : (
-                  <DropdownCities
-                    error={Boolean(city.error)}
-                    open={visibleButtonCity ? false : true}
-                    helperText={city.error}
-                    list={cities}
-                    onChange={(event, input) => {
-                      setCity({ value: input, error: city.error });
-                    }}
-                  />
-                )}
+                <DropdownCities
+                  filledColor={filledColor}
+                  citySelected={city.value}
+                  error={Boolean(city.error)}
+                  helperText={city.error}
+                  list={cities}
+                  onChange={(event, input) => {
+                    setCity({ value: input, error: city.error });
+                  }}
+                />
               </Grid>
             </Grid>
             <Grid item container spacing={2}>
@@ -672,7 +648,7 @@ export default function FormHired(props) {
                       <FontButton>
                         {isEdit ? "VALIDAR" : "CONTINUAR"}
                       </FontButton>
-                    </StyledButton>                              
+                    </StyledButton>
                   </Grid>
                 </Grid>
               )}
@@ -683,7 +659,6 @@ export default function FormHired(props) {
             info={openDialogConfirmInfo.info}
             onClick={() => sendHired()}
             onBack={() => {
-              setVisibleButtonCity(true);
               setOpenDialogConfirmInfo({ open: false });
             }}
           />

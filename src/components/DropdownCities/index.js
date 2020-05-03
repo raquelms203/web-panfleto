@@ -10,16 +10,16 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 // }
 
 export default function DropdownCities(props) {
-  const { list, onChange, error, helperText, open } = props;
+  const { list, onChange, error, helperText, citySelected, filledColor } = props;
 
   return (
     <Autocomplete
+      value={citySelected}
       options={list}
       autoHighlight
       size="small"
-      open={open}
       onChange={(event, value) => onChange(event, value)}
-      getOptionSelected={(option, value) => option === value}
+      getOptionSelected={(option, value) => option === citySelected}
       getOptionLabel={(option) => option}
       renderInput={(params) => (
         <TextField
@@ -29,7 +29,7 @@ export default function DropdownCities(props) {
           label="Selecione a cidade"
           fullWidth
           variant="outlined"
-          style={{ background: "white" }}
+          style={{ backgroundColor: filledColor }}
           InputLabelProps={{ shrink: true }}
         />
       )}

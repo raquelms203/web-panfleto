@@ -366,10 +366,6 @@ export default function Dashboard() {
     setCityDropdown(value);
   };
 
-  const handleFilterPolitic = (event) => {
-    setPoliticDropdown(event.target.value);
-  };
-
   const handleFilters = async (event) => {
     setListener(true);
     setLoadingFilter(true);
@@ -693,11 +689,13 @@ export default function Dashboard() {
                         <Grid item xs sm={12} md={12}>
                           <DropdownPolitics
                             isFilter={true}
-                            onChange={handleFilterPolitic}
+                            onChange={() => {}}
+                            value={politicDropdown}
                           />
                         </Grid>
                         <Grid item xs>
                           <DropdownCities
+                             filledColor={"white"}
                             onChange={handleFilterCity}
                             list={cities}
                           ></DropdownCities>
