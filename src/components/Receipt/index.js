@@ -79,14 +79,13 @@ export default function Receipt(props) {
               toast.success("Comprovante adicionado com sucesso!");
             })
             .catch((error) => {
-              
               if (Boolean(error.response) && error.response.status === 401)
                 toast.info(
                   "Após 1h a sessão expira. Você será redirecionado para a página de login.",
                   {
                     onClose: function () {
                       history.push("/");
-                      localStorage.setItem("isLogged",false);
+                      localStorage.setItem("isLogged", false);
                     },
                   }
                 );
@@ -296,24 +295,25 @@ export default function Receipt(props) {
             </FileDrop>
           </div>
           <div style={{ height: 16 }}></div>
-          <Grid container direction="row" justify="flex-end" spacing={2}>
-            <Grid item>
-              <Button
-                size="large"
-                style={{ background: "#958a94", color: "white" }}
-                onClick={() => onBack()}
-              >
-                Voltar
-              </Button>
+
+          {loading ? (
+            <Grid container justify="center">
+              <Grid item>
+                <CircularProgress size={35} />
+              </Grid>
             </Grid>
-            <Grid item>
-              {loading ? (
-                <Grid container justify="center">
-                  <Grid item>
-                    <CircularProgress size={35} />
-                  </Grid>
-                </Grid>
-              ) : (
+          ) : (
+            <Grid container direction="row" justify="flex-end" spacing={2}>
+              <Grid item>
+                <Button
+                  size="large"
+                  style={{ background: "#958a94", color: "white" }}
+                  onClick={() => onBack()}
+                >
+                  Voltar
+                </Button>
+              </Grid>
+              <Grid item>
                 <StyledButton
                   style={{ marginRight: 16 }}
                   disabled={hasError || receipts.length === 0}
@@ -324,9 +324,9 @@ export default function Receipt(props) {
                 >
                   <FontButton>SALVAR</FontButton>
                 </StyledButton>
-              )}
+              </Grid>
             </Grid>
-          </Grid>
+          )}
         </>
       )}
     </>

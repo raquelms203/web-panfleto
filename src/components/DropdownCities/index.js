@@ -10,26 +10,18 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 // }
 
 export default function DropdownCities(props) {
-  const [open, setOpen] = React.useState(false);
-  const { list, onChange, error, helperText } = props;
-
+  const { list, onChange, error, helperText, open } = props;
 
   return (
     <Autocomplete
       options={list}
-    autoHighlight
+      autoHighlight
       size="small"
       open={open}
-      onOpen={() => {
-        setOpen(true);
-      }}
-      onClose={() => {
-        setOpen(false);
-      }}
-      onChange={(event, value) => onChange(event, value) }
+      onChange={(event, value) => onChange(event, value)}
       getOptionSelected={(option, value) => option === value}
-      getOptionLabel={option => option}
-      renderInput={params => (
+      getOptionLabel={(option) => option}
+      renderInput={(params) => (
         <TextField
           {...params}
           error={error}

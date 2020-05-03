@@ -477,6 +477,7 @@ export default function FormHired(props) {
                 ) : (
                   <DropdownCities
                     error={Boolean(city.error)}
+                    open={visibleButtonCity ? false : true}
                     helperText={city.error}
                     list={cities}
                     onChange={(event, input) => {
