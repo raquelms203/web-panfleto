@@ -46,8 +46,12 @@ export default function FormHired(props) {
     if (response.hasOwnProperty("erro")) {
       return;
     }
+    let streetFormatted = response.data.logradouro;
+    if(streetFormatted.substring(0,3).toUpperCase() === "RUA")
+      streetFormatted = streetFormatted.substring(4, streetFormatted.length);
+
     setFilledColor("#dfdfdf");
-    setStreet({ value: response.data.logradouro, error: street.error });
+    setStreet({ value: streetFormatted, error: street.error });
     setCity({
       value: response.data.localidade + " - " + response.data.uf,
       error: city.error,
@@ -245,7 +249,7 @@ export default function FormHired(props) {
         complement = local.join(" ");
       } else number = editPolitic.number;
 
-      if (editPolitic.type === "Prefeitos") setNumberType(1);
+      if (editPolitic.type === 1) setNumberType(1);
       else setNumberType(2);
 
       setName({ value: editPolitic.name, error: "" });

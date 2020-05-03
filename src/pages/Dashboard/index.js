@@ -370,33 +370,36 @@ export default function Dashboard() {
     setListener(true);
     setLoadingFilter(true);
     onOrientationChange();
-    if (cityDropdown === "" && politicDropdown === 0) {
+    if (cityDropdown === "" && politicDropdown < 2) {
       setOpenDialogFilter(false);
       return;
     }
     await fetchPolitics();
     let list = [];
     let p = [...politics];
-    if (cityDropdown !== "" && politicDropdown !== 0) {
+    if (cityDropdown !== "" && politicDropdown > 1) {
       politics.forEach((item) => {
+        let indexPolitic = politicDropdown - 1;
         if (item.city === cityDropdown) {
           if (!list.includes(item)) {
-            if (item.type === politicDropdown) {
+            if (item.type === indexPolitic) {
               if (!list.includes(item)) {
                 list.push(item);
+                console.log(item);
               }
             }
           }
         }
       });
-    } else if (politicDropdown !== 0 && cityDropdown === "") {
-      let n = politicDropdown;
+    } else if (politicDropdown > 1 && cityDropdown === "") {
+      let indexPolitic = politicDropdown - 1;
+      console.log(indexPolitic);
       politics.forEach((item) => {
-        if (item.type === n) {
+        if (item.type === indexPolitic) {
           if (list.indexOf(item) === -1) list.push(item);
         }
       });
-    } else if (politicDropdown === 0 && cityDropdown !== "") {
+    } else if (politicDropdown < 2 && cityDropdown !== "") {
       politics.forEach((item) => {
         if (item.city === cityDropdown) {
           if (list.indexOf(item) === -1) {
@@ -406,6 +409,7 @@ export default function Dashboard() {
       });
     }
     if (list.length !== 0) {
+      console.log(list);
       setPolitics(list);
       await fetchManagers(list[0].id);
     } else {
@@ -427,13 +431,14 @@ export default function Dashboard() {
     setCitySelected("");
     let list = [];
 
-    if (filterPoliticSelected !== 0) {
+    if (filterPoliticSelected > 1) {
       await apiADM
         .get(`/politic?adminId=${localStorage.getItem("userId")}`)
         .then(async (response) => {
           let resp = response.data;
           for (let i = 0; i < resp.length; i++) {
-            if (resp[i].type === filterPoliticSelected) {
+            let indexPolitic = filterPoliticSelected - 1;
+            if (resp[i].type === indexPolitic) {
               if (list.indexOf(resp[i]) === -1) {
                 let p = {
                   name: resp[i].name,
@@ -656,7 +661,7 @@ export default function Dashboard() {
             ) : undefined}
             {filterPoliticSelected !== 0 ? (
               <Button onClick={() => removeFilterPolitic()}>
-                {filterPoliticSelected === 1 ? (
+                {filterPoliticSelected === 2 ? (
                   <LabelFilter>Prefeitos X</LabelFilter>
                 ) : (
                   <LabelFilter>Vereadores X</LabelFilter>
@@ -689,7 +694,9 @@ export default function Dashboard() {
                         <Grid item xs sm={12} md={12}>
                           <DropdownPolitics
                             isFilter={true}
-                            onChange={() => {}}
+                            onChange={(event) => {  
+                              setPoliticDropdown(event.target.value);
+                            }}
                             value={politicDropdown}
                           />
                         </Grid>
