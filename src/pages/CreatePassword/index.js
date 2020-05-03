@@ -70,6 +70,7 @@ export default function CreatePassword(props) {
   }, [setTokenValid, token]);
 
   useEffect(() => {
+    localStorage.clear();
     verifyToken();
   }, [verifyToken]);
 
