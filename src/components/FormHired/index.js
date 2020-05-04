@@ -660,6 +660,7 @@ export default function FormHired(props) {
           </>
         ) : (
           <ConfirmInfo
+           open={openDialogConfirmInfo.open}
             info={openDialogConfirmInfo.info}
             onClick={() => sendHired()}
             onBack={() => {

@@ -231,6 +231,7 @@ export default function FormManager(props) {
     >
       <Grid item>
         <ConfirmInfo
+        open={openDialogConfirmInfo.open}
           info={openDialogConfirmInfo.info}
           onClick={() => sendManager(openDialogConfirmInfo.values)}
           onBack={() => {
