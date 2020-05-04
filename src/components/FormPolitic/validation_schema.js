@@ -2,7 +2,7 @@ import CpfValidator from "cpf";
 
 export const validateName = (value) => {
   if (value === "") return "Campo obrigatório";
-  else if (!value.includes(" ")) return "Campo incompleto";
+  else if (!value.match(/([A-Za-z]{1}[ ]{1}[A-Za-z]{1})/)) return "Campo incompleto";
   else if (!value.match(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/))
     return "Apenas letras permitidas";
   else return "";
@@ -38,6 +38,11 @@ export const validateSelect = (value) => {
   if (value === "") return "Selecione uma opção";
   else return "";
 };
+
+export const validateType = (value) => {  
+  if(value === 0) return "Selecione uma opção";
+  else return "";
+}
 
 export const validateNotEmpty = (value) => {
   if (value === "") return "Campo obrigatório";

@@ -9,9 +9,7 @@ export const validationSchema = () => {
         /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/,
         "Apenas letras permitidas"
       )
-      .test("sobrenome", "Campo incompleto", (value) => {
-        if (value !== undefined) return value.includes(" ");
-      })
+      .matches(/([A-Za-z]{1}[ ]{1}[A-Za-z]{1})/, "Campo incompleto")
       .required("Campo obrigatório"),
     cpf: yup
       .string()

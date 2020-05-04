@@ -774,7 +774,7 @@ export default function Dashboard() {
                 ]}
               />
               <Dialog
-              fullScreen={true}
+              fullScreen={isMobile}
                 onClose={() => {
                   setOpenDialogAddPolitic({ open: false, action: "" });
                   setListener(true);
