@@ -56,7 +56,7 @@ export default function FormHired(props) {
       baseURL: `https://viacep.com.br/ws/${cep}/json/`,
     });
     let response = await api.get();
-    if (response.hasOwnProperty("erro")) {
+    if (response.data.hasOwnProperty("erro")) {
       return;
     }
     let streetFormatted = response.data.logradouro;
@@ -327,7 +327,7 @@ export default function FormHired(props) {
 
   return (
     <form
-      autoComplete="on"
+      autoComplete="off"
       onSubmit={handleSubmit}
       style={{ padding: "16px 24px" }}
     >

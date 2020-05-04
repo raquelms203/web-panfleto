@@ -13,3 +13,10 @@ export const FontValue = styled.p`
   max-width: 450px;
   font:  18px Ebrima;
 `;
+
+export const FontTitle = styled.p`  
+   font: 18px Ebrima;
+  color: #4a4a4a;
+  margin-top: 20px;
+  margin-bottom: 10px;
+`;

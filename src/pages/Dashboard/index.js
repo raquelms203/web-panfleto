@@ -9,6 +9,7 @@ import {
   MenuItem,
   CircularProgress,
 } from "@material-ui/core";
+import { isMobile } from "react-device-detect";
 import { ArrowDropDown } from "@material-ui/icons";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
@@ -773,6 +774,7 @@ export default function Dashboard() {
                 ]}
               />
               <Dialog
+              fullScreen={true}
                 onClose={() => {
                   setOpenDialogAddPolitic({ open: false, action: "" });
                   setListener(true);
@@ -880,6 +882,7 @@ export default function Dashboard() {
               ) : (
                 <>
                   <Dialog
+                    fullScreen={isMobile}
                     onClose={() => {
                       setOpenDialogAddManager({ open: false });
                       setListener(true);
@@ -1004,6 +1007,7 @@ export default function Dashboard() {
               ) : (
                 <>
                   <Dialog
+                    fullScreen={isMobile}
                     onClose={async () => {
                       setOpenDialogAddHired({ open: false });
                       setListener(true);
@@ -1076,8 +1080,6 @@ export default function Dashboard() {
                     <Dialog
                       onClose={() => {
                         setOpenDialogReceipt(false);
-                        setListener(true);
-                        onOrientationChange();
                       }}
                       open={openDialogReceipt}
                     >

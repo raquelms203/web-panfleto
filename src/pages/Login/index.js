@@ -108,14 +108,13 @@ export default function Login() {
   }, []);
 
   return (
-    <Grid item container justify="center">
+    <Grid item container justify="center" style={{ minHeight: "95vh"}}>
       <Grid
         item
         container
         direction="column"
         justify="center"
-        alignItems="stretch"
-        style={{ minHeight: "95vh", maxWidth: 450 }}
+        style={{ maxWidth: 450 }}
       >
         <BackgroundWhite item>
           <Grid item container justify="center" xs={12} sm={12} md={12}>

@@ -169,7 +169,6 @@ export default function Receipt(props) {
               </Grid>
             ) : (
               <StyledButton
-                style={{ marginRight: 16 }}
                 disabled={hasError || receipts.length === 0}
                 onClick={sendReceipts}
                 variant="contained"

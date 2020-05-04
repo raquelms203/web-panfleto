@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Grid, Button, Divider, CircularProgress, Dialog, DialogTitle } from "@material-ui/core";
+import { isMobile } from "react-device-detect";
 
-import { FontField, FontValue } from "./styles";
+import { FontField, FontValue, FontTitle } from "./styles";
 
 export default function ConfirmInfo(props) {
   const { info, onClick, onBack, open } = props;
@@ -15,19 +16,17 @@ export default function ConfirmInfo(props) {
   };
   if (info !== undefined)
     return (
-      <form onSubmit={handleSubmit} autoComplete="off">
-        {" "}
-        <Dialog onClose={onBack} open={open}>
+      <>
+        <Dialog fullScreen={isMobile} onClose={onBack} open={open}>
           <DialogTitle style={{ background: "#f5f3f3" }}>
             <Grid
               container
               direction="column"
               spacing={1}
               alignItems="flex-end"
-              style={{ padding: "8px 24px" }}
             >
               <Grid item xs sm md container justify="center">
-                <FontField>Confirme as informações:</FontField>
+                <FontTitle>Confirme as informações:</FontTitle>
                 <div style={{ height: 10 }}></div>
               </Grid>
               <Grid item container direction="column" spacing={1}>
@@ -66,7 +65,7 @@ export default function ConfirmInfo(props) {
                   </Grid>
                   <Grid item>
                     <Button
-                      type="submit"
+                      onClick={handleSubmit}
                       variant="contained"
                       size="large"
                       color="secondary"
@@ -80,6 +79,6 @@ export default function ConfirmInfo(props) {
             </Grid>
           </DialogTitle>
         </Dialog>
-      </form>
+      </>
     );
 }

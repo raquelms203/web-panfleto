@@ -12,7 +12,6 @@ export const StyledTextField = styled(TextField)`
 
 `;
 export const StyledButton = styled(Button)`  
-  margin-top: 30px;
   width: 150px;
 `;
 export const Title = styled.p`  
