@@ -5,6 +5,7 @@ import Dashboard from "../pages/Dashboard";
 import CreatePassword from "../pages/CreatePassword";
 import ErrorPage from "../pages/ErrorPage";
 import DashManager from "../pages/DashManager";
+import ViewPDF from "../pages/ViewPDF";
 import NotFound from "../assets/not_found.svg";
 
 export default function Routes() {
@@ -14,6 +15,7 @@ export default function Routes() {
       <Route path="/dashboard" component={Dashboard}></Route>
       <Route path="/dashboard-gestor" component={DashManager}></Route>
       <Route path="/criar-senha" component={CreatePassword}></Route>
+      <Route path="/contrato/:hiredId/:managerId/:politicId" component={ViewPDF}></Route>
       <Route
         path="*"
         render={(props) => (

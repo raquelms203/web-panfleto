@@ -982,6 +982,7 @@ export default function Dashboard() {
                 dropdownNames={[
                   "Adicionar assinatura",
                   "Validar informações",
+                  "Ver documento",
                   "Adicionar comprovante",
                   "Concluir contrato",
                 ]}
@@ -994,6 +995,15 @@ export default function Dashboard() {
                   (index) => {
                     setOpenDialogAddHired({ open: true, action: "edit" });
                     setListener(false);
+                  },
+                  (index) => {
+                    let url =
+                      `http://localhost:3000/contrato/${hireds[indexHired].id}/` +
+                      `${managers[indexManager].id}/${politics[indexPolitic].id}`;
+                    const win = window.open(url, "_blank");
+                    if (win != null) {
+                      win.focus();
+                    }
                   },
                   (index) => {
                     setOpenDialogReceipt(true);
