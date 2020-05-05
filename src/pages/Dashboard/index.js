@@ -37,6 +37,7 @@ import Receipt from "../../components/Receipt/index";
 import FormManager from "../../components/FormManager";
 import FormPolitic from "../../components/FormPolitic";
 import ConfirmDelete from "../../components/ConfirmDelete";
+import ConfirmEmail from "../../components/ConfirmEmail";
 import Loading from "../../components/Loading";
 import { apiADM, apiCities } from "../../services/api";
 import LogoImg from "../../assets/logo.svg";
@@ -63,6 +64,7 @@ export default function Dashboard() {
   const [checkHired, setCheckHired] = useState([]);
   const [openDialogFilter, setOpenDialogFilter] = useState(false);
   const [openDialogReceipt, setOpenDialogReceipt] = useState(false);
+  const [openDialogEmail, setOpenDialogEmail] = useState(false);
   const [openDialogAddHired, setOpenDialogAddHired] = useState({
     open: false,
     action: "",
@@ -386,7 +388,6 @@ export default function Dashboard() {
             if (item.type === indexPolitic) {
               if (!list.includes(item)) {
                 list.push(item);
-                console.log(item);
               }
             }
           }
@@ -394,7 +395,6 @@ export default function Dashboard() {
       });
     } else if (politicDropdown > 1 && cityDropdown === "") {
       let indexPolitic = politicDropdown - 1;
-      console.log(indexPolitic);
       politics.forEach((item) => {
         if (item.type === indexPolitic) {
           if (list.indexOf(item) === -1) list.push(item);
@@ -410,7 +410,6 @@ export default function Dashboard() {
       });
     }
     if (list.length !== 0) {
-      console.log(list);
       setPolitics(list);
       await fetchManagers(list[0].id);
     } else {
@@ -469,7 +468,9 @@ export default function Dashboard() {
                 },
               }
             );
-          else {toast.error("Ocorreu um erro ao carregar os dados!"); }
+          else {
+            toast.error("Ocorreu um erro ao carregar os dados!");
+          }
         });
 
       setPolitics(list);
@@ -695,7 +696,7 @@ export default function Dashboard() {
                         <Grid item xs sm={12} md={12}>
                           <DropdownPolitics
                             isFilter={true}
-                            onChange={(event) => {  
+                            onChange={(event) => {
                               setPoliticDropdown(event.target.value);
                             }}
                             value={politicDropdown}
@@ -703,7 +704,7 @@ export default function Dashboard() {
                         </Grid>
                         <Grid item xs>
                           <DropdownCities
-                             filledColor={"white"}
+                            filledColor={"white"}
                             onChange={handleFilterCity}
                             list={cities}
                           ></DropdownCities>
@@ -774,7 +775,7 @@ export default function Dashboard() {
                 ]}
               />
               <Dialog
-              fullScreen={isMobile}
+                fullScreen={isMobile}
                 onClose={() => {
                   setOpenDialogAddPolitic({ open: false, action: "" });
                   setListener(true);
@@ -998,7 +999,7 @@ export default function Dashboard() {
                     setOpenDialogReceipt(true);
                   },
                   (index) => {
-                    sendEmailContract();
+                    setOpenDialogEmail(true);
                   },
                 ]}
               />
@@ -1098,7 +1099,7 @@ export default function Dashboard() {
               )}
               <Dialog
                 onClose={async () => {
-                  setOpenDialogSign({ open: false, token: ` ` });
+                  setOpenDialogSign({ open: false });
                   setListener(true);
                   onOrientationChange();
                 }}
@@ -1111,7 +1112,11 @@ export default function Dashboard() {
                         Para concluir o cadastro baixe o aplicativo e-Contrato
                         para celular e use o código:
                       </p>
-                      <FontToken>{`${openDialogSign.token}`}</FontToken>
+                      {Boolean(openDialogSign.open) ? (
+                        <FontToken>{`${openDialogSign.token}`}</FontToken>
+                      ) : (
+                        <div style={{ height: 65, color: "#f5f3f3" }}>-</div>
+                      )}
                       <p>{expiresToken()}</p>
                     </Grid>
                     <Grid item>
@@ -1133,6 +1138,14 @@ export default function Dashboard() {
                   </Grid>
                 </DialogTitle>
               </Dialog>
+              <ConfirmEmail
+                open={openDialogEmail}
+                onBack={() => setOpenDialogEmail(false)}
+                onConfirm={async () => {
+                  await sendEmailContract();
+                  setOpenDialogEmail(false);
+                }}
+              />
             </Grid>
           </StyledGrid>
           <Footer>Site desenvolvido por Easycode - 2020</Footer>

@@ -92,6 +92,7 @@ export default function FormManager(props) {
       onSubmit={handleSubmit}
       validateOnChange={false}
       validateOnBlur={false}
+      style={{ backgroundColor: "#f5f3f3" }}
     >
       {({ errors, setFieldValue }) => {
         return (

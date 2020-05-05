@@ -155,7 +155,6 @@ export default function FormHired(props) {
     let allValid = true;
     let values = [];
     let complementPosition = 9;
-    console.log(name.value, validate.validateName(name.value));
     if (validate.validateName(name.value) !== "") {
       allValid = false;
     }

@@ -24,19 +24,27 @@ export default function ConfirmInfo(props) {
   };
   if (info !== undefined)
     return (
-      <Dialog
-        fullScreen={isMobile}
-        onClose={onBack}
-        open={open}
-        style={{ background: "#f5f3f3" }}
-      >
-        <DialogTitle>
-          <Container container direction="column" spacing={1} alignItems="flex-end">
+      <Dialog fullScreen={isMobile} onClose={onBack} open={open}>
+        <DialogTitle style={{ background: "#f5f3f3" }}>
+          <Container
+            container
+            direction="column"
+            spacing={1}
+            alignItems="flex-end"
+          >
             <Grid item xs={12} sm={12} md={12} container justify="center">
               <FontTitle>Confirme as informações:</FontTitle>
               <div style={{ height: 10 }}></div>
             </Grid>
-            <Grid item xs={12} sm={12} md={12}  container direction="column" spacing={1}>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              container
+              direction="column"
+              spacing={1}
+            >
               {info.map((item, index) => (
                 <Grid item key={index}>
                   <Grid item container alignItems="flex-start" xs sm md>
