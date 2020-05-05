@@ -12,6 +12,8 @@ import { ArrowDropDown } from "@material-ui/icons";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { useHistory } from "react-router-dom";
+import { isMobile } from "react-device-detect";
+
 import {
   Subtitle,
   Footer,
@@ -75,7 +77,7 @@ export default function DashManager(props) {
               {
                 onClose: function () {
                   history.push("/");
-                  localStorage.setItem("isLogged",false);
+                  localStorage.setItem("isLogged", false);
                 },
               }
             );
@@ -119,7 +121,7 @@ export default function DashManager(props) {
             {
               onClose: function () {
                 history.push("/");
-                localStorage.setItem("isLogged",false);
+                localStorage.setItem("isLogged", false);
               },
             }
           );
@@ -173,7 +175,7 @@ export default function DashManager(props) {
 
   if (localStorage.length === 0) {
     history.push("/");
-      localStorage.setItem("isLogged",false);
+    localStorage.setItem("isLogged", false);
     return null;
   } else if (!hireds) return <Loading />;
   else if (hireds) {
@@ -212,7 +214,7 @@ export default function DashManager(props) {
                         onClick={() => {
                           localStorage.clear();
                           history.push("/");
-                          localStorage.setItem("isLogged",false);
+                          localStorage.setItem("isLogged", false);
                           setAnchorEl(null);
                         }}
                       >
@@ -254,6 +256,7 @@ export default function DashManager(props) {
               ]}
             />
             <Dialog
+              fullScreen={isMobile}
               onClose={async () => {
                 setOpenDialogAddHired({ open: false });
                 setListener(true);
@@ -326,7 +329,10 @@ export default function DashManager(props) {
             </Dialog>
           </SpaceDiv>
         </Grid>
-        <Footer style={{ marginTop: 10 }}>Site desenvolvido por Easycode - 2020</Footer>
+        <Footer style={{ marginTop: 10 }}>
+          Site desenvolvido por Easycode - 2020 | Contato:
+          easycodesuporte@gmail.com
+        </Footer>
       </>
     );
   }

@@ -1158,7 +1158,7 @@ export default function Dashboard() {
               />
             </Grid>
           </StyledGrid>
-          <Footer>Site desenvolvido por Easycode - 2020</Footer>
+          <Footer>Site desenvolvido por Easycode - 2020 | Contato: easycodesuporte@gmail.com</Footer>
         </>
       );
     }
