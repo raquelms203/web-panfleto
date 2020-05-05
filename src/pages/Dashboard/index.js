@@ -982,7 +982,7 @@ export default function Dashboard() {
                 dropdownNames={[
                   "Adicionar assinatura",
                   "Validar informações",
-                  "Ver documento",
+                  "Prévia documento",
                   "Adicionar comprovante",
                   "Concluir contrato",
                 ]}
@@ -998,7 +998,7 @@ export default function Dashboard() {
                   },
                   (index) => {
                     let url =
-                      `http://localhost:3000/contrato/${hireds[indexHired].id}/` +
+                      `http://64.225.27.98:5000/contrato/${hireds[indexHired].id}/` +
                       `${managers[indexManager].id}/${politics[indexPolitic].id}`;
                     const win = window.open(url, "_blank");
                     if (win != null) {

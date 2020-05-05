@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Grid, Dialog, DialogTitle, CircularProgress } from "@material-ui/core";
-import { apiADM } from "../../services/api";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 
 import { ButtonDialog } from "../ConfirmDelete/styles";
