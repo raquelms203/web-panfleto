@@ -40,7 +40,7 @@ export default function ConfirmEmail(props) {
 
                 <Grid item>
                   <ButtonDialog
-                    style={{ color: "red", padding: 10 }}
+                    style={{ color: "red" }}
                     onClick={async () => {  
                       setLoading(true);
                       await onConfirm();

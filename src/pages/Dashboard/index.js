@@ -543,7 +543,7 @@ export default function Dashboard() {
       })
       .catch((error) => {
         if (Boolean(error.response) && error.response.status === 400) {
-          toast.error("Erro. É necessário assinar e validar antes.");
+          toast.error("Erro. É necessário todas as assinaturas serem adicionadas e validar antes.");
         } else if (Boolean(error.response) && error.response.status === 401)
           toast.info(
             "Após 1h a sessão expira. Você será redirecionado para a página de login.",

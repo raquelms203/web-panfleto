@@ -152,7 +152,7 @@ export default function (props) {
           <br />
           <Body
             style={{ textAlign: "center" }}
-          >[As assinaturas estaram disponíveis apenas após concluir o contrato.]</Body>
+          >[As assinaturas estarão disponíveis apenas após concluir o contrato.]</Body>
           <br />
           <br />
           <Bold>DOCUMENTOS:</Bold>

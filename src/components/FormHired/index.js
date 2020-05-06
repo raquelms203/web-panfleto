@@ -86,7 +86,7 @@ export default function FormHired(props) {
             "Hired signature is required before document validation"
           )
             toast.error(
-              "Erro. É necessário o político e contratado assinar antes."
+              "Erro. É necessário todas as assinaturas serem adicionadas antes."
             );
           else toast.info("Contratado já foi validado!");
         } else if (Boolean(error.response) && error.response.status === 401)

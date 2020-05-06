@@ -35,6 +35,7 @@ export const FontToken = styled.p`
   font-size: 40px;
   color: #2b5279;
   letter-spacing: 8px;
+  font-family: Cambria;
 `;
 
 export const LabelFilter = styled.p`
