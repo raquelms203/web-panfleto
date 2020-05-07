@@ -105,9 +105,11 @@ export default function Dashboard() {
         .get(`hired?managerId=${idManager}`)
         .then((response) => {
           response.data.forEach((item) => {
+            item.checked = false;
             hiredsAll.push(item);
           });
           setHireds(hiredsAll);
+          setCheckHired([]);
         })
         .catch((error) => {
           if (Boolean(error.response) && error.response.status === 401) {
@@ -123,7 +125,7 @@ export default function Dashboard() {
           } else toast.error("Ocorreu um erro ao carregar os dados!");
         });
     },
-    [setHireds, history]
+    [setHireds, history, setCheckHired]
   );
 
   const fetchManagers = useCallback(
@@ -138,10 +140,12 @@ export default function Dashboard() {
               name: item.name,
               document: item.document,
               email: item.email,
+              checked: false,
             };
             managersAll.push(m);
           });
           setManagers(managersAll);
+          setCheckManager([]);
           if (managersAll.length !== 0) {
             await fetchHireds(managersAll[0].id);
           } else {
@@ -162,7 +166,7 @@ export default function Dashboard() {
           } else toast.error("Ocorreu um erro ao carregar os dados!");
         });
     },
-    [setManagers, fetchHireds, history]
+    [setManagers, fetchHireds, setCheckManager, history]
   );
 
   const fetchPolitics = useCallback(async () => {
@@ -182,10 +186,12 @@ export default function Dashboard() {
             district: item.district,
             number: item.number,
             zipcode: item.zipcode,
+            checked: false,
           };
           politicsAll.push(p);
         });
         setPolitics(politicsAll);
+        setCheckPolitic([]);
         if (politicsAll.length !== 0) {
           await fetchManagers(politicsAll[0].id);
         } else {
@@ -206,7 +212,7 @@ export default function Dashboard() {
           );
         } else toast.error("Ocorreu um erro ao carregar os dados!");
       });
-  }, [history, setPolitics, fetchManagers]);
+  }, [history, setPolitics, setCheckPolitic, fetchManagers]);
 
   const sendEmailManager = async () => {
     await apiADM
@@ -312,6 +318,8 @@ export default function Dashboard() {
 
   const handleCheckChangePolitic = (event, value, indexList) => {
     let list = [...checkPolitic];
+    let allPolitics = [...politics];
+    allPolitics[indexList].checked = value;
     if (list === undefined) list = [];
     if (value) {
       list.push(politics[indexList].id);
@@ -321,6 +329,7 @@ export default function Dashboard() {
       );
       list.splice(indexRemove, 1);
     }
+    setPolitics(allPolitics);
     setCheckPolitic(list);
   };
 
@@ -332,6 +341,8 @@ export default function Dashboard() {
 
   const handleCheckChangeManager = (event, value, indexList) => {
     let list = [...checkManager];
+    let allManagers = [...managers];
+    managers[indexList].checked = value;
     if (list === undefined) list = [];
     if (value) {
       list.push(managers[indexList].id);
@@ -341,6 +352,7 @@ export default function Dashboard() {
       );
       list.splice(indexRemove, 1);
     }
+    setManagers(allManagers);
     setCheckManager(list);
   };
 
@@ -350,6 +362,8 @@ export default function Dashboard() {
 
   const handleCheckChangeHired = (event, value, indexList) => {
     let list = [...checkHired];
+    let allHireds = [...hireds];
+    hireds[indexList].checked = value;
     if (list === undefined) list = [];
     if (value) {
       list.push(hireds[indexList].id);
@@ -357,6 +371,7 @@ export default function Dashboard() {
       let indexRemove = list.findIndex((item) => item === hireds[indexList].id);
       list.splice(indexRemove, 1);
     }
+    setHireds(allHireds);
     setCheckHired(list);
   };
 
@@ -543,7 +558,9 @@ export default function Dashboard() {
       })
       .catch((error) => {
         if (Boolean(error.response) && error.response.status === 400) {
-          toast.error("Erro. É necessário todas as assinaturas serem adicionadas e validar antes.");
+          toast.error(
+            "Erro. É necessário todas as assinaturas serem adicionadas e validar antes."
+          );
         } else if (Boolean(error.response) && error.response.status === 401)
           toast.info(
             "Após 1h a sessão expira. Você será redirecionado para a página de login.",
@@ -812,6 +829,7 @@ export default function Dashboard() {
                     list: undefined,
                     type: "",
                   });
+                  setCheckPolitic([]);
                 }}
                 open={
                   openDialogDelete.open && openDialogDelete.type === "politic"
@@ -825,13 +843,14 @@ export default function Dashboard() {
                       setOpenDialogDelete({
                         open: false,
                       });
-                      window.location.reload();
+                      await fetchPolitics();
+                      setIndexPolitic(0);
+                      setCheckPolitic([]);
                     }}
                     overId={localStorage.getItem("userId")}
                     onClickNo={() =>
                       setOpenDialogDelete({
                         open: false,
-                        type: "politic",
                       })
                     }
                   />
@@ -878,7 +897,7 @@ export default function Dashboard() {
                   },
                 ]}
               />
-              {politics.length === 0 ? (
+              {politics.length === 0 || !Boolean(politics)? (
                 <></>
               ) : (
                 <>
@@ -928,14 +947,16 @@ export default function Dashboard() {
                   >
                     <DialogTitle>
                       <ConfirmDelete
-                        overId={politics && politics[indexPolitic].id}
+                        overId={Boolean(politics[indexPolitic]) && politics[indexPolitic].id}
                         type={openDialogDelete.type}
                         list={openDialogDelete.list}
                         onBack={async () => {
+                          await fetchManagers(politics[indexPolitic].id);
+                          setIndexManager(0);
+                          setCheckManager([]);
                           setOpenDialogDelete({
                             open: false,
                           });
-                          window.location.reload();
                         }}
                         onClickNo={() =>
                           setOpenDialogDelete({
@@ -1028,10 +1049,10 @@ export default function Dashboard() {
                   >
                     <DialogTitle style={{ background: "#f5f3f3", padding: 0 }}>
                       <FormHired
-                        groupPolitic={politics[
+                        groupPolitic={Boolean(politics[indexPolitic]) && politics[
                           indexPolitic
                         ].group.toUpperCase()}
-                        title={`Campanha: (${politics[
+                        title={Boolean(politics[indexPolitic]) && `Campanha: (${politics[
                           indexPolitic
                         ].group.toUpperCase()}) ${
                           politics[indexPolitic].name.split(" ")[0]
@@ -1071,9 +1092,13 @@ export default function Dashboard() {
                   >
                     <DialogTitle>
                       <ConfirmDelete
-                        onBack={() => {
-                          setOpenDialogDelete({ open: false });
-                          window.location.reload();
+                        onBack={async () => {
+                          await fetchHireds(managers[indexManager].id);
+                          setIndexHired(0);
+                          setCheckHired([]);
+                          setOpenDialogDelete({
+                            open: false,
+                          });
                         }}
                         overId={managers[indexManager].id}
                         type={openDialogDelete.type}
@@ -1158,7 +1183,10 @@ export default function Dashboard() {
               />
             </Grid>
           </StyledGrid>
-          <Footer>Site desenvolvido por Easycode - 2020 | Contato: easycodesuporte@gmail.com</Footer>
+          <Footer>
+            Site desenvolvido por Easycode - 2020 | Contato:
+            easycodesuporte@gmail.com
+          </Footer>
         </>
       );
     }

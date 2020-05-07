@@ -24,7 +24,6 @@ export default function CustomList(props) {
     dropdownOnChange,
     disableCheckBox,
   } = props;
-
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClickMenu = (event) => {
@@ -79,6 +78,7 @@ export default function CustomList(props) {
               >
                 {disableCheckBox ? undefined : (
                   <Checkbox
+                    checked={itemList.checked}
                     edge="start"
                     disableRipple
                     onChange={(event, value) => {

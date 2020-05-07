@@ -9,6 +9,7 @@ import ViewPDF from "../pages/ViewPDF";
 import NotFound from "../assets/not_found.svg";
 
 export default function Routes() {
+
   return (
     <Switch>
       <Route path="/" exact component={Login}></Route>
