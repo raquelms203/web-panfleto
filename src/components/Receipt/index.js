@@ -99,7 +99,6 @@ export default function Receipt(props) {
               } else toast.error("Ocorreu um erro ao adicionar comprovante!");
             });
           onBack();
-          setLoading(false);
           return;
         },
         "blob"

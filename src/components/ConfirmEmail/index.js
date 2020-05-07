@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import { Grid, Dialog, DialogTitle, CircularProgress } from "@material-ui/core";
+import { Grid, Dialog, DialogTitle, CircularProgress, Button } from "@material-ui/core";
 import "react-toastify/dist/ReactToastify.min.css";
-
-import { ButtonDialog } from "../ConfirmDelete/styles";
-
 export default function ConfirmEmail(props) {
   const { onBack, open, onConfirm } = props;
   const [loading, setLoading] = useState(false);
@@ -29,32 +26,42 @@ export default function ConfirmEmail(props) {
                 </Grid>
               </Grid>
             ) : (
-              <Grid item container justify="flex-end" spacing={3}>
+              <Grid
+                item
+                container
+                justify="flex-end"
+                spacing={2}
+                xs
+                sm
+                md={12}
+                style={{ paddingRight: 0 }}
+              >
                 <Grid item>
-                  <ButtonDialog style={{ color: "black" }} onClick={onBack}>
-                    <p>NÃO</p>
-                  </ButtonDialog>
+                  <Button
+                    size="large"
+                    style={{ background: "#958a94", color: "white" }}
+                    onClick={onBack}
+                  >
+                    NÃO
+                  </Button>
                 </Grid>
-
-                <div style={{ width: 20 }}></div>
-
                 <Grid item>
-                  <ButtonDialog
-                    style={{ color: "red" }}
-                    onClick={async () => {  
+                  <Button
+                    onClick={async () => {
                       setLoading(true);
                       await onConfirm();
-                      setLoading(false);
                     }}
+                    variant="contained"
+                    size="large"
+                    color="secondary"
                   >
-                    <p>SIM</p>
-                  </ButtonDialog>
+                    SIM
+                  </Button>
                 </Grid>
               </Grid>
             )}
-
-            <div style={{ height: 20 }}></div>
           </Grid>
+          <div style={{ height: 20 }}></div>
         </div>
       </DialogTitle>
     </Dialog>

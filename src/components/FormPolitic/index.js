@@ -38,7 +38,7 @@ export default function FormHired(props) {
   });
 
   const fetchCEP = async (cep) => {
-    if (cep.includes("_")) return;
+    if (cep.includes("_") || cep.length === 0) return;
     let api = axios.create({
       baseURL: `https://viacep.com.br/ws/${cep}/json/`,
     });
@@ -47,7 +47,7 @@ export default function FormHired(props) {
       return;
     }
     let streetFormatted = response.data.logradouro;
-    if(streetFormatted.substring(0,3).toUpperCase() === "RUA")
+    if (streetFormatted.substring(0, 3).toUpperCase() === "RUA")
       streetFormatted = streetFormatted.substring(4, streetFormatted.length);
 
     setFilledColor("#dfdfdf");
@@ -343,7 +343,7 @@ export default function FormHired(props) {
                   isFilter={false}
                   error={Boolean(type.error)}
                   onChange={(event) => {
-                    setNumberType(event.target.value)
+                    setNumberType(event.target.value);
                     if (event.target.value === 1)
                       setType({ value: "Prefeito", error: type.error });
                     else setType({ value: "Vereador", error: type.error });
@@ -507,7 +507,7 @@ export default function FormHired(props) {
           </>
         ) : (
           <ConfirmInfo
-          open={openDialogConfirmInfo.open}
+            open={openDialogConfirmInfo.open}
             info={openDialogConfirmInfo.info}
             onClick={() => sendPolitic(openDialogConfirmInfo.values)}
             onBack={() => {

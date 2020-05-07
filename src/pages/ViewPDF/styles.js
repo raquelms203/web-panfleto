@@ -8,6 +8,11 @@ export const Bold = styled.p`
   }
 `;
 
+export const Title = styled.p`
+  font: bold 14px "Trebuchet MS";
+  text-align: center;
+`;
+
 export const Body = styled.p`
   font: 14px "Trebuchet MS";
 `;

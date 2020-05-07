@@ -823,12 +823,12 @@ export default function Dashboard() {
                 </DialogTitle>
               </Dialog>
               <Dialog
-                onClose={() => {
+                onClose={async () => {
                   setOpenDialogDelete({
                     open: false,
-                    list: undefined,
-                    type: "",
                   });
+                  await fetchPolitics();
+                  setIndexPolitic(0);
                   setCheckPolitic([]);
                 }}
                 open={
@@ -848,11 +848,6 @@ export default function Dashboard() {
                       setCheckPolitic([]);
                     }}
                     overId={localStorage.getItem("userId")}
-                    onClickNo={() =>
-                      setOpenDialogDelete({
-                        open: false,
-                      })
-                    }
                   />
                 </DialogTitle>
               </Dialog>
@@ -897,7 +892,7 @@ export default function Dashboard() {
                   },
                 ]}
               />
-              {politics.length === 0 || !Boolean(politics)? (
+              {politics.length === 0 || !Boolean(politics) ? (
                 <></>
               ) : (
                 <>
@@ -933,12 +928,13 @@ export default function Dashboard() {
                     </DialogTitle>
                   </Dialog>
                   <Dialog
-                    onClose={() => {
+                    onClose={async () => {
                       setOpenDialogDelete({
                         open: false,
-                        list: undefined,
-                        type: "",
                       });
+                      await fetchManagers(politics[indexPolitic].id);
+                      setIndexManager(0);
+                      setCheckManager([]);
                     }}
                     open={
                       openDialogDelete.open &&
@@ -947,23 +943,20 @@ export default function Dashboard() {
                   >
                     <DialogTitle>
                       <ConfirmDelete
-                        overId={Boolean(politics[indexPolitic]) && politics[indexPolitic].id}
+                        overId={
+                          Boolean(politics[indexPolitic]) &&
+                          politics[indexPolitic].id
+                        }
                         type={openDialogDelete.type}
                         list={openDialogDelete.list}
                         onBack={async () => {
-                          await fetchManagers(politics[indexPolitic].id);
-                          setIndexManager(0);
-                          setCheckManager([]);
                           setOpenDialogDelete({
                             open: false,
                           });
+                          await fetchManagers(politics[indexPolitic].id);
+                          setIndexManager(0);
+                          setCheckManager([]);
                         }}
-                        onClickNo={() =>
-                          setOpenDialogDelete({
-                            open: false,
-                            type: "",
-                          })
-                        }
                       />
                     </DialogTitle>
                   </Dialog>
@@ -1049,14 +1042,19 @@ export default function Dashboard() {
                   >
                     <DialogTitle style={{ background: "#f5f3f3", padding: 0 }}>
                       <FormHired
-                        groupPolitic={Boolean(politics[indexPolitic]) && politics[
-                          indexPolitic
-                        ].group.toUpperCase()}
-                        title={Boolean(politics[indexPolitic]) && `Campanha: (${politics[
-                          indexPolitic
-                        ].group.toUpperCase()}) ${
-                          politics[indexPolitic].name.split(" ")[0]
-                        } | ${managers[indexManager].name.split(" ")[0]}`}
+                        groupPolitic={
+                          Boolean(politics[indexPolitic]) &&
+                          politics[indexPolitic].group.toUpperCase()
+                        }
+                        title={
+                          Boolean(politics[indexPolitic]) &&
+                          Boolean(managers[indexManager]) &&
+                          `Campanha: (${politics[
+                            indexPolitic
+                          ].group.toUpperCase()}) ${
+                            politics[indexPolitic].name.split(" ")[0]
+                          } | ${managers[indexManager].name.split(" ")[0]}`
+                        }
                         managerId={managers[indexManager].id}
                         cities={cities}
                         onClose={async () => {
@@ -1079,36 +1077,30 @@ export default function Dashboard() {
                     </DialogTitle>
                   </Dialog>
                   <Dialog
-                    onClose={() => {
-                      setOpenDialogDelete({
-                        open: false,
-                        list: undefined,
-                        type: "",
-                      });
+                    onClose={async () => {
+                      setOpenDialogDelete({ open: false });
+                      await fetchHireds(managers[indexManager].id);
+                      setIndexHired(0);
+                      setCheckHired([]);
                     }}
                     open={
-                      openDialogDelete.open && openDialogDelete.type === "hired"
+                      Boolean(openDialogDelete.open) &&
+                      openDialogDelete.type === "hired"
                     }
                   >
                     <DialogTitle>
                       <ConfirmDelete
                         onBack={async () => {
-                          await fetchHireds(managers[indexManager].id);
-                          setIndexHired(0);
-                          setCheckHired([]);
                           setOpenDialogDelete({
                             open: false,
                           });
+                          await fetchHireds(managers[indexManager].id);
+                          setIndexHired(0);
+                          setCheckHired([]);
                         }}
                         overId={managers[indexManager].id}
                         type={openDialogDelete.type}
                         list={openDialogDelete.list}
-                        onClickNo={() =>
-                          setOpenDialogDelete({
-                            open: false,
-                            type: "",
-                          })
-                        }
                       />
                     </DialogTitle>
                   </Dialog>
@@ -1122,7 +1114,7 @@ export default function Dashboard() {
                       <DialogTitle>
                         <Receipt
                           idManager={managers[indexManager].id}
-                          idHired={hireds[indexHired].id}
+                          idHired={hireds[indexHired] && hireds[indexHired].id}
                           onBack={() => {
                             setOpenDialogReceipt(false);
                           }}

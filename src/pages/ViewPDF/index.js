@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loading from "../../components/Loading";
 
-import { Body, Bold, Page } from "./styles";
+import { Body, Bold, Page, Title } from "./styles";
 
 export default function (props) {
   const history = useHistory();
@@ -64,10 +64,10 @@ export default function (props) {
         <Grid item xs sm md>
           <br />
           <br />
-          <Bold>
+          <Title>
             CONTRATO DE PRESTAÇÃO DE SERVIÇOS REMUNERADO POR PRAZO DETERMINADO
             PARA FINS DE CAMPANHA ELEITORAL
-          </Bold>
+          </Title>
           <br />
           <Body>
             {`  Pelo presente instrumento particular, de um lado ${hired.name} (PESSOA

@@ -51,25 +51,28 @@ export default function FormHired(props) {
   });
 
   const fetchCEP = async (cep) => {
-    if (cep.includes("_")) return;
-    let api = axios.create({
-      baseURL: `https://viacep.com.br/ws/${cep}/json/`,
-    });
-    let response = await api.get();
-    if (response.data.hasOwnProperty("erro")) {
+    if (cep.includes("_") || cep.length === 0) {
       return;
-    }
-    let streetFormatted = response.data.logradouro;
-    if(streetFormatted.substring(0,3).toUpperCase() === "RUA")
-      streetFormatted = streetFormatted.substring(4, streetFormatted.length);
+    } else {
+      let api = axios.create({
+        baseURL: `https://viacep.com.br/ws/${cep}/json/`,
+      });
+      let response = await api.get();
+      if (response.data.hasOwnProperty("erro")) {
+        return;
+      }
+      let streetFormatted = response.data.logradouro;
+      if (streetFormatted.substring(0, 3).toUpperCase() === "RUA")
+        streetFormatted = streetFormatted.substring(4, streetFormatted.length);
 
-    setFilledColor("#dfdfdf");
-    setStreet({ value: streetFormatted, error: street.error });
-    setCity({
-      value: response.data.localidade + " - " + response.data.uf,
-      error: city.error,
-    });
-    setDistrict({ value: response.data.bairro, error: district.error });
+      setFilledColor("#dfdfdf");
+      setStreet({ value: streetFormatted, error: street.error });
+      setCity({
+        value: response.data.localidade + " - " + response.data.uf,
+        error: city.error,
+      });
+      setDistrict({ value: response.data.bairro, error: district.error });
+    }
   };
 
   const validateDocument = async () => {
@@ -101,7 +104,6 @@ export default function FormHired(props) {
           );
         else toast.error("Ocorreu um erro ao validar contratado!");
       });
-    setLoading(false);
     onCancel();
   };
 
@@ -628,9 +630,6 @@ export default function FormHired(props) {
                   container
                   justify="flex-end"
                   spacing={1}
-                  xs
-                  sm
-                  md={12}
                   style={{ paddingRight: 0 }}
                 >
                   <Grid item>
@@ -660,7 +659,7 @@ export default function FormHired(props) {
           </>
         ) : (
           <ConfirmInfo
-           open={openDialogConfirmInfo.open}
+            open={openDialogConfirmInfo.open}
             info={openDialogConfirmInfo.info}
             onClick={() => sendHired()}
             onBack={() => {
