@@ -2,9 +2,7 @@ import CpfValidator from "cpf";
 
 export const validateName = (value) => {
   if (value === "") return "Campo obrigatório";
-  else if (!value.match(/([A-Za-z]{1}[ ]{1}[A-Za-z]{1})/)) return "Campo incompleto";
-  else if (!value.match(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/))
-    return "Apenas letras permitidas";
+  else if (!value.match(/(.{1}[ ].{1})/)) return "Campo incompleto";
   else return "";
 };
 

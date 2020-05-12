@@ -5,11 +5,7 @@ export const validationSchema = () => {
   return yup.object().shape({
     name: yup
       .string()
-      .matches(
-        /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/,
-        "Apenas letras permitidas"
-      )
-      .matches(/([A-Za-z]{1}[ ]{1}[A-Za-z]{1})/, "Campo incompleto")
+      .matches(/(.{1}[ ].{1})/, "Campo incompleto")
       .required("Campo obrigatório"),
     cpf: yup
       .string()

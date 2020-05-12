@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.min.css";
 
-import { ButtonDialog, EmptyDialog } from "./styles";
+import { EmptyDialog } from "./styles";
 
 export default function ConfirmDelete(props) {
   const { list, onBack, type, overId } = props;
