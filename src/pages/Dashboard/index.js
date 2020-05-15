@@ -752,6 +752,7 @@ export default function Dashboard() {
                 </Grid>
                 <Grid item>
                   <ActionButton
+                    type="Campanha"
                     remove={Boolean(checkPolitic.length > 0)}
                     onClicks={[
                       () => {
@@ -857,6 +858,7 @@ export default function Dashboard() {
             <Grid item xs={3} sm={3} md={4}>
               <div style={{ height: 4 }}></div>
               <ActionButton
+                type="Gestor"
                 remove={Boolean(checkManager.length > 0)}
                 disabledAdd={!Boolean(politics) || politics.length === 0}
                 overType="campanhas"
@@ -969,6 +971,7 @@ export default function Dashboard() {
             <Grid item xs={3} sm={3} md={3}>
               <div style={{ height: 4 }}></div>
               <ActionButton
+                type="Contratado"
                 disabledAdd={!Boolean(managers) || managers.length === 0}
                 overType="gestores"
                 remove={Boolean(checkHired.length !== 0)}

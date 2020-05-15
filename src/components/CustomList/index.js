@@ -9,6 +9,7 @@ import {
   ListItemSecondaryAction,
   Button,
   CircularProgress,
+  Tooltip,
 } from "@material-ui/core";
 import { MoreVert } from "@material-ui/icons";
 
@@ -71,10 +72,9 @@ export default function CustomList(props) {
                 style={{ paddingRight: 0 }}
                 selected={indexSelected === indexList}
                 onClick={(event) => {
-                  if(indexList === indexSelected)
-                    return;
+                  if (indexList === indexSelected) return;
                   onClick(event, indexList);
-                  }}
+                }}
               >
                 {disableCheckBox ? undefined : (
                   <Checkbox
@@ -101,11 +101,13 @@ export default function CustomList(props) {
                     )}
                   </Grid>
                   <Grid item container xs={4} sm={3} md={2} justify="flex-end">
-                    <Button onClick={handleClickMenu}>
-                      <MoreVert
-                        style={{ color: "#525252", transform: "scale(0.8)" }}
-                      />
-                    </Button>
+                    <Tooltip title="Opções" enterDelay={600}>
+                      <Button onClick={handleClickMenu}>
+                        <MoreVert
+                          style={{ color: "#525252", transform: "scale(0.8)" }}
+                        />
+                      </Button>
+                    </Tooltip>
                   </Grid>
                 </Grid>
                 <ListItemSecondaryAction>

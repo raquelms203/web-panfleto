@@ -10,7 +10,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
-        <ToastContainer autoClose={4000}/>
+        <ToastContainer autoClose={4000} position="bottom-right" />
         <GlobalStyle />
         <Routes />
       </BrowserRouter>
