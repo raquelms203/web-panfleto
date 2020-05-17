@@ -856,7 +856,6 @@ export default function Dashboard() {
             <Separator />
 
             <Grid item xs={3} sm={3} md={4}>
-              <div style={{ height: 4 }}></div>
               <ActionButton
                 type="Gestor"
                 remove={Boolean(checkManager.length > 0)}
@@ -876,7 +875,6 @@ export default function Dashboard() {
                   },
                 ]}
               />
-              <div style={{ height: "4.4px" }}></div>
               <Subtitle>Gestores</Subtitle>
               <CustomList
                 onClick={handleManagerListClick}
@@ -969,7 +967,6 @@ export default function Dashboard() {
             <Separator />
 
             <Grid item xs={3} sm={3} md={3}>
-              <div style={{ height: 4 }}></div>
               <ActionButton
                 type="Contratado"
                 disabledAdd={!Boolean(managers) || managers.length === 0}
@@ -989,7 +986,6 @@ export default function Dashboard() {
                   },
                 ]}
               />
-              <div style={{ height: "4.4px" }}></div>
               <Subtitle>Contratados</Subtitle>
               <CustomList
                 onClick={handleHiredListClick}
