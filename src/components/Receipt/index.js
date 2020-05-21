@@ -22,7 +22,11 @@ export default function Receipt(props) {
     if (files) {
       for (let i = 0; i < files.length; i++) {
         let item = files[i];
-        if (files[i].type !== "image/png") {
+        if (
+          item.type !== "image/png" &&
+          item.type !== "image/svg" &&
+          item.type !== "image/jpeg" 
+        ) {
           setHasError(true);
           list.push({ error: 1, file: files[i] });
         } else if ((item.size / 1024 / 1024).toFixed(4) > 1) {
@@ -55,54 +59,52 @@ export default function Receipt(props) {
     setLoading(true);
     for (let i = 0; i < receipts.length; i++) {
       let archive;
-      let list = [];
-      Resizer.imageFileResizer(
-        receipts[i].file,
-        600,
-        600,
-        "PNG",
-        100,
-        0,
-        async (uri) => {
-          list.push(uri);
-          archive = new File(list, receipts[i].file.name, { type: uri.type });
-          let fd = new FormData();
-          fd.append("file", archive);
-          await apiADM
-            .put(`hired/${idHired}?managerId=${idManager}`, fd, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                "Access-Control-Allow-Origin": "*",
-              },
-            })
-            .then((response) => {
-              toast.success("Comprovante adicionado com sucesso!");
-            })
-            .catch((error) => {
-              if (Boolean(error.response) && error.response.status === 401)
-                toast.info(
-                  "Após 1h a sessão expira. Você será redirecionado para a página de login.",
-                  {
-                    onClose: function () {
-                      history.push("/");
-                      localStorage.setItem("isLogged", false);
-                    },
-                  }
-                );
-              else if (
-                Boolean(error.response) &&
-                error.response.status === 400
-              ) {
-                if (error.response.data.message === "Invalid file")
-                  toast.error("Erro. Imagem precisa ser .PNG e até 1 MB.");
-                else toast.error("Erro. É necessário assinar e validar antes.");
-              } else toast.error("Ocorreu um erro ao adicionar comprovante!");
-            });
-          onBack();
-          return;
-        },
-        "blob"
-      );
+      //  let list = [];
+      // Resizer.imageFileResizer(
+      //   receipts[i].file,
+      //   600,
+      //   600,
+      //   "PNG",
+      //   100,
+      //   0,
+      //   async (uri) => {
+      //    list.push(receipts[i]); //uri
+      //    archive = new File(list, receipts[i].file.name, { type: uri.type });
+      archive = receipts[i];
+      let fd = new FormData();
+      fd.append("file", archive.name);
+      await apiADM
+        .put(`hired/${idHired}?managerId=${idManager}`, fd, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*",
+          },
+        })
+        .then((response) => {
+          toast.success("Comprovante adicionado com sucesso!");
+        })
+        .catch((error) => {
+          if (Boolean(error.response) && error.response.status === 401)
+            toast.info(
+              "Após 1h a sessão expira. Você será redirecionado para a página de login.",
+              {
+                onClose: function () {
+                  history.push("/");
+                  localStorage.setItem("isLogged", false);
+                },
+              }
+            );
+          else if (Boolean(error.response) && error.response.status === 400) {
+            if (error.response.data.message === "Invalid file")
+              toast.error("Erro. Comprovante precisa ser imagem e até 1 MB.");
+            else toast.error("Erro. É necessário assinar e validar antes.");
+          } else toast.error("Ocorreu um erro ao adicionar comprovante!");
+        });
+      onBack();
+      //  return;
+      //    },
+      //   "blob"
+      // );
     }
   };
   const removeReceipt = (event, item) => {
@@ -140,7 +142,7 @@ export default function Receipt(props) {
             <input
               multiple
               type="file"
-              accept=".png"
+              accept=".png .jpeg .jpg .svg"
               id="file"
               onChange={handleImageChange}
               ref={inputFile}
@@ -179,7 +181,7 @@ export default function Receipt(props) {
             )}
             <Grid item>
               <p style={{ fontSize: 12, marginTop: 10 }}>
-                (.PNG com tamanho até 1MB)
+                (Imagens com tamanho até 1MB)
               </p>
             </Grid>
           </Grid>
@@ -225,7 +227,8 @@ export default function Receipt(props) {
                     >
                       <input
                         type="file"
-                        accept=".png"
+                        multiple
+                        accept=".png, .jpeg, .jpg, .svg"
                         id="file"
                         onChange={handleImageChange}
                         ref={inputFile}
@@ -235,7 +238,7 @@ export default function Receipt(props) {
                     </Button>
                     <Grid item>
                       <p style={{ fontSize: 12, marginTop: 10 }}>
-                        (.PNG com tamanho até 1MB)
+                        (Imagens com tamanho até 1MB)
                       </p>
                     </Grid>
                   </Grid>
