@@ -12,6 +12,7 @@ export default function ActionButton(props) {
         <Grid item>
           <Tooltip title={`Excluir ${type}`} enterDelay={600} >
             <IconButton
+              disableRipple
               style={{ color: "firebrick"}}
               onClick={() => onClicks[1]()}
             >
@@ -23,13 +24,14 @@ export default function ActionButton(props) {
       <Grid item>
         {disabledAdd ? (
           <Tooltip title={`Cadastre ${overType} antes!`} enterDelay={600}>
-            <span style={{ border: "none", color: "grey" }}>
+            <div style={{ border: "none", color: "grey", marginTop: 20 }}>
               <Add />
-            </span>
+            </div>
           </Tooltip>
         ) : (
           <Tooltip title={`Cadastrar ${type}`} enterDelay={600} >
             <IconButton
+              disableRipple
               style={{ border: "none", color: "green" }}
               onClick={() => onClicks[0]()}
             >

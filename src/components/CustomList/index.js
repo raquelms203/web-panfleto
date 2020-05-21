@@ -41,7 +41,7 @@ export default function CustomList(props) {
         container
         justify="center"
         alignItems="center"
-        style={{ marginTop: 20 }}
+        style={{ marginTop: 50 }}
       >
         <CircularProgress />
       </Grid>
@@ -102,7 +102,7 @@ export default function CustomList(props) {
                   </Grid>
                   <Grid item container xs={4} sm={3} md={2} justify="flex-end">
                     <Tooltip title="Opções" enterDelay={600}>
-                      <IconButton onClick={handleClickMenu}>
+                      <IconButton onClick={handleClickMenu} disableRipple>
                         <MoreVert
                           style={{ color: "#525252", transform: "scale(0.8)" }}
                         />

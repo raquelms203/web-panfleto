@@ -25,7 +25,7 @@ export default function Receipt(props) {
         if (
           item.type !== "image/png" &&
           item.type !== "image/svg" &&
-          item.type !== "image/jpeg" 
+          item.type !== "image/jpeg"
         ) {
           setHasError(true);
           list.push({ error: 1, file: files[i] });
@@ -55,11 +55,12 @@ export default function Receipt(props) {
   };
 
   const sendReceipts = async (event) => {
+    console.log("send");
     event.preventDefault();
     setLoading(true);
     for (let i = 0; i < receipts.length; i++) {
       let archive;
-      //  let list = [];
+      let list = [];
       // Resizer.imageFileResizer(
       //   receipts[i].file,
       //   600,
@@ -70,9 +71,10 @@ export default function Receipt(props) {
       //   async (uri) => {
       //    list.push(receipts[i]); //uri
       //    archive = new File(list, receipts[i].file.name, { type: uri.type });
-      archive = receipts[i];
+      list.push(receipts[i]);
+      archive = new File (list, receipts[i].file.name);
       let fd = new FormData();
-      fd.append("file", archive.name);
+      fd.append("file", archive);
       await apiADM
         .put(`hired/${idHired}?managerId=${idManager}`, fd, {
           headers: {
@@ -81,9 +83,11 @@ export default function Receipt(props) {
           },
         })
         .then((response) => {
+          console.log(response);
           toast.success("Comprovante adicionado com sucesso!");
         })
         .catch((error) => {
+          console.log(error);
           if (Boolean(error.response) && error.response.status === 401)
             toast.info(
               "Após 1h a sessão expira. Você será redirecionado para a página de login.",
@@ -97,10 +101,10 @@ export default function Receipt(props) {
           else if (Boolean(error.response) && error.response.status === 400) {
             if (error.response.data.message === "Invalid file")
               toast.error("Erro. Comprovante precisa ser imagem e até 1 MB.");
-            else toast.error("Erro. É necessário assinar e validar antes.");
+              else toast.error("Erro. É necessário assinar e validar antes.");
           } else toast.error("Ocorreu um erro ao adicionar comprovante!");
-        });
-      onBack();
+        })
+        .finally(() => onBack());
       //  return;
       //    },
       //   "blob"
@@ -142,7 +146,7 @@ export default function Receipt(props) {
             <input
               multiple
               type="file"
-              accept=".png .jpeg .jpg .svg"
+              accept=".png .jpeg .jpg"
               id="file"
               onChange={handleImageChange}
               ref={inputFile}
@@ -171,7 +175,10 @@ export default function Receipt(props) {
             ) : (
               <StyledButton
                 disabled={hasError || receipts.length === 0}
-                onClick={sendReceipts}
+                onClick={(event) => {
+                  console.log("click");
+                  sendReceipts(event);
+                }}
                 variant="contained"
                 size="large"
                 color="secondary"
@@ -181,7 +188,7 @@ export default function Receipt(props) {
             )}
             <Grid item>
               <p style={{ fontSize: 12, marginTop: 10 }}>
-                (Imagens com tamanho até 1MB)
+                (.png, .jpeg ou .jpg)
               </p>
             </Grid>
           </Grid>
@@ -228,7 +235,7 @@ export default function Receipt(props) {
                       <input
                         type="file"
                         multiple
-                        accept=".png, .jpeg, .jpg, .svg"
+                        accept=".png, .jpeg, .jpg"
                         id="file"
                         onChange={handleImageChange}
                         ref={inputFile}
@@ -238,7 +245,7 @@ export default function Receipt(props) {
                     </Button>
                     <Grid item>
                       <p style={{ fontSize: 12, marginTop: 10 }}>
-                        (Imagens com tamanho até 1MB)
+                        (.png, .jpeg ou .jpg)
                       </p>
                     </Grid>
                   </Grid>
@@ -318,7 +325,10 @@ export default function Receipt(props) {
                 <StyledButton
                   style={{ marginRight: 16 }}
                   disabled={hasError || receipts.length === 0}
-                  onClick={sendReceipts}
+                  onClick={(event) => {
+                    console.log("click");
+                    sendReceipts(event);
+                  }}
                   variant="contained"
                   size="large"
                   color="secondary"

@@ -750,7 +750,7 @@ export default function Dashboard() {
                     </DialogTitle>
                   </Dialog>
                 </Grid>
-                <Grid item>
+                <Grid item xs={3} sm={3} md={4}>
                   <ActionButton
                     type="Campanha"
                     remove={Boolean(checkPolitic.length > 0)}
@@ -1026,7 +1026,7 @@ export default function Dashboard() {
                   },
                 ]}
               />
-              {politics.length === 0 || !managers || managers.length === 0 ? (
+              {politics.length === 0 || !managers || !managers[indexManager] || managers.length === 0 ? (
                 <></>
               ) : (
                 <>
