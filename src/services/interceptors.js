@@ -9,11 +9,3 @@ export const requestSuccessInterceptor = config => {
   return config;
 
 };
-
-// const responseErrorInterceptor = (error: AxiosError) => {
-//   if (error.response && error.response.status === 401) {
-//     localStorage.clear();
-//     window.location.href = '/';
-//   }
-//   return error;
-// };

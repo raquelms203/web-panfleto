@@ -274,7 +274,6 @@ export default function Dashboard() {
     }
     setIsLessThan500(false);
     if (window.matchMedia("(orientation: landscape)").matches) {
-      // if (allow) {
       setIsLessThan500(false);
       return;
     }

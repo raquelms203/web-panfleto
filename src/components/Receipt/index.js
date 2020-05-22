@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { FileDrop } from "react-file-drop";
 import { isMobile } from "react-device-detect";
-import Resizer from "react-image-file-resizer";
 import "./styles.css";
 import { apiADM } from "../../services/api";
 import { FontButton, StyledButton } from "../FormHired/styles";
@@ -29,7 +28,7 @@ export default function Receipt(props) {
         ) {
           setHasError(true);
           list.push({ error: 1, file: files[i] });
-        } else if ((item.size / 1024 / 1024).toFixed(4) > 1) {
+        } else if ((item.size / 1024 / 1024).toFixed(4) > 1000) {
           setHasError(true);
           list.push({ error: 2, file: files[i] });
         } else list.push({ error: 0, file: files[i] });
@@ -43,9 +42,10 @@ export default function Receipt(props) {
     if (event.target.files) {
       for (let i = 0; i < event.target.files.length; i++) {
         let item = event.target.files[i];
-        if ((item.size / 1024 / 1024).toFixed(4) > 1)
+        if ((item.size / 1024 / 1024).toFixed(4) > 1000) {
+          setHasError(true);
           list.push({ error: 2, file: item });
-        else list.push({ error: 0, file: item });
+        } else list.push({ error: 0, file: item });
       }
       setReceipts(list);
     }
@@ -55,26 +55,12 @@ export default function Receipt(props) {
   };
 
   const sendReceipts = async (event) => {
-    console.log("send");
     event.preventDefault();
     setLoading(true);
     for (let i = 0; i < receipts.length; i++) {
-      let archive;
-      let list = [];
-      // Resizer.imageFileResizer(
-      //   receipts[i].file,
-      //   600,
-      //   600,
-      //   "PNG",
-      //   100,
-      //   0,
-      //   async (uri) => {
-      //    list.push(receipts[i]); //uri
-      //    archive = new File(list, receipts[i].file.name, { type: uri.type });
-      list.push(receipts[i]);
-      archive = new File (list, receipts[i].file.name);
       let fd = new FormData();
-      fd.append("file", archive);
+      fd.append("file", receipts[i].file);
+
       await apiADM
         .put(`hired/${idHired}?managerId=${idManager}`, fd, {
           headers: {
@@ -83,11 +69,9 @@ export default function Receipt(props) {
           },
         })
         .then((response) => {
-          console.log(response);
           toast.success("Comprovante adicionado com sucesso!");
         })
         .catch((error) => {
-          console.log(error);
           if (Boolean(error.response) && error.response.status === 401)
             toast.info(
               "Após 1h a sessão expira. Você será redirecionado para a página de login.",
@@ -101,14 +85,9 @@ export default function Receipt(props) {
           else if (Boolean(error.response) && error.response.status === 400) {
             if (error.response.data.message === "Invalid file")
               toast.error("Erro. Comprovante precisa ser imagem e até 1 MB.");
-              else toast.error("Erro. É necessário assinar e validar antes.");
           } else toast.error("Ocorreu um erro ao adicionar comprovante!");
         })
         .finally(() => onBack());
-      //  return;
-      //    },
-      //   "blob"
-      // );
     }
   };
   const removeReceipt = (event, item) => {
@@ -176,7 +155,6 @@ export default function Receipt(props) {
               <StyledButton
                 disabled={hasError || receipts.length === 0}
                 onClick={(event) => {
-                  console.log("click");
                   sendReceipts(event);
                 }}
                 variant="contained"
@@ -283,7 +261,7 @@ export default function Receipt(props) {
                             >
                               {item.error === 1
                                 ? "(formato não suportado)"
-                                : "(maior que 1MB)"}
+                                : "(maior que 1GB)"}
                             </p>
                           ) : undefined}
                           <Button
@@ -326,7 +304,6 @@ export default function Receipt(props) {
                   style={{ marginRight: 16 }}
                   disabled={hasError || receipts.length === 0}
                   onClick={(event) => {
-                    console.log("click");
                     sendReceipts(event);
                   }}
                   variant="contained"

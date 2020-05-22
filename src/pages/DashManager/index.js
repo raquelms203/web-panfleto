@@ -94,7 +94,6 @@ export default function DashManager(props) {
     }
     setIsLessThan500(false);
     if (window.matchMedia("(orientation: landscape)").matches) {
-      // if (allow) {
       setIsLessThan500(false);
       return;
     }
