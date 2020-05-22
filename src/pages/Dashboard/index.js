@@ -122,7 +122,17 @@ export default function Dashboard() {
                 },
               }
             );
-          } else toast.error("Ocorreu um erro ao carregar os dados!");
+          } else
+            toast.error(
+              "Ocorreu um erro ao carregar os dados. Clique aqui para logar novamente.",
+              {
+                autoClose: false,
+                onClose: function () {
+                  history.push("/");
+                  localStorage.setItem("isLogged", false);
+                },
+              }
+            );
         });
     },
     [setHireds, history, setCheckHired]
@@ -163,7 +173,17 @@ export default function Dashboard() {
                 },
               }
             );
-          } else toast.error("Ocorreu um erro ao carregar os dados!");
+          } else
+            toast.error(
+              "Ocorreu um erro ao carregar os dados. Clique aqui para logar novamente.",
+              {
+                autoClose: false,
+                onClose: function () {
+                  history.push("/");
+                  localStorage.setItem("isLogged", false);
+                },
+              }
+            );
         });
     },
     [setManagers, fetchHireds, setCheckManager, history]
@@ -210,7 +230,17 @@ export default function Dashboard() {
               },
             }
           );
-        } else toast.error("Ocorreu um erro ao carregar os dados!");
+        }
+        toast.error(
+          "Ocorreu um erro ao carregar os dados. Clique aqui para logar novamente.",
+          {
+            autoClose: false,
+            onClose: function () {
+              history.push("/");
+              localStorage.setItem("isLogged", false);
+            },
+          }
+        );
       });
   }, [history, setPolitics, setCheckPolitic, fetchManagers]);
 
@@ -1026,7 +1056,10 @@ export default function Dashboard() {
                   },
                 ]}
               />
-              {politics.length === 0 || !managers || !managers[indexManager] || managers.length === 0 ? (
+              {politics.length === 0 ||
+              !managers ||
+              !managers[indexManager] ||
+              managers.length === 0 ? (
                 <></>
               ) : (
                 <>
