@@ -1206,9 +1206,24 @@ export default function Dashboard() {
               />
             </Grid>
           </StyledGrid>
-          <Footer>
-            Site desenvolvido por Easycode - 2020 | Contato:
-            easycodesuporte@gmail.com
+          <Footer
+            container
+            direction="column"
+            justify="center"
+            alignItems="center"
+          >
+            <Grid item> Site desenvolvido por Easycode - 2020</Grid>
+            <Grid item>
+              <a
+                style={{ color: "white" }}
+                href={process.env.PUBLIC_URL + "/politica-de-privacidade.pdf"}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Política de privacidade
+              </a>
+              {` | easycodesuporte@gmail.com`}
+            </Grid>
           </Footer>
         </>
       );

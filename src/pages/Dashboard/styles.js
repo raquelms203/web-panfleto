@@ -49,19 +49,13 @@ export const LabelFilter = styled.p`
   background: #b5c5fb;
 `;
 
-export const Footer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
+export const Footer = styled(Grid)`
+padding: 20px;
   color: white;
   background: #454545;
   font: 15px Microsoft New Tai Lue;
   letter-spacing: 0.4px;
-  pre {
-    color: #2b5279;
-    font: 15px Microsoft New Tai Lue;
-  }
+  
 `;
 
 export const FontButton = styled.p`

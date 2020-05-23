@@ -6,6 +6,8 @@ import {
   CircularProgress,
   InputAdornment,
   Button,
+  Dialog,
+  DialogTitle,
 } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import Computer from "../../assets/logo_2.svg";
@@ -22,6 +24,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [hidePass, setHidePass] = useState(true);
   const history = useHistory();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [userType, setUserType] = useState("");
 
   const sendLogin = async () => {
     setLoading(true);
@@ -36,8 +40,8 @@ export default function Login() {
         localStorage.setItem("userId", response.data.userId);
         localStorage.setItem("isLogged", true);
         localStorage.setItem("username", response.data.username);
-        if (response.data.userType === "admin") history.push("/dashboard");
-        else history.push("/dashboard-gestor");
+        setUserType(response.data.userType);
+        setOpenDialog(true);
       })
       .catch(function (error) {
         setLoading(false);
@@ -108,7 +112,7 @@ export default function Login() {
   }, []);
 
   return (
-    <Grid item container justify="center" style={{ minHeight: "95vh"}}>
+    <Grid item container justify="center" style={{ minHeight: "95vh" }}>
       <Grid
         item
         container
@@ -269,6 +273,52 @@ export default function Login() {
               </Grid>
             </Grid>
           )}
+          <Dialog open={openDialog} style={{ minHeight: 300 }}>
+            <DialogTitle style={{ overflowY: "hidden" }}>
+              <Grid container justify="center" spacing={3}>
+                <Grid item>
+                  {`Bem-vindo(a) ao seu primeiro acesso!`}
+                  <br />
+                  {`Para continuar é
+                  necessário ler e concordar com a nossa `}
+                  <a
+                    href={
+                      process.env.PUBLIC_URL + "/politica-de-privacidade.pdf"
+                    }
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    política de privacidade
+                  </a>
+                </Grid>
+                <Grid item container direction="row-reverse" spacing={2}>
+                  <Grid item>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => {
+                        if (userType === "admin") history.push("/dashboard");
+                        else history.push("/dashboard-gestor");
+                      }}
+                    >
+                      Eu concordo
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button
+                      style={{ background: "#958a94", color: "white" }}
+                      onClick={() => {
+                        localStorage.clear();
+                        setOpenDialog(false);
+                      }}
+                    >
+                      Voltar
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </DialogTitle>
+          </Dialog>
         </BackgroundWhite>
       </Grid>
     </Grid>
