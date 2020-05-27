@@ -55,6 +55,11 @@ padding: 20px;
   background: #454545;
   font: 15px Microsoft New Tai Lue;
   letter-spacing: 0.4px;
+
+  button {  
+    color: white; 
+    font: 15px Microsoft New Tai Lue;
+  }
   
 `;
 

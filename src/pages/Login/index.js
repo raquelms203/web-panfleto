@@ -281,15 +281,20 @@ export default function Login() {
                   <br />
                   {`Para continuar é
                   necessário ler e concordar com a nossa `}
-                  <a
-                    href={
-                      process.env.PUBLIC_URL + "/politica-de-privacidade.pdf"
-                    }
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    política de privacidade
-                  </a>
+                  <button
+                onClick={() => {
+                  let url = `${process.env.PUBLIC_URL}/politica-de-privacidade.pdf`;
+                  const win = window.open(url, "_blank");
+                  if (win != null) {
+                    win.focus();
+                  }
+                }}
+                style={{ border: "none", background: "transparent" }}
+              >
+                <span style={{ color: "blue", fontSize: 20 }}>
+                  política de privacidade
+                </span>
+              </button>
                 </Grid>
                 <Grid item container direction="row-reverse" spacing={2}>
                   <Grid item>

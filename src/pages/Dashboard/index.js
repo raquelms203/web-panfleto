@@ -122,17 +122,7 @@ export default function Dashboard() {
                 },
               }
             );
-          } else
-            toast.error(
-              "Ocorreu um erro ao carregar os dados. Clique aqui para logar novamente.",
-              {
-                autoClose: false,
-                onClose: function () {
-                  history.push("/");
-                  localStorage.setItem("isLogged", false);
-                },
-              }
-            );
+          }
         });
     },
     [setHireds, history, setCheckHired]
@@ -173,17 +163,7 @@ export default function Dashboard() {
                 },
               }
             );
-          } else
-            toast.error(
-              "Ocorreu um erro ao carregar os dados. Clique aqui para logar novamente.",
-              {
-                autoClose: false,
-                onClose: function () {
-                  history.push("/");
-                  localStorage.setItem("isLogged", false);
-                },
-              }
-            );
+          }
         });
     },
     [setManagers, fetchHireds, setCheckManager, history]
@@ -230,17 +210,17 @@ export default function Dashboard() {
               },
             }
           );
-        }
-        toast.error(
-          "Ocorreu um erro ao carregar os dados. Clique aqui para logar novamente.",
-          {
-            autoClose: false,
-            onClose: function () {
-              history.push("/");
-              localStorage.setItem("isLogged", false);
-            },
-          }
-        );
+        } else
+          toast.error(
+            "Ocorreu um erro ao carregar os dados. Clique aqui para logar novamente.",
+            {
+              autoClose: false,
+              onClose: function () {
+                history.push("/");
+                localStorage.setItem("isLogged", false);
+              },
+            }
+          );
       });
   }, [history, setPolitics, setCheckPolitic, fetchManagers]);
 
@@ -1214,14 +1194,22 @@ export default function Dashboard() {
           >
             <Grid item> Site desenvolvido por Easycode - 2020</Grid>
             <Grid item>
-              <a
-                style={{ color: "white" }}
-                href={process.env.PUBLIC_URL + "/politica-de-privacidade.pdf"}
-                rel="noopener noreferrer"
-                target="_blank"
+              <button
+                onClick={() => {
+                  let url = `${process.env.PUBLIC_URL}/politica-de-privacidade.pdf`;
+                  const win = window.open(url, "_blank");
+                  if (win != null) {
+                    win.focus();
+                  }
+                }}
+                style={{ border: "none", background: "transparent" }}
               >
-                Política de privacidade
-              </a>
+                <span
+                 
+                >
+                  política de privacidade
+                </span>
+              </button>
               {` | easycodesuporte@gmail.com`}
             </Grid>
           </Footer>

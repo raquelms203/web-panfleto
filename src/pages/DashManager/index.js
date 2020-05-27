@@ -328,9 +328,28 @@ export default function DashManager(props) {
             </Dialog>
           </SpaceDiv>
         </Grid>
-        <Footer style={{ marginTop: 10 }}>
-          Site desenvolvido por Easycode - 2020 | Contato:
-          easycodesuporte@gmail.com
+        <Footer
+          container
+          direction="column"
+          justify="center"
+          alignItems="center"
+        >
+          <Grid item> Site desenvolvido por Easycode - 2020</Grid>
+          <Grid item>
+            <button
+              onClick={() => {
+                let url = `${process.env.PUBLIC_URL}/politica-de-privacidade.pdf`;
+                const win = window.open(url, "_blank");
+                if (win != null) {
+                  win.focus();
+                }
+              }}
+              style={{ border: "none", background: "transparent" }}
+            >
+              <span>política de privacidade</span>
+            </button>
+            {` | easycodesuporte@gmail.com`}
+          </Grid>
         </Footer>
       </>
     );

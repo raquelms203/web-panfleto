@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { FileDrop } from "react-file-drop";
 import { isMobile } from "react-device-detect";
+import FileUploadProgress from "react-fileupload-progress";
+
 import "./styles.css";
 import { apiADM } from "../../services/api";
 import { FontButton, StyledButton } from "../FormHired/styles";
@@ -15,6 +17,8 @@ export default function Receipt(props) {
   const inputFile = useRef(null);
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [responseFiles, setResponseFiles] = useState([]);
+  const [dialogSucess, setDialogSuccess] = useState(false);
 
   const handleImageDrop = (files, event) => {
     let list = [...receipts];
@@ -69,7 +73,9 @@ export default function Receipt(props) {
           },
         })
         .then((response) => {
-          toast.success("Comprovante adicionado com sucesso!");
+          let files = [...responseFiles];
+          files.push({file: receipts[i].file, error: false});
+         setResponseFiles(files);
         })
         .catch((error) => {
           if (Boolean(error.response) && error.response.status === 401)
@@ -82,12 +88,13 @@ export default function Receipt(props) {
                 },
               }
             );
-          else if (Boolean(error.response) && error.response.status === 400) {
-            if (error.response.data.message === "Invalid file")
-              toast.error("Erro. Comprovante precisa ser imagem e até 1 MB.");
-          } else toast.error("Ocorreu um erro ao adicionar comprovante!");
+          else {  
+            let files = [...responseFiles];
+            files.push({file: receipts[i].file, error: false});
+           setResponseFiles(files);
+          }
         })
-        .finally(() => onBack());
+        .finally(() => setDialogSuccess(true));
     }
   };
   const removeReceipt = (event, item) => {
@@ -213,7 +220,7 @@ export default function Receipt(props) {
                       <input
                         type="file"
                         multiple
-                        accept=".png, .jpeg, .jpg"
+                        //   accept=".png, .jpeg, .jpg"
                         id="file"
                         onChange={handleImageChange}
                         ref={inputFile}
