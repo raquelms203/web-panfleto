@@ -1,12 +1,18 @@
-.drag {  
+.drag {
   border: 2px dashed #8d939a;
   color: black;
   min-width: 400px;
   min-height: 200px;
 }
 
-.font-list {  
+.font-list {
   font-size: 14px;
+}
+
+.font-response {
+  font-size: 14px;
+  margin-top: 2px;
+  margin-left: 2px;
 }
 
 .file-drop {
