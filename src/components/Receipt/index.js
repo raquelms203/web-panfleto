@@ -63,7 +63,6 @@ export default function Receipt(props) {
     event.preventDefault();
     setLoading(true);
     let f = [...responseFiles];
-    var e = false;
     for (let i = 0; i < receipts.length; i++) {
       let fd = new FormData();
       fd.append("file", receipts[i].file);
@@ -89,14 +88,13 @@ export default function Receipt(props) {
               }
             );
           else {
-            if (!e) e = true;
+            if (!hasResponseError) setHasResponseError(true);
             f.push({ file: receipts[i].file, error: true });
           }
         })
         .finally(() => {
           setResponseFiles(f);
           if (i === receipts.length - 1) {
-            if (e) setHasResponseError(true);
             setCloseDisabled(false);
           }
         });
@@ -133,11 +131,13 @@ export default function Receipt(props) {
         style={{ marginTop: 30 }}
       >
         <Grid item>
-          <Button onClick={handleClick} variant="outlined" color="secondary">
+          <Button onClick={() => {  
+            handleClick();
+          }} variant="outlined" color="secondary">
             <input
               multiple
               type="file"
-              accept=".png .jpeg .jpg"
+              accept=".png .jpeg .jpg" capture="user"
               id="file"
               onChange={handleImageChange}
               ref={inputFile}
@@ -151,7 +151,7 @@ export default function Receipt(props) {
             <Button
               size="large"
               style={{ background: "#958a94", color: "white" }}
-              onClick={() => onBack()}
+              onClick={() =>{ onBack() }}
             >
               Voltar
             </Button>
@@ -199,7 +199,7 @@ export default function Receipt(props) {
               <div
                 style={{ width: 400, height: 3, backgroundColor: "#2B5279" }}
               ></div>{" "}
-              {`Concluído (${responseFiles.length}/${receipts.length})`}
+              {`Concluído (${(responseFiles.filter((item) => !item.error)).length}/${receipts.length})`}
             </>
           ) : (
             <>
@@ -208,7 +208,7 @@ export default function Receipt(props) {
                 color="secondary"
                 variant="indeterminate"
               />
-              {`Carregando (${responseFiles.length}/${receipts.length})`}
+              Carregando...
             </>
           )}
         </Grid>
@@ -248,10 +248,10 @@ export default function Receipt(props) {
               )
             )}
           </List>
-          {hasResponseError ? (
+          {hasResponseError && !closeDisabled ? (
             <Grid item style={{ marginLeft: 12, marginTop: 10 }}>
               <p style={{ color: "red", fontSize: 14 }}>
-                Houve arquivo(s) com erro. Tente enviar novamente.
+                Tente enviar novamente o(s) arquivo(s) com erro.
               </p>
             </Grid>
           ) : undefined}
@@ -317,7 +317,7 @@ export default function Receipt(props) {
                         <input
                           type="file"
                           multiple
-                          //   accept=".png, .jpeg, .jpg"
+                          accept=".png, .jpeg, .jpg"
                           id="file"
                           onChange={handleImageChange}
                           ref={inputFile}

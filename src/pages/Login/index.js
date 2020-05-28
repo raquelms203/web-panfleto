@@ -41,7 +41,7 @@ export default function Login() {
         localStorage.setItem("isLogged", true);
         localStorage.setItem("username", response.data.username);
         setUserType(response.data.userType);
-        setOpenDialog(true);
+         if (response.data.isFirstLogin) setOpenDialog(true); else history.push("/dashboard");
       })
       .catch(function (error) {
         setLoading(false);
@@ -273,7 +273,7 @@ export default function Login() {
               </Grid>
             </Grid>
           )}
-          <Dialog open={openDialog} style={{ minHeight: 300 }}>
+          <Dialog open={openDialog} style={{ minHeight: 300 }} disableBackdropClick disableEscapeKeyDown>
             <DialogTitle style={{ overflowY: "hidden" }}>
               <Grid container justify="center" spacing={3}>
                 <Grid item>
@@ -282,19 +282,19 @@ export default function Login() {
                   {`Para continuar é
                   necessário ler e concordar com a nossa `}
                   <button
-                onClick={() => {
-                  let url = `${process.env.PUBLIC_URL}/politica-de-privacidade.pdf`;
-                  const win = window.open(url, "_blank");
-                  if (win != null) {
-                    win.focus();
-                  }
-                }}
-                style={{ border: "none", background: "transparent" }}
-              >
-                <span style={{ color: "blue", fontSize: 20 }}>
-                  política de privacidade
-                </span>
-              </button>
+                    onClick={() => {
+                      let url = `${process.env.PUBLIC_URL}/politica-de-privacidade.pdf`;
+                      const win = window.open(url, "_blank");
+                      if (win != null) {
+                        win.focus();
+                      }
+                    }}
+                    style={{ border: "none", background: "transparent" }}
+                  >
+                    <span style={{ color: "blue", fontSize: 20 }}>
+                      política de privacidade
+                    </span>
+                  </button>
                 </Grid>
                 <Grid item container direction="row-reverse" spacing={2}>
                   <Grid item>

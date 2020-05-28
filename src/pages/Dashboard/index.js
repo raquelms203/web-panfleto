@@ -1029,6 +1029,7 @@ export default function Dashboard() {
                   },
                   (index) => {
                     setOpenDialogReceipt(true);
+                    setListener(false);
                   },
                   (index) => {
                     setOpenDialogEmail(true);
@@ -1117,8 +1118,11 @@ export default function Dashboard() {
                   </Dialog>
                   {hireds && hireds.length > 0 ? (
                     <Dialog
+                      fullScreen={isMobile}
                       onClose={() => {
                         setOpenDialogReceipt(false);
+                        setListener(true);
+                        onOrientationChange();
                       }}
                       open={openDialogReceipt}
                     >
@@ -1128,6 +1132,8 @@ export default function Dashboard() {
                           idHired={hireds[indexHired] && hireds[indexHired].id}
                           onBack={() => {
                             setOpenDialogReceipt(false);
+                            setListener(true);
+                            onOrientationChange();
                           }}
                         />
                       </DialogTitle>
@@ -1204,11 +1210,7 @@ export default function Dashboard() {
                 }}
                 style={{ border: "none", background: "transparent" }}
               >
-                <span
-                 
-                >
-                  política de privacidade
-                </span>
+                <span>política de privacidade</span>
               </button>
               {` | easycodesuporte@gmail.com`}
             </Grid>

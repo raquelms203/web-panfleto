@@ -6,7 +6,7 @@ export default function ConfirmEmail(props) {
   const [loading, setLoading] = useState(false);
 
   return (
-    <Dialog onClose={onBack} open={open}>
+    <Dialog onClose={() => {onBack(); setLoading(false);}} open={open}>
       <DialogTitle>
         <div style={{ width: 400 }}>
           <Grid container direction="column">
