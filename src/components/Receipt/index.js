@@ -125,6 +125,7 @@ export default function Receipt(props) {
     return (
       <Grid
         container
+        justify="center"
         direction="column"
         alignItems="center"
         spacing={2}
@@ -192,26 +193,23 @@ export default function Receipt(props) {
 
   if (loading) {
     return (
-      <Grid container direction="column" spacing={2}>
-        <Grid item container direction="row-reverse" style={{ width: 400 }}>
+      <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
           {!closeDisabled ? (
-            <>
+            <Grid item container direction="row-reverse" xs sm md>
               <div
-                style={{ width: 400, height: 3, backgroundColor: "#2B5279" }}
-              ></div>{" "}
+                style={{ width: "100%" ,height: 5, backgroundColor: "#2B5279" }}
+              ></div>
               {`Concluído (${(responseFiles.filter((item) => !item.error)).length}/${receipts.length})`}
-            </>
+            </Grid>
           ) : (
-            <>
+            <Grid item xs sm md>
               <LinearProgress
-                style={{ width: 400 }}
                 color="secondary"
                 variant="indeterminate"
               />
               Carregando...
-            </>
+            </Grid>
           )}
-        </Grid>
         <Grid item xs sm md>
           <List
             dense

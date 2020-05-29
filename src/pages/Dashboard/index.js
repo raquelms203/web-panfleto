@@ -562,7 +562,8 @@ export default function Dashboard() {
       .post(
         `/hired/${hireds[indexHired].id}?managerId=${managers[indexManager].id}&action=sendContract`
       )
-      .then(() => {
+      .then((response) => {
+        console.log(response);
         toast.success("Email enviado com sucesso!");
       })
       .catch((error) => {
@@ -1118,6 +1119,8 @@ export default function Dashboard() {
                   </Dialog>
                   {hireds && hireds.length > 0 ? (
                     <Dialog
+                      fullWidth
+                      maxWidth="sm"
                       fullScreen={isMobile}
                       onClose={() => {
                         setOpenDialogReceipt(false);

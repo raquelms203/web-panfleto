@@ -1,12 +1,24 @@
 import React, { useState } from "react";
-import { Grid, Dialog, DialogTitle, CircularProgress, Button } from "@material-ui/core";
+import {
+  Grid,
+  Dialog,
+  DialogTitle,
+  CircularProgress,
+  Button,
+} from "@material-ui/core";
 import "react-toastify/dist/ReactToastify.min.css";
 export default function ConfirmEmail(props) {
   const { onBack, open, onConfirm } = props;
   const [loading, setLoading] = useState(false);
 
   return (
-    <Dialog onClose={() => {onBack(); setLoading(false);}} open={open}>
+    <Dialog
+      onClose={() => {
+        setLoading(false);
+        onBack();
+      }}
+      open={open}
+    >
       <DialogTitle>
         <div style={{ width: 400 }}>
           <Grid container direction="column">
@@ -50,6 +62,7 @@ export default function ConfirmEmail(props) {
                     onClick={async () => {
                       setLoading(true);
                       await onConfirm();
+                      setLoading(false);
                     }}
                     variant="contained"
                     size="large"
