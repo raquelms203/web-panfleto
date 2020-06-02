@@ -41,7 +41,11 @@ export default function Login() {
         localStorage.setItem("isLogged", true);
         localStorage.setItem("username", response.data.username);
         setUserType(response.data.userType);
-         if (response.data.isFirstLogin) setOpenDialog(true); else history.push("/dashboard");
+        if (response.data.isFirstLogin) setOpenDialog(true);
+        else {
+          if (response.data.userType === "admin") history.push("/dashboard");
+          else history.push("/dashboard-gestor");
+        }
       })
       .catch(function (error) {
         setLoading(false);
@@ -99,6 +103,29 @@ export default function Login() {
       .catch((error) => {
         toast.error("Ocorreu um erro ao enviar email de recuperação!");
       });
+  };
+
+  const acceptTerms = async () => {
+    if (userType === "admin") {
+      await apiADM
+        .put(`/administrator/accept-terms/${localStorage.getItem("userId")}`)
+        .then(() => {
+          history.push("/dashboard");
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error("Ocorreu um erro ao aceitar termos!");
+        });
+    } else {
+      await apiADM
+        .put(`/manager/accept-terms/${localStorage.getItem("userId")}`)
+        .then(() => {
+          history.push("/dashboard-gestor");
+        })
+        .catch((error) => {
+          toast.error("Ocorreu um erro ao aceitar termos!");
+        });
+    }
   };
 
   const handleSubmit = (event) => {
@@ -273,7 +300,12 @@ export default function Login() {
               </Grid>
             </Grid>
           )}
-          <Dialog open={openDialog} style={{ minHeight: 300 }} disableBackdropClick disableEscapeKeyDown>
+          <Dialog
+            open={openDialog}
+            style={{ minHeight: 300 }}
+            disableBackdropClick
+            disableEscapeKeyDown
+          >
             <DialogTitle style={{ overflowY: "hidden" }}>
               <Grid container justify="center" spacing={3}>
                 <Grid item>
@@ -301,10 +333,7 @@ export default function Login() {
                     <Button
                       variant="contained"
                       color="secondary"
-                      onClick={() => {
-                        if (userType === "admin") history.push("/dashboard");
-                        else history.push("/dashboard-gestor");
-                      }}
+                      onClick={acceptTerms}
                     >
                       Eu concordo
                     </Button>
