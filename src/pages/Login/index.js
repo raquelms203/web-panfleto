@@ -108,17 +108,16 @@ export default function Login() {
   const acceptTerms = async () => {
     if (userType === "admin") {
       await apiADM
-        .put(`/administrator/accept-terms/${localStorage.getItem("userId")}`)
+        .put(`/administrator/accept-terms/${localStorage.getItem("userId")}?adminId=${localStorage.getItem("userId")}`)
         .then(() => {
           history.push("/dashboard");
         })
         .catch((error) => {
-          console.log(error);
           toast.error("Ocorreu um erro ao aceitar termos!");
         });
     } else {
       await apiADM
-        .put(`/manager/accept-terms/${localStorage.getItem("userId")}`)
+        .put(`/manager/accept-terms/${localStorage.getItem("userId")}?managerId=${localStorage.getItem("userId")}`)
         .then(() => {
           history.push("/dashboard-gestor");
         })

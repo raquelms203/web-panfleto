@@ -563,7 +563,6 @@ export default function Dashboard() {
         `/hired/${hireds[indexHired].id}?managerId=${managers[indexManager].id}&action=sendContract`
       )
       .then((response) => {
-        console.log(response);
         toast.success("Email enviado com sucesso!");
       })
       .catch((error) => {
