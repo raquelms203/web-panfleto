@@ -36,8 +36,8 @@ export default function Login() {
       })
       .then(function (response) {
         setLoading(false);
-        localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data.userId);
+        localStorage.setItem("token", response.data.token);
         localStorage.setItem("isLogged", true);
         localStorage.setItem("username", response.data.username);
         setUserType(response.data.userType);
