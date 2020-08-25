@@ -1,15 +1,14 @@
 import axios from "axios";
 import { requestSuccessInterceptor } from "./interceptors";
 
-export const apiCities = axios.create({  
-  baseURL: "https://servicodados.ibge.gov.br/api/v1/localidades/distritos"
+export const apiCities = axios.create({
+  baseURL: "https://servicodados.ibge.gov.br/api/v1/localidades/distritos",
 });
 
-const apiADM = axios.create({  
-  baseURL: "http://64.225.27.98:3333"
+const apiADM = axios.create({
+  baseURL: "http://161.35.5.72/api/v1",
 });
 
 apiADM.interceptors.request.use(requestSuccessInterceptor);
 
 export { apiADM };
-
