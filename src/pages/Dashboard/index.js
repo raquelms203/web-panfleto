@@ -1020,7 +1020,7 @@ export default function Dashboard() {
                   },
                   (index) => {
                     let url =
-                      `http://161.35.5.72/api/v1/contrato/${hireds[indexHired].id}/` +
+                      `http://econtraweb.com.br/contrato/${hireds[indexHired].id}/` +
                       `${managers[indexManager].id}/${politics[indexPolitic].id}`;
                     const win = window.open(url, "_blank");
                     if (win != null) {
